@@ -1,6 +1,6 @@
 # grpc-gateway-boilerplate
 
-[![Run on Google Cloud](https://storage.googleapis.com/cloudrun/button.svg)](https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/johanbrandhorst/grpc-gateway-boilerplate.git)
+[![Run on Google Cloud](https://storage.googleapis.com/cloudrun/button.svg)](https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/merefield/grpc-user-api.git)
 
 All the boilerplate you need to get started with writing grpc-gateway powered
 REST services in Go.
@@ -37,7 +37,7 @@ After cloning the repo, there are a couple of initial steps;
    you will need to correct the import paths. Here's a nice `find` one-liner for accomplishing this
    (replace `yourscmprovider.com/youruser/yourrepo` with your cloned repo path):
    ```bash
-   $ find . -path ./vendor -prune -o -type f \( -name '*.go' -o -name '*.proto' \) -exec sed -i -e "s;github.com/johanbrandhorst/grpc-gateway-boilerplate;yourscmprovider.com/youruser/yourrepo;g" {} +
+   $ find . -path ./vendor -prune -o -type f \( -name '*.go' -o -name '*.proto' \) -exec sed -i -e "s;github.com/merefield/grpc-user-api;yourscmprovider.com/youruser/yourrepo;g" {} +
    ```
 1. Finally, generate the files with `make generate`.
 

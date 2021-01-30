@@ -1,0 +1,351 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "package example;",
+    "version": "1.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/user/{id}": {
+      "get": {
+        "summary": "Get a user",
+        "description": "Get a user from the server.",
+        "operationId": "UserService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "List users",
+        "description": "List all users on the server.",
+        "operationId": "UserService_ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/userUser"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of userUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "post": {
+        "summary": "Add a user",
+        "description": "Add a user to the server.",
+        "operationId": "UserService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUpdateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "userAddUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "favoriteTracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userRelatedUserGroup"
+          }
+        },
+        "residenceAddress": {
+          "$ref": "#/definitions/userStreetAddress"
+        }
+      }
+    },
+    "userRelatedUserGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "userStreetAddress": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
+    "userUpdateUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "favoriteTracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userRelatedUserGroup"
+          }
+        },
+        "residenceAddress": {
+          "$ref": "#/definitions/userStreetAddress"
+        }
+      }
+    },
+    "userUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "favoriteTracks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userRelatedUserGroup"
+          }
+        },
+        "residenceAddress": {
+          "$ref": "#/definitions/userStreetAddress"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "gRPC-gateway resonate-user-api repository",
+    "url": "https://github.com/merefield/grpc-user-api"
+  }
+}

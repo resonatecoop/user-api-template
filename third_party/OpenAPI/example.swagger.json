@@ -125,6 +125,6 @@
   },
   "externalDocs": {
     "description": "gRPC-gateway boilerplate repository",
-    "url": "https://github.com/johanbrandhorst/grpc-gateway-boilerplate"
+    "url": "https://github.com/merefield/grpc-user-api"
   }
 }

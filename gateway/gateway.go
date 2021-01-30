@@ -16,11 +16,11 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/johanbrandhorst/grpc-gateway-boilerplate/insecure"
-	pbExample "github.com/johanbrandhorst/grpc-gateway-boilerplate/proto"
+	"github.com/merefield/grpc-user-api/insecure"
+	pbExample "github.com/merefield/grpc-user-api/proto"
 
 	// Static files
-	_ "github.com/johanbrandhorst/grpc-gateway-boilerplate/statik"
+	_ "github.com/merefield/grpc-user-api/statik"
 )
 
 // getOpenAPIHandler serves an OpenAPI UI.

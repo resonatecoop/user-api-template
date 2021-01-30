@@ -6,13 +6,13 @@ import (
 
 	"github.com/gofrs/uuid"
 
-	pbExample "github.com/johanbrandhorst/grpc-gateway-boilerplate/proto"
+	pbUser "github.com/merefield/grpc-user-api/proto"
 )
 
 // Backend implements the protobuf interface
 type Backend struct {
 	mu    *sync.RWMutex
-	users []*pbExample.User
+	users []*pbUser.User
 }
 
 // New initializes a new Backend struct.
@@ -22,12 +22,38 @@ func New() *Backend {
 	}
 }
 
-// AddUser adds a user to the in-memory store.
-func (b *Backend) AddUser(ctx context.Context, _ *pbExample.AddUserRequest) (*pbExample.User, error) {
+// AddUser gets a user to the in-memory store.
+func (b *Backend) AddUser(ctx context.Context, _ *pbUser.AddUserRequest) (*pbUser.User, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	user := &pbExample.User{
+	user := &pbUser.User{
+		Id: uuid.Must(uuid.NewV4()).String(),
+	}
+	b.users = append(b.users, user)
+
+	return user, nil
+}
+
+// GetUser Gets a user to the in-memory store.
+func (b *Backend) GetUser(ctx context.Context, _ *pbUser.GetUserRequest) (*pbUser.User, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	user := &pbUser.User{
+		Id: uuid.Must(uuid.NewV4()).String(),
+	}
+	b.users = append(b.users, user)
+
+	return user, nil
+}
+
+// UpdateUser gets a user to the in-memory store.
+func (b *Backend) UpdateUser(ctx context.Context, _ *pbUser.UpdateUserRequest) (*pbUser.User, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	user := &pbUser.User{
 		Id: uuid.Must(uuid.NewV4()).String(),
 	}
 	b.users = append(b.users, user)
@@ -36,7 +62,7 @@ func (b *Backend) AddUser(ctx context.Context, _ *pbExample.AddUserRequest) (*pb
 }
 
 // ListUsers lists all users in the store.
-func (b *Backend) ListUsers(_ *pbExample.ListUsersRequest, srv pbExample.UserService_ListUsersServer) error {
+func (b *Backend) ListUsers(_ *pbUser.ListUsersRequest, srv pbUser.UserService_ListUsersServer) error {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 

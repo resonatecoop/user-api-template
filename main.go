@@ -9,13 +9,13 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/johanbrandhorst/grpc-gateway-boilerplate/gateway"
-	"github.com/johanbrandhorst/grpc-gateway-boilerplate/insecure"
-	pbExample "github.com/johanbrandhorst/grpc-gateway-boilerplate/proto"
-	"github.com/johanbrandhorst/grpc-gateway-boilerplate/server"
+	"github.com/merefield/grpc-user-api/gateway"
+	"github.com/merefield/grpc-user-api/insecure"
+	pbUser "github.com/merefield/grpc-user-api/proto"
+	"github.com/merefield/grpc-user-api/server"
 
 	// Static files
-	_ "github.com/johanbrandhorst/grpc-gateway-boilerplate/statik"
+	_ "github.com/merefield/grpc-user-api/statik"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbExample.RegisterUserServiceServer(s, server.New())
+	pbUser.RegisterUserServiceServer(s, server.New())
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)

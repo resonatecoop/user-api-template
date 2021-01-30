@@ -1,5 +1,6 @@
 generate:
-	buf generate --path ./proto/example.proto
+	buf generate --path ./proto/tag.proto
+	buf generate --path ./proto/user.proto
 	# Generate static assets for OpenAPI UI
 	statik -m -f -src third_party/OpenAPI/
 
