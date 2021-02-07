@@ -153,18 +153,9 @@
         "operationId": "UserService_ListUsers",
         "responses": {
           "200": {
-            "description": "A successful response.(streaming responses)",
+            "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/apiUser"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of apiUser"
+              "$ref": "#/definitions/apiUserListResponse"
             }
           },
           "default": {
@@ -283,37 +274,13 @@
         }
       }
     },
-    "apiUser": {
+    "apiUserListResponse": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "member": {
-          "type": "boolean"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
-        },
-        "followedGroups": {
+        "user": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/apiUserPrivateResponse"
           }
         }
       }

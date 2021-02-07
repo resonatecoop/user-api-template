@@ -90,7 +90,7 @@ service UserService {
       tags: "Users"
     };
   }
-  rpc ListUsers(Empty) returns (stream User) {
+  rpc ListUsers(Empty) returns (UserListResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/users
       get: "/api/v1/users"
@@ -168,7 +168,9 @@ message AddUserRequest {
   //StreetAddress residence_address = 13;
 }
 
-message ListUsersRequest {}
+message UserListResponse {
+  repeated UserPrivateResponse user = 1;
+}
 
 // message User {
 //   string id = 1;

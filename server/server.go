@@ -176,7 +176,7 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 }
 
 // ListUsers lists all users in the store.
-func (s *Server) ListUsers(_ *pbUser.Empty, srv pbUser.UserService_ListUsersServer) error {
+func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.UserListResponse, error) {
 
 	// uresult, pgerr := s.db.Model(u).
 	// 	Column("user.*").
@@ -208,19 +208,39 @@ func (s *Server) ListUsers(_ *pbUser.Empty, srv pbUser.UserService_ListUsersServ
 	//  }
 
 	var users []pbUser.User
+	var results pbUser.UserListResponse
 	err := s.db.Model(&users).Select()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	//users.
 	//defer users.Close()
 	//for
 
+	// for _, user := range users {
+	// 	err := srv.Send(&user)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
+
 	for _, user := range users {
-		err := srv.Send(&user)
-		if err != nil {
-			return err
-		}
+		var result pbUser.UserPrivateResponse
+		result.Id = user.Id
+		result.Username = user.Username
+		result.FullName = user.FullName
+		result.Email = user.Email
+		result.FirstName = user.FirstName
+		result.LastName = user.LastName
+		result.Member = user.Member
+		result.NewsletterNotification = user.NewsletterNotification
+		// DisplayName: user.DisplayName,
+		results.User = append(results.User, &result)
+
+		// err := results.extend(result)
+		// if err != nil {
+		// 	return err
+		// }
 	}
 
 	// for _, user := range uresult
@@ -230,7 +250,7 @@ func (s *Server) ListUsers(_ *pbUser.Empty, srv pbUser.UserService_ListUsersServ
 	// 	}
 	// }
 
-	return nil
+	return &results, nil
 }
 
 func getUserModelFromID(user string) (returneduser *model.User, err error) {
