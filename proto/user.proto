@@ -22,7 +22,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   };
   external_docs: {
     url: "https://github.com/merefield/grpc-user-api";
-    description: "gRPC-gateway dresonate-user-api repository";
+    description: "gRPC-gateway resonate-user-api repository";
   }
   schemes: HTTPS;
 };
