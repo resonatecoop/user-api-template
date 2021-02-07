@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/merefield/grpc-user-api/insecure"
-	pbExample "github.com/merefield/grpc-user-api/proto"
+	pbUser "github.com/merefield/grpc-user-api/proto"
 
 	// Static files
 	_ "github.com/merefield/grpc-user-api/statik"
@@ -56,7 +56,7 @@ func Run(dialAddr string) error {
 	}
 
 	gwmux := runtime.NewServeMux()
-	err = pbExample.RegisterUserServiceHandler(context.Background(), gwmux, conn)
+	err = pbUser.RegisterUserServiceHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}

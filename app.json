@@ -1,5 +1,5 @@
 {
-    "name": "grpc-gateway-boilerplate",
+    "name": "grpc-user-api",
     "env": {
         "SERVE_HTTP": {
             "description": "Whether to use HTTP to serve, instead of HTTPS",

@@ -1,14 +1,21 @@
 module github.com/merefield/grpc-user-api
 
-go 1.12
+go 1.15
 
 require (
 	github.com/bufbuild/buf v0.32.0
+	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/gofrs/uuid v3.3.0+incompatible
+	github.com/golang/protobuf v1.4.3
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
+	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/rakyll/statik v0.1.7
+	github.com/satori/go.uuid v1.2.0
+	github.com/twitchtv/twirp v7.1.0+incompatible
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4
 	google.golang.org/grpc v1.33.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
+	gopkg.in/yaml.v2 v2.3.0
+	mellium.im/sasl v0.2.1 // indirect
 )

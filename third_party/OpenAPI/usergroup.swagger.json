@@ -1,0 +1,464 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "usergroup.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "apiEmpty": {
+      "type": "object"
+    },
+    "apiGroupTaxonomy": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "apiGroupedUserGroups": {
+      "type": "object",
+      "properties": {
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroupPublicResponse"
+          }
+        }
+      }
+    },
+    "apiLink": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
+    "apiPrivacy": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "private": {
+          "type": "boolean"
+        },
+        "ownedTracks": {
+          "type": "boolean"
+        },
+        "supportedArtists": {
+          "type": "boolean"
+        }
+      }
+    },
+    "apiRelatedUserGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "apiSearchResults": {
+      "type": "object",
+      "properties": {
+        "people": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        }
+      }
+    },
+    "apiStreetAddress": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
+    "apiTag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "apiUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "apiUserGroup": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "banner": {
+          "type": "string",
+          "format": "byte"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/apiGroupTaxonomy"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUser"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "memberOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiLink"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiTag"
+          }
+        },
+        "address": {
+          "$ref": "#/definitions/apiStreetAddress"
+        },
+        "privacy": {
+          "$ref": "#/definitions/apiPrivacy"
+        },
+        "recommendedArtists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        },
+        "publisher": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "pro": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "groupEmailAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "apiUserGroupPrivateResponse": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "banner": {
+          "type": "string",
+          "format": "byte"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/apiGroupTaxonomy"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUser"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "memberOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiLink"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiTag"
+          }
+        },
+        "address": {
+          "$ref": "#/definitions/apiStreetAddress"
+        },
+        "privacy": {
+          "$ref": "#/definitions/apiPrivacy"
+        },
+        "recommendedArtists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        },
+        "publisher": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "pro": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "groupEmailAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "apiUserGroupPublicResponse": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        },
+        "banner": {
+          "type": "string",
+          "format": "byte"
+        },
+        "type": {
+          "$ref": "#/definitions/apiGroupTaxonomy"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUser"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "memberOfGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiUserGroup"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiLink"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiTag"
+          }
+        },
+        "recommendedArtists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/apiRelatedUserGroup"
+          }
+        },
+        "publisher": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "pro": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "groupEmailAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

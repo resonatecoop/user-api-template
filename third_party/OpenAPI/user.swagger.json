@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "package example;",
-    "version": "1.0"
+    "title": "package user",
+    "version": "0.1.0"
   },
   "schemes": [
     "https"
@@ -14,16 +14,46 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/user/{id}": {
+    "/api/v1/restricted/user/{id}": {
       "get": {
-        "summary": "Get a user",
-        "description": "Get a user from the server.",
-        "operationId": "UserService_GetUser",
+        "summary": "Get a user's restricted information",
+        "description": "Get user profile from the server including private information.",
+        "operationId": "UserService_GetUserRestricted",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userUser"
+              "$ref": "#/definitions/apiUserPrivateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "summary": "Delete user",
+        "description": "Delete a user from the server.",
+        "operationId": "UserService_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiEmpty"
             }
           },
           "default": {
@@ -46,6 +76,76 @@
         ]
       }
     },
+    "/api/v1/user/{id}": {
+      "get": {
+        "summary": "Get a user",
+        "description": "Get a user's public information from the server.",
+        "operationId": "UserService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiUserPublicResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "summary": "Update a user",
+        "description": "Update an existing user record on the server.",
+        "operationId": "UserService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apiEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apiUpdateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "List users",
@@ -58,13 +158,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/userUser"
+                  "$ref": "#/definitions/apiUser"
                 },
                 "error": {
                   "$ref": "#/definitions/rpcStatus"
                 }
               },
-              "title": "Stream result of userUser"
+              "title": "Stream result of apiUser"
             }
           },
           "default": {
@@ -81,12 +181,12 @@
       "post": {
         "summary": "Add a user",
         "description": "Add a user to the server.",
-        "operationId": "UserService_UpdateUser",
+        "operationId": "UserService_AddUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userUser"
+              "$ref": "#/definitions/apiEmpty"
             }
           },
           "default": {
@@ -102,7 +202,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/userUpdateUserRequest"
+              "$ref": "#/definitions/apiAddUserRequest"
             }
           }
         ],
@@ -113,6 +213,172 @@
     }
   },
   "definitions": {
+    "apiAddUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "apiEmpty": {
+      "type": "object"
+    },
+    "apiUpdateUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "apiUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "apiUserPrivateResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "apiUserPublicResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -142,210 +408,10 @@
           }
         }
       }
-    },
-    "userAddUserRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "member": {
-          "type": "boolean"
-        },
-        "avatar": {
-          "type": "string",
-          "format": "byte"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
-        },
-        "favoriteTracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "ownerOfGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/userRelatedUserGroup"
-          }
-        },
-        "residenceAddress": {
-          "$ref": "#/definitions/userStreetAddress"
-        }
-      }
-    },
-    "userRelatedUserGroup": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "avatar": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "userStreetAddress": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "data": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "personalData": {
-          "type": "boolean"
-        }
-      }
-    },
-    "userUpdateUserRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "member": {
-          "type": "boolean"
-        },
-        "avatar": {
-          "type": "string",
-          "format": "byte"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
-        },
-        "favoriteTracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "ownerOfGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/userRelatedUserGroup"
-          }
-        },
-        "residenceAddress": {
-          "$ref": "#/definitions/userStreetAddress"
-        }
-      }
-    },
-    "userUser": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "member": {
-          "type": "boolean"
-        },
-        "avatar": {
-          "type": "string",
-          "format": "byte"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
-        },
-        "favoriteTracks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "ownerOfGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/userRelatedUserGroup"
-          }
-        },
-        "residenceAddress": {
-          "$ref": "#/definitions/userStreetAddress"
-        }
-      }
     }
   },
   "externalDocs": {
-    "description": "gRPC-gateway resonate-user-api repository",
+    "description": "gRPC-gateway dresonate-user-api repository",
     "url": "https://github.com/merefield/grpc-user-api"
   }
 }

@@ -1,26 +1,28 @@
 syntax="proto3";
 
 //package example;
-package resonate.api.user;
+//package resonate.api.user;
+package api;
 
 //option go_package = "user";
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "tag.proto";
+import "common.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/merefield/grpc-user-api/proto;user";
+option go_package = "github.com/merefield/grpc-user-api/proto/api";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    version: "1.0";
+    version: "0.1.0";
+    title: "package user";
   };
   external_docs: {
     url: "https://github.com/merefield/grpc-user-api";
-    description: "gRPC-gateway resonate-user-api repository";
+    description: "gRPC-gateway dresonate-user-api repository";
   }
   schemes: HTTPS;
 };
@@ -28,7 +30,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service UserService {
 
   //rpc AddUser(AddUserRequest) returns (User) {
-  rpc AddUser(AddUserRequest) returns (User) {
+  rpc AddUser(AddUserRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
       post: "/api/v1/users"
@@ -41,30 +43,54 @@ service UserService {
     };
   }
   //rpc AddUser(AddUserRequest) returns (User) {
-  rpc UpdateUser(UpdateUserRequest) returns (User) {
+  rpc UpdateUser(UpdateUserRequest) returns (Empty) {
     option (google.api.http) = {
-      // Route to this method from POST requests to /api/v1/users
-      post: "/api/v1/users"
+      // Route to this method from PUT requests to /api/v1/user
+      patch: "/api/v1/user/{id}"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Add a user"
-      description: "Add a user to the server."
+      summary: "Update a user"
+      description: "Update an existing user record on the server."
       tags: "Users"
     };
   }
-  rpc GetUser(GetUserRequest) returns (User) {
+  //GetUser provides a public level of information about a user
+  rpc GetUser(UserRequest) returns (UserPublicResponse) {
     option (google.api.http) = {
-      // Route to this method from POST requests to /api/v1/users
+      // Route to this method from GET requests to /api/v1/user/{id}
       get: "/api/v1/user/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get a user"
-      description: "Get a user from the server."
+      description: "Get a user's public information from the server."
       tags: "Users"
     };
   }
-  rpc ListUsers(ListUsersRequest) returns (stream User) {
+  //GetUserRestricted provides private level of information about a user
+  rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/restricted/user/{id}
+      get: "/api/v1/restricted/user/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a user's restricted information"
+      description: "Get user profile from the server including private information."
+      tags: "Users"
+    };
+  }
+  rpc DeleteUser(UserRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
+      delete: "/api/v1/restricted/user/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete user"
+      description: "Delete a user from the server."
+      tags: "Users"
+    };
+  }
+  rpc ListUsers(Empty) returns (stream User) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/users
       get: "/api/v1/users"
@@ -77,7 +103,7 @@ service UserService {
   }
 }
 
-message GetUserRequest {
+message UserRequest {
   string id = 1;
 }
 
@@ -85,33 +111,61 @@ message UpdateUserRequest {
   string id = 1; // required
   string username = 2; // required
   string email = 3; // required
-  string display_name = 4; // required TODO remove
   string full_name = 5; // required
   string first_name = 6;
   string last_name = 7;
   bool member = 8;
-  bytes avatar = 9;
   bool newsletter_notification = 10;
-  repeated string favorite_tracks = 11;
   repeated string followed_groups = 12;
-  repeated RelatedUserGroup owner_of_groups = 13;
-  StreetAddress residence_address = 14;
+  //repeated string favorite_tracks = 11;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //string display_name = 4; // required TODO remove
+  //bytes avatar = 9;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
+}
+
+message UserPrivateResponse {
+  string id = 1; // required
+  string username = 2; // required
+  string email = 3; // required
+  string full_name = 5; // required
+  string first_name = 6;
+  string last_name = 7;
+  bool member = 8;
+  bool newsletter_notification = 10;
+  repeated string followed_groups = 12;
+    //bytes avatar = 9;
+    //string display_name = 4; // required TODO remove
+ // repeated RelatedUserGroup owner_of_groups = 13;
+ // StreetAddress residence_address = 14;
+}
+
+message UserPublicResponse {
+  string username = 2; // required
+  string full_name = 5; // required
+  string first_name = 6;
+  string last_name = 7;
+  bool member = 8;
+  repeated string followed_groups = 12;
+  //bytes avatar = 9;
+   // string display_name = 4; // required TODO remove
 }
 
 message AddUserRequest {
   string username = 1; // required
   string email = 2; // required
-  string display_name = 3; // required TODO remove
   string full_name = 4; // required
   string first_name = 5;
   string last_name = 6;
   bool member = 7;
-  bytes avatar = 8;
   bool newsletter_notification = 9;
-  repeated string favorite_tracks = 10;
   repeated string followed_groups = 11;
-  repeated RelatedUserGroup owner_of_groups = 12;
-  StreetAddress residence_address = 13;
+  //repeated string favorite_tracks = 10;
+  //bytes avatar = 8;
+  //string display_name = 3; // required TODO remove
+  //repeated RelatedUserGroup owner_of_groups = 12;
+  //StreetAddress residence_address = 13;
 }
 
 message ListUsersRequest {}
@@ -148,22 +202,6 @@ message ListUsersRequest {}
 //   // rpc CreatePlay(CreatePlayRequest) returns (CreatePlayResponse); Payment API
 // }
 
-message User {
-  string id = 1; // required
-  string username = 2; // required
-  string email = 3; // required
-  string display_name = 4; // required TODO remove
-  string full_name = 5; // required
-  string first_name = 6;
-  string last_name = 7;
-  bool member = 8;
-  bytes avatar = 9;
-  bool newsletter_notification = 10;
-  repeated string favorite_tracks = 11;
-  repeated string followed_groups = 12;
-  repeated RelatedUserGroup owner_of_groups = 13;
-  StreetAddress residence_address = 14;
-}
 
 // message Playlists {
 //   repeated RelatedTrackGroup playlists = 1;
@@ -173,11 +211,7 @@ message User {
 //   repeated Track tracks = 1;
 // }
 
-message StreetAddress {
-  string id = 1;
-  map<string, string> data = 2;
-  bool personal_data = 3;
-}
+
 
 // message Artists {
 //   repeated RelatedUserGroup artists = 1;
