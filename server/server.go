@@ -157,14 +157,30 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 		return nil, err
 	}
 
-	u, err := getUserModel(updateUserRequest.Id)
+	// u, err := getUserModel(updateUserRequest)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	existingID, err := uuidpkg.GetUUIDFromString(updateUserRequest.Id)
+
 	if err != nil {
 		return nil, err
 	}
 
+	u := &model.User{
+		ID:        existingID,
+		Username:  updateUserRequest.Username,
+		FullName:  updateUserRequest.FullName,
+		Email:     updateUserRequest.Email,
+		FirstName: updateUserRequest.FirstName,
+		LastName:  updateUserRequest.LastName,
+		// DisplayName: user.DisplayName,
+	}
+
 	u.UpdatedAt = time.Now()
 	_, pgerr := s.db.Model(u).
-		Column("updated_at", "username", "full_name", "email", "member", "newsletter_notification").
+		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
 		WherePK().
 		Returning("*").
 		Update()
@@ -272,6 +288,24 @@ func getUserModelFromID(user string) (returneduser *model.User, err error) {
 }
 
 func getUserModel(user string) (returneduser *model.User, err error) {
+	ID, err := uuidpkg.GetUUIDFromString(user)
+	if err != nil {
+		return nil, err
+	}
+	return &model.User{
+		ID:       ID,
+		Username: returneduser.Username,
+		// DisplayName: user.DisplayName,
+		FullName:               returneduser.FullName,
+		Email:                  returneduser.Email,
+		FirstName:              returneduser.FirstName,
+		LastName:               returneduser.LastName,
+		Member:                 returneduser.Member,
+		NewsletterNotification: returneduser.NewsletterNotification,
+	}, nil
+}
+
+func getUserModelforUpdate(user string) (returneduser *model.User, err error) {
 	ID, err := uuidpkg.GetUUIDFromString(user)
 	if err != nil {
 		return nil, err

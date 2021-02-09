@@ -17,7 +17,7 @@ option go_package = "github.com/merefield/grpc-user-api/proto/api";
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    version: "0.1.0";
+    version: "2.0.1";
     title: "package user";
   };
   external_docs: {
