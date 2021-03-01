@@ -1,0 +1,170 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Resonate IAM Service Documentation",
+    "version": "1.0"
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/refresh": {
+      "post": {
+        "summary": "Refresh a token",
+        "description": "Provide token and get refreshed token response ",
+        "operationId": "ResonateIAM_Refresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/iamRefreshResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/iamRefreshReq"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/api/v1/token": {
+      "post": {
+        "summary": "Request a token",
+        "description": "Provide credentials and get token response ",
+        "operationId": "ResonateIAM_Auth",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/iamAuthResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/iamAuthReq"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "iamAuthReq": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "type": "string",
+          "title": "Required"
+        },
+        "password": {
+          "type": "string",
+          "title": "Required"
+        }
+      },
+      "title": "Password authentication request"
+    },
+    "iamAuthResp": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "title": "Access token"
+        },
+        "refreshToken": {
+          "type": "string",
+          "title": "Refresh token"
+        }
+      },
+      "title": "Password authentication response"
+    },
+    "iamRefreshReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "title": "Required"
+        }
+      },
+      "title": "Refresh token request"
+    },
+    "iamRefreshResp": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "title": "Access token"
+        }
+      },
+      "title": "Refresh token response"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "gRPC-gateway resonate-user-api repository",
+    "url": "https://github.com/merefield/grpc-user-api"
+  }
+}

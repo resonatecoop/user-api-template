@@ -12,7 +12,7 @@ import (
 	"github.com/twitchtv/twirp"
 
 	"github.com/merefield/grpc-user-api/internal/model"
-	pbUser "github.com/merefield/grpc-user-api/proto"
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 )
 
 // Server implements the UserService

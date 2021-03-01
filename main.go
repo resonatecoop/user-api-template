@@ -14,7 +14,7 @@ import (
 	"github.com/merefield/grpc-user-api/insecure"
 	"github.com/merefield/grpc-user-api/pkg/config"
 	pgsql "github.com/merefield/grpc-user-api/pkg/postgres"
-	pbAPI "github.com/merefield/grpc-user-api/proto"
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 	"github.com/merefield/grpc-user-api/server"
 
 	// Static files
@@ -48,7 +48,7 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbAPI.RegisterUserServiceServer(s, server.New(db))
+	pbUser.RegisterUserServiceServer(s, server.New(db))
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)

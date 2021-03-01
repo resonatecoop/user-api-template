@@ -1,14 +1,14 @@
 package model
 
 import (
-	pb "github.com/merefield/grpc-user-api/proto"
-
 	"github.com/go-pg/pg"
 	"github.com/twitchtv/twirp"
 
 	uuidpkg "github.com/merefield/grpc-user-api/pkg/uuid"
 
 	uuid "github.com/satori/go.uuid"
+
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 
 	errorpkg "github.com/merefield/grpc-user-api/pkg/error"
 )
@@ -36,8 +36,8 @@ func SearchTags(query string, tagType string, db *pg.DB) ([]*Tag, twirp.Error) {
 }
 
 // GetTags given tag UUID returns a Tag
-func GetTags(tagIds []uuid.UUID, db *pg.DB) ([]*pb.Tag, twirp.Error) {
-	tags := make([]*pb.Tag, len(tagIds))
+func GetTags(tagIds []uuid.UUID, db *pg.DB) ([]*pbUser.Tag, twirp.Error) {
+	tags := make([]*pbUser.Tag, len(tagIds))
 	if len(tags) > 0 {
 		var t []Tag
 		pgerr := db.Model(&t).
@@ -47,14 +47,14 @@ func GetTags(tagIds []uuid.UUID, db *pg.DB) ([]*pb.Tag, twirp.Error) {
 			return nil, errorpkg.CheckError(pgerr, "tag")
 		}
 		for i, tag := range t {
-			tags[i] = &pb.Tag{Id: tag.ID.String(), Type: tag.Type, Name: tag.Name}
+			tags[i] = &pbUser.Tag{Id: tag.ID.String(), Type: tag.Type, Name: tag.Name}
 		}
 	}
 	return tags, nil
 }
 
 // GetTagIDs accepts a slice tags
-func GetTagIDs(t []*pb.Tag, db *pg.Tx) ([]uuid.UUID, error) {
+func GetTagIDs(t []*pbUser.Tag, db *pg.Tx) ([]uuid.UUID, error) {
 	tags := make([]*Tag, len(t))
 	tagIDs := make([]uuid.UUID, len(t))
 	for i, tag := range t {

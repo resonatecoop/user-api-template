@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package api;
+package user;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 //import "usergroup.proto";
 import "user/common.proto";
 
-option go_package = "github.com/merefield/grpc-user-api/proto/api";
+option go_package = "github.com/merefield/grpc-user-api/proto/user";
 
 service StreetAdressService {
   rpc SearchStreetAddress(Query) returns (StreetAddress);

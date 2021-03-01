@@ -17,10 +17,6 @@ service TagService {
   rpc SearchGenres(Query) returns (SearchResults);
 }
 
-
-
-
-
 // message RelatedUserGroup {
 //   string ID = 1;
 //   string display_name = 2;

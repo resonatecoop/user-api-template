@@ -17,7 +17,7 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/merefield/grpc-user-api/insecure"
-	pbUser "github.com/merefield/grpc-user-api/proto"
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 
 	// Static files
 	_ "github.com/merefield/grpc-user-api/statik"

@@ -11,9 +11,10 @@ import (
 	"github.com/go-pg/pg/orm"
 	"github.com/twitchtv/twirp"
 
-	pb "github.com/merefield/grpc-user-api/proto"
 	// trackpb "user-api/rpc/track"
 	//tagpb "github.com/merefield/grpc-user-api/proto/api"
+
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 
 	uuidpkg "github.com/merefield/grpc-user-api/pkg/uuid"
 	uuid "github.com/satori/go.uuid"
@@ -81,7 +82,7 @@ func (u *UserGroup) BeforeInsert(c context.Context, db orm.DB) error {
 }
 
 // Create creates a new UserGroup
-func (u *UserGroup) Create(db *pg.DB, userGroup *pb.UserGroup) (error, string) {
+func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
 	var table string
 	tx, err := db.Begin()
 	if err != nil {
@@ -153,7 +154,7 @@ func (u *UserGroup) Create(db *pg.DB, userGroup *pb.UserGroup) (error, string) {
 	// Building response
 	userGroup.Address.Id = u.AddressID.String()
 	userGroup.Type.ID = u.TypeID.String()
-	userGroup.Privacy = &pb.Privacy{
+	userGroup.Privacy = &pbUser.Privacy{
 		ID:               u.Privacy.ID.String(),
 		Private:          u.Privacy.Private,
 		OwnedTracks:      u.Privacy.OwnedTracks,
@@ -163,7 +164,7 @@ func (u *UserGroup) Create(db *pg.DB, userGroup *pb.UserGroup) (error, string) {
 	return tx.Commit(), table
 }
 
-func (u *UserGroup) Update(db *pg.DB, userGroup *pb.UserGroup) (error, string) {
+func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
 	var table string
 	tx, err := db.Begin()
 	if err != nil {
@@ -277,7 +278,7 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pb.UserGroup) (error, string) {
 	return tx.Commit(), table
 }
 
-func SearchUserGroups(query string, db *pg.DB) (*pb.SearchResults, twirp.Error) {
+func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Error) {
 	var userGroups []UserGroup
 
 	pgerr := db.Model(&userGroups).
@@ -289,11 +290,11 @@ func SearchUserGroups(query string, db *pg.DB) (*pb.SearchResults, twirp.Error) 
 		return nil, errorpkg.CheckError(pgerr, "user_group")
 	}
 
-	var people []*pb.RelatedUserGroup
-	var artists []*pb.RelatedUserGroup
-	var labels []*pb.RelatedUserGroup
+	var people []*pbUser.RelatedUserGroup
+	var artists []*pbUser.RelatedUserGroup
+	var labels []*pbUser.RelatedUserGroup
 	for _, userGroup := range userGroups {
-		searchUserGroup := &pb.RelatedUserGroup{
+		searchUserGroup := &pbUser.RelatedUserGroup{
 			Id:          userGroup.ID.String(),
 			DisplayName: userGroup.DisplayName,
 			Avatar:      userGroup.Avatar,
@@ -307,7 +308,7 @@ func SearchUserGroups(query string, db *pg.DB) (*pb.SearchResults, twirp.Error) 
 			labels = append(labels, searchUserGroup)
 		}
 	}
-	return &pb.SearchResults{
+	return &pbUser.SearchResults{
 		People:  people,
 		Artists: artists,
 		Labels:  labels,
@@ -499,8 +500,8 @@ func (u *UserGroup) RemoveRecommended(db *pg.DB, recommendedID uuid.UUID) (error
 
 // Select user groups in db with given 'ids'
 // Return slice of UserGroup response
-func GetRelatedUserGroups(ids []uuid.UUID, db orm.DB) ([]*pb.RelatedUserGroup, error) {
-	groupsResponse := make([]*pb.RelatedUserGroup, len(ids))
+func GetRelatedUserGroups(ids []uuid.UUID, db orm.DB) ([]*pbUser.RelatedUserGroup, error) {
+	groupsResponse := make([]*pbUser.RelatedUserGroup, len(ids))
 	if len(ids) > 0 {
 		var groups []UserGroup
 		pgerr := db.Model(&groups).
@@ -510,7 +511,7 @@ func GetRelatedUserGroups(ids []uuid.UUID, db orm.DB) ([]*pb.RelatedUserGroup, e
 			return nil, pgerr
 		}
 		for i, group := range groups {
-			groupsResponse[i] = &pb.RelatedUserGroup{
+			groupsResponse[i] = &pbUser.RelatedUserGroup{
 				Id:          group.ID.String(),
 				DisplayName: group.DisplayName,
 				Avatar:      group.Avatar,
@@ -524,7 +525,7 @@ func GetRelatedUserGroups(ids []uuid.UUID, db orm.DB) ([]*pb.RelatedUserGroup, e
 // Select user groups in db with given ids in 'userGroups'
 // Return ids slice
 // Used in CreateUserGroup/UpdateUserGroup to add/update ids slice to recommended Artists
-func GetRelatedUserGroupIDs(userGroups []*pb.RelatedUserGroup, db *pg.Tx) ([]uuid.UUID, error) {
+func GetRelatedUserGroupIDs(userGroups []*pbUser.RelatedUserGroup, db *pg.Tx) ([]uuid.UUID, error) {
 	relatedUserGroups := make([]*UserGroup, len(userGroups))
 	relatedUserGroupIDs := make([]uuid.UUID, len(userGroups))
 	for i, userGroup := range userGroups {
@@ -547,7 +548,7 @@ func GetRelatedUserGroupIDs(userGroups []*pb.RelatedUserGroup, db *pg.Tx) ([]uui
 	return relatedUserGroupIDs, nil
 }
 
-func getLinkIDs(l []*pb.Link, db *pg.Tx) ([]uuid.UUID, error) {
+func getLinkIDs(l []*pbUser.Link, db *pg.Tx) ([]uuid.UUID, error) {
 	links := make([]*Link, len(l))
 	linkIDs := make([]uuid.UUID, len(l))
 	for i, link := range l {
@@ -579,7 +580,7 @@ func getLinkIDs(l []*pb.Link, db *pg.Tx) ([]uuid.UUID, error) {
 }
 
 // DEPRECATED - moved to Payment API
-func (u *UserGroup) GetUserGroupTrackAnalytics(db *pg.DB) ([]*pb.TrackAnalytics, twirp.Error) {
+func (u *UserGroup) GetUserGroupTrackAnalytics(db *pg.DB) ([]*pbUser.TrackAnalytics, twirp.Error) {
   pgerr := db.Model(u).
     Column("OwnerOfTracks").
     WherePK().
@@ -595,7 +596,7 @@ func (u *UserGroup) GetUserGroupTrackAnalytics(db *pg.DB) ([]*pb.TrackAnalytics,
     }
     trackIDs[i] = track.ID
   }
-  artistTrackAnalytics := make([]*pb.TrackAnalytics, len(tracks))
+  artistTrackAnalytics := make([]*pbUser.TrackAnalytics, len(tracks))
 
   if len(u.OwnerOfTracks) > 0 {
     _, pgerr := db.Query(&tracks, `
@@ -611,7 +612,7 @@ func (u *UserGroup) GetUserGroupTrackAnalytics(db *pg.DB) ([]*pb.TrackAnalytics,
       return nil, errorpkg.CheckError(pgerr, "play")
     }
     for i, track := range(tracks) {
-      artistTrackAnalytics[i] = &pb.TrackAnalytics{
+      artistTrackAnalytics[i] = &pbUser.TrackAnalytics{
         ID: track.ID.String(),
         Title: track.Title,
         TotalPlays: track.PaidPlays + track.FreePlays,
