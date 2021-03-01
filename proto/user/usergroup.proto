@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "user/common.proto";
+//import "tag.proto";
+
+
+package user;
+option go_package = "github.com/merefield/grpc-user-api/proto/user";
+
+service UserGroupService {
+  rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
+  rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
+  rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
+  rpc UpdateUserGroup(UserGroupUpdateRequest) returns (UserGroupPrivateResponse);
+  rpc DeleteUserGroup(UserGroupRequest) returns (Empty);
+
+  rpc GetChildUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+  rpc GetParentUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+
+  //rpc GetLabelUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+  //rpc GetUserGroupTypes(Empty) returns (GroupTaxonomies);
+
+  //rpc AddRecommended(UserGroupRecommended) returns (Empty);
+  //rpc RemoveRecommended(UserGroupRecommended) returns (Empty);
+
+  rpc AddMember(UserGroupMembershipRequest) returns (Empty);
+  rpc DeleteMember(UserGroupMembershipRequest) returns (Empty);
+
+  rpc SearchUserGroups(Query) returns (SearchResults);
+}
+
+message UserGroupRequest {
+  string ID = 1; // required
+}
+
+message UserGroupMembershipRequest {
+  string GroupID = 1; // required
+  string MemberID = 2; //required
+}
+
+message UserGroup {
+  string ID = 1; // required
+  string display_name = 2; // required
+  string description = 3;
+  string short_bio = 4;
+  bytes avatar = 5; // required
+  bytes banner = 6;
+  string owner_id = 7; // required
+  GroupTaxonomy type = 8; // required
+  repeated User followers = 9;
+  repeated UserGroup members = 10;
+  repeated UserGroup memberOfGroups = 11;
+  repeated Link links = 12;
+  repeated Tag tags = 13;
+  StreetAddress address = 14;
+  Privacy privacy = 15;
+  repeated RelatedUserGroup recommended_artists = 16;
+  map<string, string> publisher = 17;
+  map<string, string> pro = 18;
+  string group_email_address = 19;
+}
+
+message UserGroupCreateRequest {
+  string display_name = 2; // required
+  string description = 3;
+  string short_bio = 4;
+  bytes avatar = 5; // required
+  bytes banner = 6;
+  string owner_id = 7; // required
+  GroupTaxonomy type = 8; // required
+  repeated User followers = 9;
+  repeated UserGroup members = 10;
+  repeated UserGroup memberOfGroups = 11;
+  repeated Link links = 12;
+  repeated Tag tags = 13;
+  StreetAddress address = 14;
+  Privacy privacy = 15;
+  repeated RelatedUserGroup recommended_artists = 16;
+  map<string, string> publisher = 17;
+  map<string, string> pro = 18;
+  string group_email_address = 19;
+}
+
+message UserGroupUpdateRequest {
+  string ID = 1; // required
+  string display_name = 2; // required
+  string description = 3;
+  string short_bio = 4;
+  bytes avatar = 5; // required
+  bytes banner = 6;
+  string owner_id = 7; // required
+  GroupTaxonomy type = 8; // required
+  repeated User followers = 9;
+  repeated UserGroup members = 10;
+  repeated UserGroup memberOfGroups = 11;
+  repeated Link links = 12;
+  repeated Tag tags = 13;
+  StreetAddress address = 14;
+  Privacy privacy = 15;
+  repeated RelatedUserGroup recommended_artists = 16;
+  map<string, string> publisher = 17;
+  map<string, string> pro = 18;
+  string group_email_address = 19;
+}
+
+message UserGroupPrivateResponse {
+  string display_name = 1; // required
+  string description = 2;
+  string short_bio = 3;
+  bytes avatar = 4; // required
+  bytes banner = 5;
+  string owner_id = 6; // required
+  GroupTaxonomy type = 7; // required
+  repeated User followers = 8;
+  repeated UserGroup members = 9;
+  repeated UserGroup memberOfGroups = 10;
+  repeated Link links = 11;
+  repeated Tag tags = 12;
+  StreetAddress address = 13;
+  Privacy privacy = 14;
+  repeated RelatedUserGroup recommended_artists = 15;
+  map<string, string> publisher = 16;
+  map<string, string> pro = 17;
+  string group_email_address = 18;
+}
+
+
+message UserGroupPublicResponse {
+  string display_name = 2; // required
+  string description = 3;
+  string short_bio = 4;
+  bytes avatar = 5; // required
+  bytes banner = 6;
+  GroupTaxonomy type = 8; // required
+  repeated User followers = 9;
+  repeated UserGroup members = 10;
+  repeated UserGroup memberOfGroups = 11;
+  repeated Link links = 12;
+  repeated Tag tags = 13;
+  repeated RelatedUserGroup recommended_artists = 17;
+  map<string, string> publisher = 21;
+  map<string, string> pro = 22;
+  string group_email_address = 23;
+}
+
+// message TrackAnalytics {
+//   string id = 1;
+//   string title = 2;
+//   int32 total_plays = 3;
+//   int32 paid_plays = 4;
+//   int32 free_plays = 5;
+//   float total_credits = 6;
+//   float user_group_credits = 7;
+//   float resonate_credits = 8;
+// }
+
+// message LabelTrackAnalytics {
+//   RelatedUserGroup user_group = 1;
+//   repeated TrackAnalytics tracks = 2;
+// }
+
+// message UserGroupTrackAnalytics {
+//   repeated TrackAnalytics artist_track_analytics = 1;
+//   repeated LabelTrackAnalytics label_track_analytics = 2;
+// }
+
+message UserGroupRecommended {
+  string user_group_id = 1;
+  string recommended_id = 2;
+}
+
+message UserGroupMembers {
+  string user_group_id = 1;
+  repeated UserGroup members = 2;
+}
+
+message GroupTaxonomy {
+  string ID = 1;
+  string type = 2;
+  string name = 3;
+}
+
+message GroupTaxonomies {
+  repeated GroupTaxonomy types = 1;
+}
+
+message Link {
+  string ID = 1;
+  string platform = 2;
+  string type = 3;
+  string uri = 4;
+  bool personal_data = 5;
+}
+
+message Privacy {
+  string ID = 1;
+  bool private = 2;
+  bool owned_tracks = 3;
+  bool supported_artists = 4;
+}
+
+message GroupedUserGroups {
+  repeated UserGroupPublicResponse groups = 1;
+}
+
+
