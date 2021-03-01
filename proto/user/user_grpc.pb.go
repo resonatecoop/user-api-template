@@ -13,10 +13,10 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion7
 
-// UserServiceClient is the client API for UserService service.
+// ResonateUserClient is the client API for ResonateUser service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UserServiceClient interface {
+type ResonateUserClient interface {
 	//rpc AddUser(AddUserRequest) returns (User) {
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc AddUser(AddUserRequest) returns (User) {
@@ -29,72 +29,72 @@ type UserServiceClient interface {
 	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
 }
 
-type userServiceClient struct {
+type resonateUserClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
-	return &userServiceClient{cc}
+func NewResonateUserClient(cc grpc.ClientConnInterface) ResonateUserClient {
+	return &resonateUserClient{cc}
 }
 
-func (c *userServiceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *resonateUserClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserService/AddUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *resonateUserClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserService/UpdateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error) {
+func (c *resonateUserClient) GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error) {
 	out := new(UserPublicResponse)
-	err := c.cc.Invoke(ctx, "/user.UserService/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) GetUserRestricted(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPrivateResponse, error) {
+func (c *resonateUserClient) GetUserRestricted(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPrivateResponse, error) {
 	out := new(UserPrivateResponse)
-	err := c.cc.Invoke(ctx, "/user.UserService/GetUserRestricted", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUserRestricted", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *resonateUserClient) DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserService/DeleteUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error) {
+func (c *resonateUserClient) ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error) {
 	out := new(UserListResponse)
-	err := c.cc.Invoke(ctx, "/user.UserService/ListUsers", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/ListUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UserServiceServer is the server API for UserService service.
-// All implementations should embed UnimplementedUserServiceServer
+// ResonateUserServer is the server API for ResonateUser service.
+// All implementations should embed UnimplementedResonateUserServer
 // for forward compatibility
-type UserServiceServer interface {
+type ResonateUserServer interface {
 	//rpc AddUser(AddUserRequest) returns (User) {
 	AddUser(context.Context, *AddUserRequest) (*Empty, error)
 	//rpc AddUser(AddUserRequest) returns (User) {
@@ -107,175 +107,175 @@ type UserServiceServer interface {
 	ListUsers(context.Context, *Empty) (*UserListResponse, error)
 }
 
-// UnimplementedUserServiceServer should be embedded to have forward compatible implementations.
-type UnimplementedUserServiceServer struct {
+// UnimplementedResonateUserServer should be embedded to have forward compatible implementations.
+type UnimplementedResonateUserServer struct {
 }
 
-func (UnimplementedUserServiceServer) AddUser(context.Context, *AddUserRequest) (*Empty, error) {
+func (UnimplementedResonateUserServer) AddUser(context.Context, *AddUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error) {
+func (UnimplementedResonateUserServer) UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedUserServiceServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
+func (UnimplementedResonateUserServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserServiceServer) GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error) {
+func (UnimplementedResonateUserServer) GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserRestricted not implemented")
 }
-func (UnimplementedUserServiceServer) DeleteUser(context.Context, *UserRequest) (*Empty, error) {
+func (UnimplementedResonateUserServer) DeleteUser(context.Context, *UserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedUserServiceServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
+func (UnimplementedResonateUserServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
 
-// UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserServiceServer will
+// UnsafeResonateUserServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ResonateUserServer will
 // result in compilation errors.
-type UnsafeUserServiceServer interface {
-	mustEmbedUnimplementedUserServiceServer()
+type UnsafeResonateUserServer interface {
+	mustEmbedUnimplementedResonateUserServer()
 }
 
-func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
-	s.RegisterService(&_UserService_serviceDesc, srv)
+func RegisterResonateUserServer(s grpc.ServiceRegistrar, srv ResonateUserServer) {
+	s.RegisterService(&_ResonateUser_serviceDesc, srv)
 }
 
-func _UserService_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).AddUser(ctx, in)
+		return srv.(ResonateUserServer).AddUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/AddUser",
+		FullMethod: "/user.ResonateUser/AddUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).AddUser(ctx, req.(*AddUserRequest))
+		return srv.(ResonateUserServer).AddUser(ctx, req.(*AddUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).UpdateUser(ctx, in)
+		return srv.(ResonateUserServer).UpdateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/UpdateUser",
+		FullMethod: "/user.ResonateUser/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+		return srv.(ResonateUserServer).UpdateUser(ctx, req.(*UpdateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetUser(ctx, in)
+		return srv.(ResonateUserServer).GetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/GetUser",
+		FullMethod: "/user.ResonateUser/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUser(ctx, req.(*UserRequest))
+		return srv.(ResonateUserServer).GetUser(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetUserRestricted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_GetUserRestricted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetUserRestricted(ctx, in)
+		return srv.(ResonateUserServer).GetUserRestricted(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/GetUserRestricted",
+		FullMethod: "/user.ResonateUser/GetUserRestricted",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUserRestricted(ctx, req.(*UserRequest))
+		return srv.(ResonateUserServer).GetUserRestricted(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).DeleteUser(ctx, in)
+		return srv.(ResonateUserServer).DeleteUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/DeleteUser",
+		FullMethod: "/user.ResonateUser/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).DeleteUser(ctx, req.(*UserRequest))
+		return srv.(ResonateUserServer).DeleteUser(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).ListUsers(ctx, in)
+		return srv.(ResonateUserServer).ListUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserService/ListUsers",
+		FullMethod: "/user.ResonateUser/ListUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).ListUsers(ctx, req.(*Empty))
+		return srv.(ResonateUserServer).ListUsers(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _UserService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "user.UserService",
-	HandlerType: (*UserServiceServer)(nil),
+var _ResonateUser_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "user.ResonateUser",
+	HandlerType: (*ResonateUserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "AddUser",
-			Handler:    _UserService_AddUser_Handler,
+			Handler:    _ResonateUser_AddUser_Handler,
 		},
 		{
 			MethodName: "UpdateUser",
-			Handler:    _UserService_UpdateUser_Handler,
+			Handler:    _ResonateUser_UpdateUser_Handler,
 		},
 		{
 			MethodName: "GetUser",
-			Handler:    _UserService_GetUser_Handler,
+			Handler:    _ResonateUser_GetUser_Handler,
 		},
 		{
 			MethodName: "GetUserRestricted",
-			Handler:    _UserService_GetUserRestricted_Handler,
+			Handler:    _ResonateUser_GetUserRestricted_Handler,
 		},
 		{
 			MethodName: "DeleteUser",
-			Handler:    _UserService_DeleteUser_Handler,
+			Handler:    _ResonateUser_DeleteUser_Handler,
 		},
 		{
 			MethodName: "ListUsers",
-			Handler:    _UserService_ListUsers_Handler,
+			Handler:    _ResonateUser_ListUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"user-api/internal/model"
+	"github.com/merefield/grpc-user-api/internal/model"
 
-	pkgctx "user-api/pkg/context"
+	pkgctx "github.com/merefield/grpc-user-api/pkg/context"
 
 	"github.com/rs/zerolog"
 )
@@ -34,9 +34,9 @@ func (z *ZLog) Log(ctx context.Context, source, msg string, err error, params ma
 	params["source"] = source
 
 	if user, ok := ctx.Value(pkgctx.KeyString("_authuser")).(*model.AuthUser); ok {
-		params["id"] = user.Id
+		params["id"] = user.ID
 		params["username"] = user.Username
-		params["tenant_id"] = user.TenantId
+		params["tenant_id"] = user.TenantID
 	}
 
 	if err != nil {

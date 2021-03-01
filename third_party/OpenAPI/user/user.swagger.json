@@ -18,7 +18,7 @@
       "get": {
         "summary": "Get a user's restricted information",
         "description": "Get user profile from the server including private information.",
-        "operationId": "UserService_GetUserRestricted",
+        "operationId": "ResonateUser_GetUserRestricted",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -48,7 +48,7 @@
       "delete": {
         "summary": "Delete user",
         "description": "Delete a user from the server.",
-        "operationId": "UserService_DeleteUser",
+        "operationId": "ResonateUser_DeleteUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -80,7 +80,7 @@
       "get": {
         "summary": "Get a user",
         "description": "Get a user's public information from the server.",
-        "operationId": "UserService_GetUser",
+        "operationId": "ResonateUser_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -110,7 +110,7 @@
       "patch": {
         "summary": "Update a user",
         "description": "Update an existing user record on the server.",
-        "operationId": "UserService_UpdateUser",
+        "operationId": "ResonateUser_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -150,7 +150,7 @@
       "get": {
         "summary": "List users",
         "description": "List all users on the server.",
-        "operationId": "UserService_ListUsers",
+        "operationId": "ResonateUser_ListUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -172,7 +172,7 @@
       "post": {
         "summary": "Add a user",
         "description": "Add a user to the server.",
-        "operationId": "UserService_AddUser",
+        "operationId": "ResonateUser_AddUser",
         "responses": {
           "200": {
             "description": "A successful response.",

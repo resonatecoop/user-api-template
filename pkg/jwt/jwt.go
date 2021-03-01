@@ -3,9 +3,10 @@ package jwt
 import (
 	"fmt"
 	"time"
-  "github.com/satori/go.uuid"
 
-	"user-api/internal/model"
+	uuid "github.com/satori/go.uuid"
+
+	"github.com/merefield/grpc-user-api/internal/model"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -38,8 +39,8 @@ type JWT struct {
 // GenerateToken generates new jwt token
 func (j *JWT) GenerateToken(u *model.AuthUser) (string, error) {
 	t := jwt.NewWithClaims(j.algo, jwt.MapClaims{
-		"id":  u.Id.String(),
-		"t":   u.TenantId,
+		"id":  u.ID.String(),
+		"t":   u.TenantID,
 		"u":   u.Username,
 		"e":   u.Email,
 		"r":   u.Role,
@@ -87,8 +88,8 @@ func (j *JWT) ParseToken(token string) (*model.AuthUser, error) {
 	}
 
 	return &model.AuthUser{
-		Id:       uid,
-		TenantId: int32(tenantId.(float64)),
+		ID:       uid,
+		TenantID: int32(tenantId.(float64)),
 		Username: username.(string),
 		Email:    email.(string),
 		Role:     model.AccessRole(role.(float64)),

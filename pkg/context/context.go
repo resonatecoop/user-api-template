@@ -3,7 +3,7 @@ package context
 import (
 	"context"
 
-	"user-api/internal/model"
+	"github.com/merefield/grpc-user-api/internal/model"
 )
 
 // KeyString should be used when setting and fetching context values

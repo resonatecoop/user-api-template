@@ -27,7 +27,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   schemes: HTTPS;
 };
 
-service UserService {
+service ResonateUser {
 
   //rpc AddUser(AddUserRequest) returns (User) {
   rpc AddUser(AddUserRequest) returns (Empty) {

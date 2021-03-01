@@ -13,9 +13,14 @@ import (
 	"github.com/merefield/grpc-user-api/gateway"
 	"github.com/merefield/grpc-user-api/insecure"
 	"github.com/merefield/grpc-user-api/pkg/config"
+	"github.com/merefield/grpc-user-api/pkg/jwt"
 	pgsql "github.com/merefield/grpc-user-api/pkg/postgres"
+	"github.com/merefield/grpc-user-api/pkg/zerolog"
 	pbUser "github.com/merefield/grpc-user-api/proto/user"
-	"github.com/merefield/grpc-user-api/server"
+	iamserver "github.com/merefield/grpc-user-api/server/iam"
+	iamdb "github.com/merefield/grpc-user-api/server/iam/platform/postgres"
+	"github.com/merefield/grpc-user-api/server/iam/secure"
+	userserver "github.com/merefield/grpc-user-api/server/user"
 
 	// Static files
 	_ "github.com/merefield/grpc-user-api/statik"
@@ -38,6 +43,12 @@ func main() {
 
 	checkErr(log, err)
 
+	zerolog := zerolog.New()
+
+	secureSvc := secure.New(cfg.App.MinPasswordStrength)
+
+	j := jwt.New(cfg.JWT.Secret, cfg.JWT.Duration, cfg.JWT.Algorithm)
+
 	addr := "0.0.0.0:10000"
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -48,7 +59,9 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbUser.RegisterUserServiceServer(s, server.New(db))
+	pbUser.RegisterResonateUserServer(s, userserver.New(db))
+
+	iamserver.NewLoggingService(iamserver.New(db, j, iamdb.NewUser(), secureSvc), zerolog)
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)
