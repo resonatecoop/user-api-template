@@ -12,4 +12,3 @@ option go_package = "github.com/merefield/grpc-user-api/proto/api";
 service StreetAdressService {
   rpc SearchStreetAddress(Query) returns (StreetAddress);
 }
-

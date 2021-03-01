@@ -1,6 +1,8 @@
 version: v1beta1
 build:
   roots:
+    - third_party/go-proto-validators
     - proto
     - third_party/grpc-gateway
     - third_party/googleapis
+

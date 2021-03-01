@@ -1,4 +1,5 @@
-generate:
+generate: 
+	buf generate --path ./proto/iam/iam.proto
 	buf generate --path ./proto/user/common.proto
 	buf generate --path ./proto/user/tag.proto
 	buf generate --path ./proto/user/address.proto
@@ -14,5 +15,6 @@ install:
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+		github.com/mwitkow/go-proto-validators \
 		github.com/rakyll/statik \
 		github.com/bufbuild/buf/cmd/buf

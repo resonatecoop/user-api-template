@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package iam;
+
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/merefield/grpc-user-api/proto/iam";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+    info: {
+        title: "Resonate IAM Service Documentation";
+        version: "1.0";
+    };
+    external_docs: {
+      url: "https://github.com/merefield/grpc-user-api";
+      description: "gRPC-gateway resonate-user-api repository";
+    }
+    schemes: HTTPS;
+};
+
+// ResonateIAM service handles user identity and access management
+service ResonateIAM {
+    // Authenticate user by username or email and password
+    rpc Auth(AuthReq) returns (AuthResp) {
+    option (google.api.http) = {
+        // Route to this method from POST requests to /api/v1/users
+        post: "/api/v1/token"
+        body: "*"
+      };
+      option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        summary: "Request a token"
+        description: "Provide credentials and get token response "
+        tags: "IAM"
+      };
+    };
+
+    // Refresh refreshes JWT token
+    rpc Refresh(RefreshReq) returns (RefreshResp) {
+    option (google.api.http) = {
+        // Route to this method from POST requests to /api/v1/users
+        post: "/api/v1/refresh"
+        body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Refresh a token"
+            description: "Provide token and get refreshed token response "
+            tags: "IAM"
+        };
+    }
+}
+
+// Password authentication request
+message AuthReq {
+    // Required
+    string auth = 1 [
+        (validator.field) = {string_not_empty : true}
+    ];
+
+    // Required
+    string password = 2 [
+        (validator.field) = {string_not_empty : true}
+    ];
+}
+
+// Password authentication response
+message AuthResp {
+    // Access token
+    string token = 1;
+
+    // Refresh token
+    string refresh_token = 2;
+}
+
+// Refresh token request
+message RefreshReq{
+        // Required
+        string token = 1 [
+            (validator.field) = {length_eq: 20}
+        ];
+}
+
+// Refresh token response
+message RefreshResp {
+    // Access token
+    string token = 1;
+}
