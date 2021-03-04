@@ -16,6 +16,7 @@ import (
 	"github.com/merefield/grpc-user-api/pkg/jwt"
 	pgsql "github.com/merefield/grpc-user-api/pkg/postgres"
 	"github.com/merefield/grpc-user-api/pkg/zerolog"
+	pbIAM "github.com/merefield/grpc-user-api/proto/iam"
 	pbUser "github.com/merefield/grpc-user-api/proto/user"
 	iamserver "github.com/merefield/grpc-user-api/server/iam"
 	iamdb "github.com/merefield/grpc-user-api/server/iam/platform/postgres"
@@ -61,8 +62,11 @@ func main() {
 	)
 	pbUser.RegisterResonateUserServer(s, userserver.New(db))
 
-	iamserver.NewLoggingService(iamserver.New(db, j, iamdb.NewUser(), secureSvc), zerolog)
+	iams := iamserver.New(db, j, iamdb.NewUser(), secureSvc)
 
+	iamserver.NewLoggingService(iams, zerolog)
+
+	pbIAM.RegisterResonateIAMServer(s, iams)
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)
 	go func() {
