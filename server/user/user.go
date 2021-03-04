@@ -17,12 +17,19 @@ import (
 
 // Server implements the UserService
 type Server struct {
-	db *pg.DB
+	db  *pg.DB
+	sec Securer
 }
 
 // New creates an instance of our server
-func New(db *pg.DB) *Server {
-	return &Server{db: db}
+func New(db *pg.DB, sec Securer) *Server {
+	return &Server{db: db, sec: sec}
+}
+
+// Securer represents password securing service
+type Securer interface {
+	Hash(string) string
+	Password(string, ...string) bool
 }
 
 // AddUser gets a user to the in-memory store.
@@ -182,6 +189,45 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	_, pgerr := s.db.Model(u).
 		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
 		WherePK().
+		Returning("*").
+		Update()
+	twerr := errorpkg.CheckError(pgerr, "user")
+	if twerr != nil {
+		return nil, twerr
+	}
+	return &pbUser.Empty{}, nil
+}
+
+// ResetUserPassword reset's a user's password
+func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest *pbUser.ResetUserPasswordRequest) (*pbUser.Empty, error) {
+	err := checkRequiredResetPasswordAttributes(ResetUserPasswordRequest, s)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// u, err := getUserModel(updateUserRequest)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// existingID, err := uuidpkg.GetUUIDFromString(ResetUserPasswordRequest.Id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	hashedPassword := s.sec.Hash(ResetUserPasswordRequest.Password)
+
+	u := &model.User{
+		Email: ResetUserPasswordRequest.Email,
+	}
+
+	u.UpdatedAt = time.Now()
+	u.Password = hashedPassword
+	_, pgerr := s.db.Model(u).
+		Column("updated_at", "password").
+		Where("email = ?", u.Email).
 		Returning("*").
 		Update()
 	twerr := errorpkg.CheckError(pgerr, "user")
@@ -360,6 +406,28 @@ func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
 	if re.MatchString(user.Email) == false {
 		return twirp.InvalidArgumentError("email", "must be a valid email")
 	}
+	return nil
+}
+
+func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest, s *Server) error {
+	if user.Email == "" || user.Password == "" {
+		var argument string
+		switch {
+		case user.Email == "":
+			argument = "email"
+		case user.Password == "":
+			argument = "Password"
+		}
+		return twirp.RequiredArgumentError(argument)
+	}
+	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if re.MatchString(user.Email) == false {
+		return twirp.InvalidArgumentError("Email", "must be a valid email")
+	}
+	if !s.sec.Password(user.Password) {
+		return twirp.InvalidArgumentError("Password", "is not strong enough")
+	}
+
 	return nil
 }
 

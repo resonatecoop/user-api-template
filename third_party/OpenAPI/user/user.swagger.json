@@ -14,6 +14,40 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/account/password": {
+      "put": {
+        "summary": "Update a user's password",
+        "description": "Update an existing user's password on the server.",
+        "operationId": "ResonateUser_ResetUserPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userResetUserPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Users Password"
+        ]
+      }
+    },
     "/api/v1/restricted/user/{id}": {
       "get": {
         "summary": "Get a user's restricted information",
@@ -268,6 +302,17 @@
     },
     "userEmpty": {
       "type": "object"
+    },
+    "userResetUserPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
     },
     "userUpdateUserRequest": {
       "type": "object",

@@ -60,7 +60,7 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbUser.RegisterResonateUserServer(s, userserver.New(db))
+	pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
 
 	iams := iamserver.New(db, j, iamdb.NewUser(), secureSvc)
 

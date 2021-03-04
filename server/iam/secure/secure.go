@@ -20,7 +20,7 @@ type Service struct {
 func (s *Service) Password(pw string, inputs ...string) bool {
 	inputs = append(inputs, s.appWords...)
 	pwStrength := zxcvbn.PasswordStrength(pw, inputs)
-	return !(pwStrength.Score < s.minStr)
+	return (pwStrength.Score >= s.minStr)
 }
 
 // Hash hashes the password using bcrypt

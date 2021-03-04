@@ -19,8 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 type ResonateUserClient interface {
 	//rpc AddUser(AddUserRequest) returns (User) {
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*Empty, error)
-	//rpc AddUser(AddUserRequest) returns (User) {
+	//rpc UpdateUser(UpdateUserRequest) returns (Empty) {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error)
+	//rpc ResetUserPassword(AddUserRequest) returns (Empty) {
+	ResetUserPassword(ctx context.Context, in *ResetUserPasswordRequest, opts ...grpc.CallOption) (*Empty, error)
 	//GetUser provides a public level of information about a user
 	GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
@@ -49,6 +51,15 @@ func (c *resonateUserClient) AddUser(ctx context.Context, in *AddUserRequest, op
 func (c *resonateUserClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) ResetUserPassword(ctx context.Context, in *ResetUserPasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/ResetUserPassword", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +108,10 @@ func (c *resonateUserClient) ListUsers(ctx context.Context, in *Empty, opts ...g
 type ResonateUserServer interface {
 	//rpc AddUser(AddUserRequest) returns (User) {
 	AddUser(context.Context, *AddUserRequest) (*Empty, error)
-	//rpc AddUser(AddUserRequest) returns (User) {
+	//rpc UpdateUser(UpdateUserRequest) returns (Empty) {
 	UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error)
+	//rpc ResetUserPassword(AddUserRequest) returns (Empty) {
+	ResetUserPassword(context.Context, *ResetUserPasswordRequest) (*Empty, error)
 	//GetUser provides a public level of information about a user
 	GetUser(context.Context, *UserRequest) (*UserPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
@@ -116,6 +129,9 @@ func (UnimplementedResonateUserServer) AddUser(context.Context, *AddUserRequest)
 }
 func (UnimplementedResonateUserServer) UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedResonateUserServer) ResetUserPassword(context.Context, *ResetUserPasswordRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetUserPassword not implemented")
 }
 func (UnimplementedResonateUserServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
@@ -173,6 +189,24 @@ func _ResonateUser_UpdateUser_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResonateUserServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_ResetUserPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetUserPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).ResetUserPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/ResetUserPassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).ResetUserPassword(ctx, req.(*ResetUserPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,6 +294,10 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUser",
 			Handler:    _ResonateUser_UpdateUser_Handler,
+		},
+		{
+			MethodName: "ResetUserPassword",
+			Handler:    _ResonateUser_ResetUserPassword_Handler,
 		},
 		{
 			MethodName: "GetUser",

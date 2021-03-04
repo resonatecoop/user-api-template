@@ -42,7 +42,7 @@ service ResonateUser {
       tags: "Users"
     };
   }
-  //rpc AddUser(AddUserRequest) returns (User) {
+  //rpc UpdateUser(UpdateUserRequest) returns (Empty) {
   rpc UpdateUser(UpdateUserRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from PUT requests to /api/v1/user
@@ -55,6 +55,21 @@ service ResonateUser {
       tags: "Users"
     };
   }
+
+  //rpc ResetUserPassword(AddUserRequest) returns (Empty) {
+  rpc ResetUserPassword(ResetUserPasswordRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from PUT requests to /api/v1/account
+      put: "/api/v1/account/password"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update a user's password"
+      description: "Update an existing user's password on the server."
+      tags: "Users Password"
+    };
+  }
+
   //GetUser provides a public level of information about a user
   rpc GetUser(UserRequest) returns (UserPublicResponse) {
     option (google.api.http) = {
@@ -105,6 +120,11 @@ service ResonateUser {
 
 message UserRequest {
   string id = 1;
+}
+
+message ResetUserPasswordRequest {
+  string email = 1;
+  string password = 2;
 }
 
 message UpdateUserRequest {

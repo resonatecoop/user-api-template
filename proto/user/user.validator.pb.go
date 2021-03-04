@@ -23,6 +23,9 @@ var _ = math.Inf
 func (this *UserRequest) Validate() error {
 	return nil
 }
+func (this *ResetUserPasswordRequest) Validate() error {
+	return nil
+}
 func (this *UpdateUserRequest) Validate() error {
 	return nil
 }
