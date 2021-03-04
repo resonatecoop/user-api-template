@@ -34,15 +34,6 @@ type Securer interface {
 
 // AddUser gets a user to the in-memory store.
 func (s *Server) AddUser(ctx context.Context, user *pbUser.AddUserRequest) (*pbUser.Empty, error) {
-	// b.mu.Lock()
-	// defer b.mu.Unlock()
-
-	// user := &pbUser.User{
-	// 	Id: uuid.Must(uuid.NewV4()).String(),
-	// }
-	// b.users = append(b.users, user)
-
-	// return user, nil
 
 	requiredErr := checkRequiredAddAttributes(user)
 	if requiredErr != nil {
@@ -164,11 +155,6 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 		return nil, err
 	}
 
-	// u, err := getUserModel(updateUserRequest)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
 	existingID, err := uuidpkg.GetUUIDFromString(updateUserRequest.Id)
 
 	if err != nil {
@@ -206,17 +192,6 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 		return nil, err
 	}
 
-	// u, err := getUserModel(updateUserRequest)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// existingID, err := uuidpkg.GetUUIDFromString(ResetUserPasswordRequest.Id)
-
-	if err != nil {
-		return nil, err
-	}
-
 	hashedPassword := s.sec.Hash(ResetUserPasswordRequest.Password)
 
 	u := &model.User{
@@ -240,51 +215,12 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 // ListUsers lists all users in the store.
 func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.UserListResponse, error) {
 
-	// uresult, pgerr := s.db.Model(u).
-	// 	Column("user.*").
-	// 	Select()
-	// twerr := errorpkg.CheckError(pgerr, "user")
-	// if twerr != nil {
-	// 	return nil, twerr
-	// }
-
-	// 	defer uresult.Close()
-	// for uresult.Next() {
-	//     var name string
-	//     var roll int
-
-	//     err = uresult.Scan(&name, &amp;roll)
-	//     CheckError(err)
-
-	//     fmt.Println(name, roll)
-	// }
-
-	// CheckError(err)
-
-	// 	for {
-	// 		select {
-	// 		case n := <-listener.Notify:
-	// 			 sseStreamer.SendString("data", "data", n.Extra)
-	// 			 return
-	// 		}
-	//  }
-
 	var users []pbUser.User
 	var results pbUser.UserListResponse
 	err := s.db.Model(&users).Select()
 	if err != nil {
 		return nil, err
 	}
-	//users.
-	//defer users.Close()
-	//for
-
-	// for _, user := range users {
-	// 	err := srv.Send(&user)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
 
 	for _, user := range users {
 		var result pbUser.UserPrivateResponse
@@ -298,19 +234,7 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.NewsletterNotification = user.NewsletterNotification
 		// DisplayName: user.DisplayName,
 		results.User = append(results.User, &result)
-
-		// err := results.extend(result)
-		// if err != nil {
-		// 	return err
-		// }
 	}
-
-	// for _, user := range uresult
-	// 	err := srv.Send(user)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// }
 
 	return &results, nil
 }
