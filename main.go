@@ -6,14 +6,15 @@ import (
 	"net"
 	"os"
 
-	"google.golang.org/grpc"
+	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/merefield/grpc-user-api/gateway"
 	"github.com/merefield/grpc-user-api/insecure"
 	"github.com/merefield/grpc-user-api/pkg/config"
-	"github.com/merefield/grpc-user-api/pkg/jwt"
+	jwt "github.com/merefield/grpc-user-api/pkg/jwt"
 	pgsql "github.com/merefield/grpc-user-api/pkg/postgres"
 	"github.com/merefield/grpc-user-api/pkg/zerolog"
 	pbIAM "github.com/merefield/grpc-user-api/proto/iam"
@@ -48,7 +49,11 @@ func main() {
 
 	secureSvc := secure.New(cfg.App.MinPasswordStrength)
 
-	j := jwt.New(cfg.JWT.Secret, cfg.JWT.Duration, cfg.JWT.Algorithm)
+	jwtService := jwt.New(cfg.JWT.Secret, cfg.JWT.Duration, cfg.JWT.Algorithm)
+
+	iamServer := iamserver.New(db, jwtService, iamdb.NewUser(), secureSvc)
+
+	interceptorAuth := iamserver.NewAuthInterceptor(jwtService)
 
 	addr := "0.0.0.0:10000"
 	lis, err := net.Listen("tcp", addr)
@@ -56,17 +61,35 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
+	//if len(s.config.Security.Authenticators) != 0 {
+
+	opts := make([]grpc.ServerOption, 0)
+
+	// TODO: Replace with your own certificate!
+	opts = append(opts, grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)))
+
+	opts = append(opts, grpc.UnaryInterceptor(
+		grpc_middleware.ChainUnaryServer(
+			interceptorAuth.Unary(),
+		)))
+
+	// newUserServer := userServer.NewServer(db)
+	// userTwirpHandler := userRpc.NewUserServiceServer(newUserServer, nil)
+	// // userTwirpHandler := userRpc.NewUserServiceServer(newUserServer, hooks.WithJWTAuth(j))
+	// // userSvc := user.NewLoggingService(
+	// // 	user.New(db, userdb.NewUser(), rbacSvc, secureSvc, ctxSvc), log)
+	// r.PathPrefix(userRpc.UserServicePathPrefix).Handler(userTwirpHandler)
+
 	s := grpc.NewServer(
-		// TODO: Replace with your own certificate!
-		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
+		opts...,
 	)
+
 	pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
 
-	iams := iamserver.New(db, j, iamdb.NewUser(), secureSvc)
+	iamserver.NewLoggingService(iamServer, zerolog)
 
-	iamserver.NewLoggingService(iams, zerolog)
+	pbIAM.RegisterResonateIAMServer(s, iamServer)
 
-	pbIAM.RegisterResonateIAMServer(s, iams)
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)
 	go func() {
