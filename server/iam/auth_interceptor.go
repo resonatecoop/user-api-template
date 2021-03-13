@@ -50,13 +50,13 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			info.FullMethod,
 			err)
 
-		no_token_methods_array := strings.Split(interceptor.acc.NoTokenMethods, "\\|")
+		NoTokenMethods := strings.Split(interceptor.acc.NoTokenMethods, "\\|")
 
-		isPresent := stringInSlice(info.FullMethod, no_token_methods_array)
+		TokenRequired := !stringInSlice(info.FullMethod, NoTokenMethods)
 
-		// Skip authorize when GetJWT is requested
-		//	if info.FullMethod != "/iam.ResonateIAM/Auth" {
-		if !isPresent {
+		// Skip authorize when configured methods are requested
+		//	eg if requesting token
+		if TokenRequired {
 			grpclog.Infof("Expecting JWT, let's check ...\tError:%v\n",
 				err)
 			if err := interceptor.authorize(ctx, info.FullMethod); err != nil {
@@ -77,11 +77,6 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 }
 
 func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string) error {
-	//accessibleRoles, ok := interceptor.accessibleRoles[method]
-	// if !ok {
-	// 	// everyone can access
-	// 	return nil
-	// }
 
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
@@ -93,18 +88,26 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string
 		return status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 	}
 
+	PublicUserMethods := strings.Split(interceptor.acc.PublicUserMethods, "\\|")
+	isPublicAccessMethod := stringInSlice(method, PublicUserMethods)
+
+	if isPublicAccessMethod {
+		// everyone can access
+		return nil
+	}
+
 	accessToken := values[0]
-	//claims, err := interceptor.jwt.ParseToken(accessToken)
-	_, err := interceptor.jwt.ParseToken(accessToken)
+
+	claims, err := interceptor.jwt.ParseToken(accessToken)
 	if err != nil {
 		return status.Errorf(codes.Unauthenticated, "access token is invalid: %v", err)
 	}
 
-	// for _, role := range accessibleRoles {
-	// 	if role == claims.Role {
-	// 		return nil
-	// 	}
-	// }
+	// If not an admin, you can't access the remaining non-public methods
+	if claims.Role > 3 {
+		return status.Errorf(codes.PermissionDenied, "requestor is not authorized for this method")
+	}
+
+	// else all is fine at this gate at least, go ahead
 	return nil
-	//return status.Error(codes.PermissionDenied, "no permission to access this RPC")
 }
