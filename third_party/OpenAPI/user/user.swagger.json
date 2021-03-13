@@ -108,6 +108,44 @@
         "tags": [
           "Users"
         ]
+      },
+      "patch": {
+        "summary": "Update a user record for admins",
+        "description": "Update an existing user record on the server including restricted information.",
+        "operationId": "ResonateUser_UpdateUserRestricted",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUpdateUserRestrictedRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/api/v1/user/{id}": {
@@ -349,6 +387,49 @@
         }
       }
     },
+    "userUpdateUserRestrictedRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "userUserListResponse": {
       "type": "object",
       "properties": {
@@ -383,6 +464,14 @@
         },
         "member": {
           "type": "boolean"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int32"
         },
         "newsletterNotification": {
           "type": "boolean"

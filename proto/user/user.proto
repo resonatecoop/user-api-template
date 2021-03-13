@@ -55,6 +55,19 @@ service ResonateUser {
       tags: "Users"
     };
   }
+  //rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+  rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from PUT requests to /api/v1/user
+      patch: "/api/v1/restricted/user/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update a user record for admins"
+      description: "Update an existing user record on the server including restricted information."
+      tags: "Users"
+    };
+  }
 
   //rpc ResetUserPassword(AddUserRequest) returns (Empty) {
   rpc ResetUserPassword(ResetUserPasswordRequest) returns (Empty) {
@@ -145,6 +158,26 @@ message UpdateUserRequest {
   //StreetAddress residence_address = 14;
 }
 
+message UpdateUserRestrictedRequest {
+  string id = 1; // required
+  string username = 2; // required
+  string email = 3; // required
+  string full_name = 5; // required
+  string first_name = 6;
+  string last_name = 7;
+  bool member = 8;
+  int32 role_id = 9;
+  int32 tenant_id = 10;
+  bool newsletter_notification = 11;
+  repeated string followed_groups = 12;
+  //repeated string favorite_tracks = 11;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //string display_name = 4; // required TODO remove
+  //bytes avatar = 9;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
+}
+
 message UserPrivateResponse {
   string id = 1; // required
   string username = 2; // required
@@ -153,7 +186,9 @@ message UserPrivateResponse {
   string first_name = 6;
   string last_name = 7;
   bool member = 8;
-  bool newsletter_notification = 10;
+  int32 role_id = 9;
+  int32 tenant_id = 10;
+  bool newsletter_notification = 11;
   repeated string followed_groups = 12;
     //bytes avatar = 9;
     //string display_name = 4; // required TODO remove

@@ -29,6 +29,9 @@ func (this *ResetUserPasswordRequest) Validate() error {
 func (this *UpdateUserRequest) Validate() error {
 	return nil
 }
+func (this *UpdateUserRestrictedRequest) Validate() error {
+	return nil
+}
 func (this *UserPrivateResponse) Validate() error {
 	return nil
 }

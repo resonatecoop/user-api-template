@@ -120,6 +120,8 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
 		Member:         u.Member,
+		RoleId:         u.RoleID,
+		TenantId:       u.TenantID,
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
 		//DisplayName: u.DisplayName,
 		//NewsletterNotification: u.NewsletterNotification,
@@ -174,6 +176,45 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	u.UpdatedAt = time.Now()
 	_, pgerr := s.db.Model(u).
 		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
+		WherePK().
+		Returning("*").
+		Update()
+	twerr := errorpkg.CheckError(pgerr, "user")
+	if twerr != nil {
+		return nil, twerr
+	}
+	return &pbUser.Empty{}, nil
+}
+
+// UpdateUser gets a user to the in-memory store.
+func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedRequest *pbUser.UpdateUserRestrictedRequest) (*pbUser.Empty, error) {
+	err := checkRequiredRestrictedUpdateAttributes(updateUserRestrictedRequest)
+
+	if err != nil {
+		return nil, err
+	}
+
+	existingID, err := uuidpkg.GetUUIDFromString(updateUserRestrictedRequest.Id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	u := &model.User{
+		ID:        existingID,
+		Username:  updateUserRestrictedRequest.Username,
+		FullName:  updateUserRestrictedRequest.FullName,
+		Email:     updateUserRestrictedRequest.Email,
+		FirstName: updateUserRestrictedRequest.FirstName,
+		LastName:  updateUserRestrictedRequest.LastName,
+		RoleID:    updateUserRestrictedRequest.RoleId,
+		TenantID:  updateUserRestrictedRequest.TenantId,
+		// DisplayName: user.DisplayName,
+	}
+
+	u.UpdatedAt = time.Now()
+	_, pgerr := s.db.Model(u).
+		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "role_id", "tenant_id", "member", "newsletter_notification").
 		WherePK().
 		Returning("*").
 		Update()
@@ -314,6 +355,26 @@ func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
 }
 
 func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
+	if user.Email == "" || user.Username == "" || user.FullName == "" {
+		var argument string
+		switch {
+		case user.Email == "":
+			argument = "email"
+		case user.Username == "":
+			argument = "username"
+		case user.FullName == "":
+			argument = "full_name"
+		}
+		return twirp.RequiredArgumentError(argument)
+	}
+	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if re.MatchString(user.Email) == false {
+		return twirp.InvalidArgumentError("email", "must be a valid email")
+	}
+	return nil
+}
+
+func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRequest) error {
 	if user.Email == "" || user.Username == "" || user.FullName == "" {
 		var argument string
 		switch {

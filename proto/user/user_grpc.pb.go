@@ -21,6 +21,8 @@ type ResonateUserClient interface {
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc UpdateUser(UpdateUserRequest) returns (Empty) {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error)
+	//rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+	UpdateUserRestricted(ctx context.Context, in *UpdateUserRestrictedRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc ResetUserPassword(AddUserRequest) returns (Empty) {
 	ResetUserPassword(ctx context.Context, in *ResetUserPasswordRequest, opts ...grpc.CallOption) (*Empty, error)
 	//GetUser provides a public level of information about a user
@@ -51,6 +53,15 @@ func (c *resonateUserClient) AddUser(ctx context.Context, in *AddUserRequest, op
 func (c *resonateUserClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) UpdateUserRestricted(ctx context.Context, in *UpdateUserRestrictedRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUserRestricted", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +121,8 @@ type ResonateUserServer interface {
 	AddUser(context.Context, *AddUserRequest) (*Empty, error)
 	//rpc UpdateUser(UpdateUserRequest) returns (Empty) {
 	UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error)
+	//rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+	UpdateUserRestricted(context.Context, *UpdateUserRestrictedRequest) (*Empty, error)
 	//rpc ResetUserPassword(AddUserRequest) returns (Empty) {
 	ResetUserPassword(context.Context, *ResetUserPasswordRequest) (*Empty, error)
 	//GetUser provides a public level of information about a user
@@ -129,6 +142,9 @@ func (UnimplementedResonateUserServer) AddUser(context.Context, *AddUserRequest)
 }
 func (UnimplementedResonateUserServer) UpdateUser(context.Context, *UpdateUserRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedResonateUserServer) UpdateUserRestricted(context.Context, *UpdateUserRestrictedRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserRestricted not implemented")
 }
 func (UnimplementedResonateUserServer) ResetUserPassword(context.Context, *ResetUserPasswordRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetUserPassword not implemented")
@@ -189,6 +205,24 @@ func _ResonateUser_UpdateUser_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResonateUserServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_UpdateUserRestricted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRestrictedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).UpdateUserRestricted(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/UpdateUserRestricted",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).UpdateUserRestricted(ctx, req.(*UpdateUserRestrictedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -294,6 +328,10 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUser",
 			Handler:    _ResonateUser_UpdateUser_Handler,
+		},
+		{
+			MethodName: "UpdateUserRestricted",
+			Handler:    _ResonateUser_UpdateUserRestricted_Handler,
 		},
 		{
 			MethodName: "ResetUserPassword",
