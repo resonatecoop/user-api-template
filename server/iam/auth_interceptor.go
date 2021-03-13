@@ -2,6 +2,7 @@ package iamserver
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc"
@@ -9,16 +10,27 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	"github.com/merefield/grpc-user-api/pkg/access"
 	jwt "github.com/merefield/grpc-user-api/pkg/jwt"
 	grpclog "google.golang.org/grpc/grpclog"
 )
 
 type AuthInterceptor struct {
 	jwt *jwt.JWT
+	acc *access.AccessConfig
 }
 
-func NewAuthInterceptor(jwt *jwt.JWT) *AuthInterceptor {
-	return &AuthInterceptor{jwt}
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
+func NewAuthInterceptor(jwt *jwt.JWT, acc *access.AccessConfig) *AuthInterceptor {
+	return &AuthInterceptor{jwt, acc}
 }
 
 func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
@@ -32,8 +44,19 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		var err error
 
 		start := time.Now()
+
+		// Logging with grpclog (grpclog.LoggerV2)
+		grpclog.Infof("Request - Method:%s\tDuration:0\tError:%v\n",
+			info.FullMethod,
+			err)
+
+		no_token_methods_array := strings.Split(interceptor.acc.NoTokenMethods, "\\|")
+
+		isPresent := stringInSlice(info.FullMethod, no_token_methods_array)
+
 		// Skip authorize when GetJWT is requested
-		if info.FullMethod != "/iam.ResonateIAM/Auth" {
+		//	if info.FullMethod != "/iam.ResonateIAM/Auth" {
+		if !isPresent {
 			grpclog.Infof("Expecting JWT, let's check ...\tError:%v\n",
 				err)
 			if err := interceptor.authorize(ctx, info.FullMethod); err != nil {
@@ -44,8 +67,7 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		// Calls the handler
 		h, err := handler(ctx, req)
 
-		// Logging with grpclog (grpclog.LoggerV2)
-		grpclog.Infof("Request - Method:%s\tDuration:%s\tError:%v\n",
+		grpclog.Infof("Request Authorised - Method:%s\tDuration:%s\tError:%v\n",
 			info.FullMethod,
 			time.Since(start),
 			err)

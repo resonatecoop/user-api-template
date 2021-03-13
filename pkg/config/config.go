@@ -1,9 +1,9 @@
 package config
 
 import (
-	"time"
 	"fmt"
 	"io/ioutil"
+	"time"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -28,6 +28,7 @@ type Configuration struct {
 	Server  Server      `yaml:"server,omitempty"`
 	DB      DatabaseEnv `yaml:"database,omitempty"`
 	JWT     JWT         `yaml:"jwt,omitempty"`
+	Access  Access      `yaml:"access,omitempty"`
 	App     Application `yaml:"application,omitempty"`
 	OpenAPI OpenAPI     `yaml:"openapi,omitempty"`
 	Storage Storage     `yaml:"storage,omitempty"`
@@ -35,7 +36,7 @@ type Configuration struct {
 
 // DatabaseEnv holds dev and test database data
 type DatabaseEnv struct {
-	Dev Database `yaml:"dev,omitempty"`
+	Dev  Database `yaml:"dev,omitempty"`
 	Test Database `yaml:"test,omitempty"`
 }
 
@@ -60,6 +61,12 @@ type JWT struct {
 	Algorithm string `yaml:"signing_algorithm,omitempty"`
 }
 
+// Access holds service access configuration data
+type Access struct {
+	NoTokenMethods    string `yaml:"no_token_methods,omitempty"`
+	PublicUserMethods string `yaml:"public_user_methods,omitempty"`
+}
+
 // Application represents application specific configuration
 type Application struct {
 	MinPasswordStrength int `yaml:"min_password_strength,omitempty"`
@@ -73,11 +80,11 @@ type OpenAPI struct {
 
 // Storage holds data necessary for backblaze configuration in track-server-api
 type Storage struct {
-	AccountId string `yaml:"account_id,omitempty"`
-	Key string `yaml:"key,omitempty"`
-	AuthEndpoint string `yaml:"auth_endpoint,omitempty"`
-	FileEndpoint string `yaml:"file_endpoint,omitempty"`
-	UploadEndpoint string `yaml:"upload_endpoint,omitempty"`
-	BucketId string `yaml:"bucket_id,omitempty"`
-	Timeout time.Duration `yaml:"timeout,omitempty"`
+	AccountId      string        `yaml:"account_id,omitempty"`
+	Key            string        `yaml:"key,omitempty"`
+	AuthEndpoint   string        `yaml:"auth_endpoint,omitempty"`
+	FileEndpoint   string        `yaml:"file_endpoint,omitempty"`
+	UploadEndpoint string        `yaml:"upload_endpoint,omitempty"`
+	BucketId       string        `yaml:"bucket_id,omitempty"`
+	Timeout        time.Duration `yaml:"timeout,omitempty"`
 }

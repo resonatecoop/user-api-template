@@ -10,6 +10,8 @@ import (
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 
+	acc "github.com/merefield/grpc-user-api/pkg/access"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/merefield/grpc-user-api/gateway"
 	"github.com/merefield/grpc-user-api/insecure"
@@ -51,9 +53,11 @@ func main() {
 
 	jwtService := jwt.New(cfg.JWT.Secret, cfg.JWT.Duration, cfg.JWT.Algorithm)
 
+	accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicUserMethods)
+
 	iamServer := iamserver.New(db, jwtService, iamdb.NewUser(), secureSvc)
 
-	interceptorAuth := iamserver.NewAuthInterceptor(jwtService)
+	interceptorAuth := iamserver.NewAuthInterceptor(jwtService, accService)
 
 	addr := "0.0.0.0:10000"
 	lis, err := net.Listen("tcp", addr)
