@@ -20,7 +20,7 @@ jwt:
 
 access:
   no_token_methods: "/iam.ResonateIAM/Auth"
-  public_token_methods: "/user.ResonateUser/GetUser|/user.ResonateUser/UpdateUser"
+  public_user_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser"
 
 application:
   min_password_strength: 0 # Minimum password zxcvbn strength

@@ -12,6 +12,8 @@ import (
 
 	"github.com/merefield/grpc-user-api/pkg/access"
 	jwt "github.com/merefield/grpc-user-api/pkg/jwt"
+	uuid "github.com/merefield/grpc-user-api/pkg/uuid"
+	pbUser "github.com/merefield/grpc-user-api/proto/user"
 	grpclog "google.golang.org/grpc/grpclog"
 )
 
@@ -59,7 +61,7 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		if TokenRequired {
 			grpclog.Infof("Expecting JWT, let's check ...\tError:%v\n",
 				err)
-			if err := interceptor.authorize(ctx, info.FullMethod); err != nil {
+			if err := interceptor.authorize(ctx, req, info.FullMethod); err != nil {
 				return nil, err
 			}
 		}
@@ -76,7 +78,7 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	}
 }
 
-func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string) error {
+func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface{}, method string) error {
 
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
@@ -88,19 +90,47 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, method string
 		return status.Errorf(codes.Unauthenticated, "authorization token is not provided")
 	}
 
-	PublicUserMethods := strings.Split(interceptor.acc.PublicUserMethods, "\\|")
+	PublicUserMethods := strings.Split(interceptor.acc.PublicUserMethods, ",")
 	isPublicAccessMethod := stringInSlice(method, PublicUserMethods)
-
-	if isPublicAccessMethod {
-		// everyone can access
-		return nil
-	}
 
 	accessToken := values[0]
 
 	claims, err := interceptor.jwt.ParseToken(accessToken)
 	if err != nil {
 		return status.Errorf(codes.Unauthenticated, "access token is invalid: %v", err)
+	}
+
+	if isPublicAccessMethod {
+		// everyone can access but check it's against their own ID
+		if claims.Role > 3 {
+			// dealing with normal users
+			// attempt to extract the Id from all the possible request types dealing with failure
+			// TODO a bit nasty, can we make this more elegant and less opinionated?
+			var id string
+			userReq, ok := req.(*pbUser.UserRequest)
+			if !ok {
+				userUpdateReq, ok := req.(*pbUser.UpdateUserRequest)
+				if ok {
+					id = userUpdateReq.Id
+				} else {
+					return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+				}
+			} else {
+				id = userReq.Id
+			}
+
+			ID, err := uuid.GetUUIDFromString(id)
+
+			if err != nil {
+				return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+			}
+
+			if ID != claims.ID {
+				return status.Errorf(codes.PermissionDenied, "requestor is not authorized to take action on another user record")
+			}
+			// must be working on their own record
+		}
+		return nil
 	}
 
 	// If not an admin, you can't access the remaining non-public methods
