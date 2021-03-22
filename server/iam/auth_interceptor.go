@@ -42,7 +42,6 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
-		//	var i interface{}
 		var err error
 
 		start := time.Now()
@@ -59,9 +58,13 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		// Skip authorize when configured methods are requested
 		//	eg if requesting token
 		if TokenRequired {
-			grpclog.Infof("Expecting JWT, let's check ...\tError:%v\n",
-				err)
-			if err := interceptor.authorize(ctx, req, info.FullMethod); err != nil {
+			grpclog.Infof("Expecting JWT, let's check ...")
+			err := interceptor.authorize(ctx, req, info.FullMethod)
+			if err != nil {
+				grpclog.Infof("Request Denied - Method:%s\tDuration:%s\tError:%v\n",
+					info.FullMethod,
+					time.Since(start),
+					err)
 				return nil, err
 			}
 		}
