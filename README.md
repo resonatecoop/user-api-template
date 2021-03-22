@@ -1,9 +1,19 @@
-# grpc-gateway-boilerplate
+# grpc-user-api
 
-[![Run on Google Cloud](https://storage.googleapis.com/cloudrun/button.svg)](https://console.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_image=gcr.io/cloudrun/button&cloudshell_git_repo=https://github.com/merefield/grpc-user-api.git)
+This is a significant evolution of @blushi's [original Golang-based user-api](https://github.com/resonatecoop/user-api)
 
-All the boilerplate you need to get started with writing grpc-gateway powered
-REST services in Go.
+The changes are so significant a new repo was created, but a lot of code lives on from that repo.
+
+It builds on that work in several important ways:
+
+- drops Twirp framework in favour of [GRPC-Gateway](https://grpc-ecosystem.github.io/grpc-gateway/) which has gained significant traction
+- implements full OpenAPIV2 workflow - write interfaces in protobufs and generate the code stubs, then implement them.
+- exposes full Swagger UI automatically (currently 100% not seamless, WIP)
+- implements full RBAC using native Golang Interceptors (arguably better than using Twirp Handlers)
+- RBAC is based on User role and interface access config in the config file
+- built with Go modules for dependency management
+
+It is WIP
 
 ## Running
 
@@ -43,15 +53,13 @@ After cloning the repo, there are a couple of initial steps;
 
 Now you can run the web server with `go run main.go`.
 
-## Making it your own
+## Maintenance
 
-The next step is to define the interface you want to expose in
-`proto/example.proto`. See https://developers.google.com/protocol-buffers/
+Interfaces are designed in
+`proto/` directory. See https://developers.google.com/protocol-buffers/
 tutorials and guides on writing protofiles.
 
 Once that is done, regenerate the files using
 `make generate`. This will mean you'll need to implement any functions in
-`server/server.go`, or else the build will fail since your struct won't
+`server/`, or else the build will fail since your struct won't
 be implementing the interface defined by the generated file in `proto/example.pb.go`.
-
-This should hopefully be all you need to get started playing around with the gRPC-Gateway!
