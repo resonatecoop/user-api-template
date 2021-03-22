@@ -65,8 +65,6 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	//if len(s.config.Security.Authenticators) != 0 {
-
 	opts := make([]grpc.ServerOption, 0)
 
 	// TODO: Replace with your own certificate!
@@ -76,13 +74,6 @@ func main() {
 		grpc_middleware.ChainUnaryServer(
 			interceptorAuth.Unary(),
 		)))
-
-	// newUserServer := userServer.NewServer(db)
-	// userTwirpHandler := userRpc.NewUserServiceServer(newUserServer, nil)
-	// // userTwirpHandler := userRpc.NewUserServiceServer(newUserServer, hooks.WithJWTAuth(j))
-	// // userSvc := user.NewLoggingService(
-	// // 	user.New(db, userdb.NewUser(), rbacSvc, secureSvc, ctxSvc), log)
-	// r.PathPrefix(userRpc.UserServicePathPrefix).Handler(userTwirpHandler)
 
 	s := grpc.NewServer(
 		opts...,
