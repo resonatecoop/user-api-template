@@ -1,6 +1,6 @@
 # grpc-user-api
 
-This is a significant evolution of @blushi's [original Golang-based user-api](https://github.com/resonatecoop/user-api)
+This is a significant evolution of @blushi's [original Golang-based user-api](https://github.com/resonatecoop/user-api-old)
 
 The changes are so significant a new repo was created, but a lot of code lives on from that repo.
 
