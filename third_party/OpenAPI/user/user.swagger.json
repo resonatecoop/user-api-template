@@ -511,6 +511,19 @@
       }
     }
   },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "description": "Authentication token, prefixed by Bearer: Bearer \u003ctoken\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
   "externalDocs": {
     "description": "gRPC-gateway resonate-user-api repository",
     "url": "https://github.com/merefield/grpc-user-api"

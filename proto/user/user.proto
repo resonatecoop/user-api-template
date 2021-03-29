@@ -24,6 +24,22 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     url: "https://github.com/merefield/grpc-user-api";
     description: "gRPC-gateway resonate-user-api repository";
   }
+  security_definitions: {
+    security: {
+      key: "bearer"
+      value: {
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "Authorization"
+        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "bearer"
+    }
+  }
   schemes: HTTPS;
 };
 

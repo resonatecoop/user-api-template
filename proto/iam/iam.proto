@@ -33,6 +33,7 @@ service ResonateIAM {
         summary: "Request a token"
         description: "Provide credentials and get token response "
         tags: "IAM"
+        security: { } // Disable security key
       };
     };
 
