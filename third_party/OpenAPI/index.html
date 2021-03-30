@@ -46,6 +46,14 @@
         height: 60px;
         display: flex;
       }
+
+      /* .swagger-ui .topbar .download-url-wrapper .select-label select {
+        border-color: #FFFFF;
+        }
+
+        .swagger-ui .info .title small:last-child {
+            background-color: #FFFFF !important;
+        } */
     </style>
   </head>
 
@@ -65,7 +73,7 @@
           dom_id: "#swagger-ui",
           deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+          plugins: [SwaggerUIBundle.plugins.DownloadUrl, SwaggerUIBundle.plugins.TopBar],
           layout: "StandaloneLayout",
         });
         // End Swagger UI call region

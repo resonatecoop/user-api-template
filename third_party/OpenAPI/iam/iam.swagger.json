@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Resonate IAM Service Documentation",
-    "version": "1.0"
+    "title": "Resonate Service Documentation: IAM",
+    "version": "2.0.1"
   },
   "schemes": [
     "https"
@@ -166,6 +166,6 @@
   },
   "externalDocs": {
     "description": "gRPC-gateway resonate-user-api repository",
-    "url": "https://github.com/merefield/grpc-user-api"
+    "url": "https://github.com/resonatecoop/user-api"
   }
 }

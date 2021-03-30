@@ -10,11 +10,11 @@ option go_package = "github.com/merefield/grpc-user-api/proto/iam";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
-        title: "Resonate IAM Service Documentation";
-        version: "1.0";
+        title: "Resonate Service Documentation: IAM";
+        version: "2.0.1";
     };
     external_docs: {
-      url: "https://github.com/merefield/grpc-user-api";
+      url: "https://github.com/resonatecoop/user-api";
       description: "gRPC-gateway resonate-user-api repository";
     }
     schemes: HTTPS;

@@ -18,10 +18,10 @@ option go_package = "github.com/merefield/grpc-user-api/proto/user";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     version: "2.0.1";
-    title: "package user";
+    title: "Resonate Service Documentation: User";
   };
   external_docs: {
-    url: "https://github.com/merefield/grpc-user-api";
+    url: "https://github.com/resonatecoop/user-api";
     description: "gRPC-gateway resonate-user-api repository";
   }
   security_definitions: {
