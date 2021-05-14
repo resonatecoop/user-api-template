@@ -46,6 +46,50 @@ After cloning the repo, there are a couple of initial steps;
 2. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
 3. Finally, generate the files with `make generate`.
 
+## Dev database setup
+
+* Create user and database as follows (as found in the local config file in `./conf.local.yaml`):
+
+username = "resonate_dev_user"
+
+password = "password"
+
+dbname = "resonate_dev"
+
+```
+CREATE DATABASE resonate_dev;
+
+CREATE USER resonate_dev_user WITH PASSWORD 'password';
+
+GRANT ALL PRIVILEGES ON DATABASE resonate_dev TO resonate_dev_user;
+
+```
+
+Add following postgres extensions: "hstore" and "uuid-ossp"
+
+```
+\c resonate_dev;
+CREATE EXTENSION hstore;
+CREATE EXTENSION "uuid-ossp";
+```
+
+
+From `./cmd/migration`:
+
+* Init migrations
+
+```sh
+$ go run *.go init
+```
+
+* Run migrations
+
+```sh
+$ go run *.go
+```
+
+## Running!
+
 Now you can run the web server with `go run main.go`.
 
 ## Maintenance
