@@ -1,4 +1,4 @@
-# grpc-user-api
+# user-api
 
 This is a significant evolution of @blushi's [original Golang-based user-api](https://github.com/resonatecoop/user-api-old)
 
@@ -8,12 +8,12 @@ It builds on that work in several important ways:
 
 - drops Twirp framework in favour of [GRPC-Gateway](https://grpc-ecosystem.github.io/grpc-gateway/) which has gained significant traction
 - implements full OpenAPIV2 workflow - write interfaces in protobufs and generate the code stubs, then implement them.
-- exposes full Swagger UI automatically (currently 100% not seamless, WIP)
+- exposes full Swagger UI automatically
 - implements full RBAC using native Golang Interceptors (arguably better than using Twirp Handlers)
 - RBAC is based on User role and interface access config in the config file
 - built with Go modules for dependency management
 
-It is WIP
+It is WIP, do NOT use this in Production yet!
 
 ## Running
 
@@ -73,6 +73,11 @@ CREATE EXTENSION hstore;
 CREATE EXTENSION "uuid-ossp";
 ```
 
+You can confirm with
+
+```
+SELECT * FROM pg_extension;
+```
 
 From `./cmd/migration`:
 
