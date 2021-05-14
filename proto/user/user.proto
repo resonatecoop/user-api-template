@@ -12,7 +12,7 @@ import "user/common.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/merefield/grpc-user-api/proto/user";
+option go_package = "github.com/resonatecoop/user-api/proto/user";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {

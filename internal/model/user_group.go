@@ -12,14 +12,14 @@ import (
 	"github.com/twitchtv/twirp"
 
 	// trackpb "user-api/rpc/track"
-	//tagpb "github.com/merefield/grpc-user-api/proto/api"
+	//tagpb "github.com/resonatecoop/user-api/proto/api"
 
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
 
-	uuidpkg "github.com/merefield/grpc-user-api/pkg/uuid"
+	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 	uuid "github.com/satori/go.uuid"
 
-	errorpkg "github.com/merefield/grpc-user-api/pkg/error"
+	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
 
 // UserGroup represents a group of Users and maintains a set of metadata

@@ -6,7 +6,7 @@ import "validator.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-option go_package = "github.com/merefield/grpc-user-api/proto/iam";
+option go_package = "github.com/resonatecoop/user-api/proto/iam";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {

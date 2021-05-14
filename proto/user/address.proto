@@ -9,7 +9,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 //import "usergroup.proto";
 import "user/common.proto";
 
-option go_package = "github.com/merefield/grpc-user-api/proto/user";
+option go_package = "github.com/resonatecoop/user-api/proto/user";
 
 service AddressService {
   rpc SearchAddress(AddressQuery) returns (AddressResults);

@@ -4,13 +4,13 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/twitchtv/twirp"
 
-	uuidpkg "github.com/merefield/grpc-user-api/pkg/uuid"
+	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
 	uuid "github.com/satori/go.uuid"
 
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
 
-	errorpkg "github.com/merefield/grpc-user-api/pkg/error"
+	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
 
 // Tag provides basic tag structure

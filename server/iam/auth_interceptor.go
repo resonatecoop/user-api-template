@@ -10,10 +10,10 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	"github.com/merefield/grpc-user-api/pkg/access"
-	jwt "github.com/merefield/grpc-user-api/pkg/jwt"
-	uuid "github.com/merefield/grpc-user-api/pkg/uuid"
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
+	"github.com/resonatecoop/user-api/pkg/access"
+	jwt "github.com/resonatecoop/user-api/pkg/jwt"
+	uuid "github.com/resonatecoop/user-api/pkg/uuid"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
 	grpclog "google.golang.org/grpc/grpclog"
 )
 

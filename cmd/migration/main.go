@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-pg/migrations"
 
-	"user-api/pkg/config"
-	"user-api/pkg/postgres"
+	"github.com/resonatecoop/user-api/pkg/config"
+	pgsql "github.com/resonatecoop/user-api/pkg/postgres"
 )
 
 const usageText = `This program runs command on the db. Supported commands are:
@@ -46,7 +46,7 @@ func main() {
 
 	psn := cfg.DB.Dev.PSN
 	logQueries := cfg.DB.Dev.LogQueries
-  timeoutSeconds := cfg.DB.Dev.TimeoutSeconds
+	timeoutSeconds := cfg.DB.Dev.TimeoutSeconds
 	if testing {
 		psn = cfg.DB.Test.PSN
 		logQueries = cfg.DB.Test.LogQueries
@@ -86,7 +86,7 @@ func exitf(s string, args ...interface{}) {
 func contains(arr []string, str string) bool {
 	for _, a := range arr {
 		if a == str {
-		   return true
+			return true
 		}
 	}
 	return false

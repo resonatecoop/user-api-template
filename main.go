@@ -10,24 +10,24 @@ import (
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 
-	acc "github.com/merefield/grpc-user-api/pkg/access"
+	acc "github.com/resonatecoop/user-api/pkg/access"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/merefield/grpc-user-api/gateway"
-	"github.com/merefield/grpc-user-api/insecure"
-	"github.com/merefield/grpc-user-api/pkg/config"
-	jwt "github.com/merefield/grpc-user-api/pkg/jwt"
-	pgsql "github.com/merefield/grpc-user-api/pkg/postgres"
-	"github.com/merefield/grpc-user-api/pkg/zerolog"
-	pbIAM "github.com/merefield/grpc-user-api/proto/iam"
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
-	iamserver "github.com/merefield/grpc-user-api/server/iam"
-	iamdb "github.com/merefield/grpc-user-api/server/iam/platform/postgres"
-	"github.com/merefield/grpc-user-api/server/iam/secure"
-	userserver "github.com/merefield/grpc-user-api/server/user"
+	"github.com/resonatecoop/user-api/gateway"
+	"github.com/resonatecoop/user-api/insecure"
+	"github.com/resonatecoop/user-api/pkg/config"
+	jwt "github.com/resonatecoop/user-api/pkg/jwt"
+	pgsql "github.com/resonatecoop/user-api/pkg/postgres"
+	"github.com/resonatecoop/user-api/pkg/zerolog"
+	pbIAM "github.com/resonatecoop/user-api/proto/iam"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
+	iamserver "github.com/resonatecoop/user-api/server/iam"
+	iamdb "github.com/resonatecoop/user-api/server/iam/platform/postgres"
+	"github.com/resonatecoop/user-api/server/iam/secure"
+	userserver "github.com/resonatecoop/user-api/server/user"
 
 	// Static files
-	_ "github.com/merefield/grpc-user-api/statik"
+	_ "github.com/resonatecoop/user-api/statik"
 )
 
 func main() {

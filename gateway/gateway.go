@@ -16,12 +16,12 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/merefield/grpc-user-api/insecure"
-	pbIAM "github.com/merefield/grpc-user-api/proto/iam"
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
+	"github.com/resonatecoop/user-api/insecure"
+	pbIAM "github.com/resonatecoop/user-api/proto/iam"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
 
 	// Static files
-	_ "github.com/merefield/grpc-user-api/statik"
+	_ "github.com/resonatecoop/user-api/statik"
 )
 
 // getOpenAPIHandler serves an OpenAPI UI.

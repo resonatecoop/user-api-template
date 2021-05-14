@@ -3,13 +3,13 @@ package iamserver
 import (
 	"context"
 
-	"github.com/merefield/grpc-user-api/internal/model"
+	"github.com/resonatecoop/user-api/internal/model"
 
 	"github.com/rs/xid"
 
 	"github.com/twitchtv/twirp"
 
-	"github.com/merefield/grpc-user-api/proto/iam"
+	"github.com/resonatecoop/user-api/proto/iam"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"

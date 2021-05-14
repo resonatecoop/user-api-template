@@ -6,7 +6,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/merefield/grpc-user-api/internal/model"
+	"github.com/resonatecoop/user-api/internal/model"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )

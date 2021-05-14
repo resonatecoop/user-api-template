@@ -5,14 +5,14 @@ import (
 	"regexp"
 	"time"
 
-	errorpkg "github.com/merefield/grpc-user-api/pkg/error"
-	uuidpkg "github.com/merefield/grpc-user-api/pkg/uuid"
+	errorpkg "github.com/resonatecoop/user-api/pkg/error"
+	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
 	"github.com/go-pg/pg"
 	"github.com/twitchtv/twirp"
 
-	"github.com/merefield/grpc-user-api/internal/model"
-	pbUser "github.com/merefield/grpc-user-api/proto/user"
+	"github.com/resonatecoop/user-api/internal/model"
+	pbUser "github.com/resonatecoop/user-api/proto/user"
 )
 
 // Server implements the UserService

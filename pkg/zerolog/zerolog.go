@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"github.com/merefield/grpc-user-api/internal/model"
+	"github.com/resonatecoop/user-api/internal/model"
 
-	pkgctx "github.com/merefield/grpc-user-api/pkg/context"
+	pkgctx "github.com/resonatecoop/user-api/pkg/context"
 
 	"github.com/rs/zerolog"
 )

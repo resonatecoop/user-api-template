@@ -7,7 +7,7 @@ import "user/common.proto";
 
 
 package user;
-option go_package = "github.com/merefield/grpc-user-api/proto/user";
+option go_package = "github.com/resonatecoop/user-api/proto/user";
 
 service UserGroupService {
   rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);

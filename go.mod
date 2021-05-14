@@ -1,4 +1,4 @@
-module github.com/merefield/grpc-user-api
+module github.com/resonatecoop/user-api
 
 go 1.15
 
@@ -6,6 +6,7 @@ require (
 	github.com/bufbuild/buf v0.32.0
 	github.com/codemodus/parth/v2 v2.0.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/go-pg/migrations v6.7.3+incompatible // indirect
 	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/gofrs/uuid v3.3.0+incompatible
 	github.com/golang/protobuf v1.4.3
