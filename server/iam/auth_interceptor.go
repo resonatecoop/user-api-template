@@ -2,6 +2,7 @@ package iamserver
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 	uuid "github.com/resonatecoop/user-api/pkg/uuid"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	grpclog "google.golang.org/grpc/grpclog"
+
+	"github.com/fatih/color"
 )
 
 type AuthInterceptor struct {
@@ -47,11 +50,29 @@ func (interceptor *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		start := time.Now()
 
 		// Logging with grpclog (grpclog.LoggerV2)
-		grpclog.Infof("Request - Method:%s\tDuration:0\tError:%v\n",
-			info.FullMethod,
-			err)
 
-		NoTokenMethods := strings.Split(interceptor.acc.NoTokenMethods, "\\|")
+		args := []string{
+			"[user-api-auth]",
+			//formatOperation(event),
+			fmt.Sprintf("Request - Method:%s\tDuration:0\tError:%v\n", info.FullMethod, err),
+		}
+
+		// if event.Err != nil {
+		// 	typ := reflect.TypeOf(event.Err).String()
+		// 	args = append(args,
+		// 		"\t",
+		// 		color.New(color.BgRed).Sprintf(" %s ", typ+": "+event.Err.Error()),
+		// 	)
+		// }
+
+		//fmt.Println(args...)
+
+		grpclog.Infof(strings.Join(args, ""))
+		// grpclog.Infof("Request - Method:%s\tDuration:0\tError:%v\n",
+		// info.FullMethod,
+		// err)
+
+		NoTokenMethods := strings.Split(interceptor.acc.NoTokenMethods, ",")
 
 		TokenRequired := !stringInSlice(info.FullMethod, NoTokenMethods)
 
@@ -143,4 +164,82 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 
 	// else all is fine at this gate at least, go ahead
 	return nil
+}
+
+// func (h *QueryHook) AfterQuery(ctx context.Context, event *bun.QueryEvent) {
+// 	if !h.verbose {
+// 		switch event.Err {
+// 		case nil, sql.ErrNoRows:
+// 			return
+// 		}
+// 	}
+
+// 	now := time.Now()
+// 	dur := now.Sub(event.StartTime)
+
+// 	args := []interface{}{
+// 		"[bun]",
+// 		now.Format(" 15:04:05.000 "),
+// 		formatOperation(event),
+// 		fmt.Sprintf(" %10s ", dur.Round(time.Microsecond)),
+// 		string(event.Query),
+// 	}
+
+// 	if event.Err != nil {
+// 		typ := reflect.TypeOf(event.Err).String()
+// 		args = append(args,
+// 			"\t",
+// 			color.New(color.BgRed).Sprintf(" %s ", typ+": "+event.Err.Error()),
+// 		)
+// 	}
+
+// 	fmt.Println(args...)
+// }
+
+// func formatOperation(event *bun.QueryEvent) string {
+// 	operation := eventOperation(event)
+// 	return operationColor(operation).Sprintf(" %-16s ", operation)
+// }
+
+// func eventOperation(event *bun.QueryEvent) string {
+// 	switch event.QueryAppender.(type) {
+// 	case *bun.SelectQuery:
+// 		return "SELECT"
+// 	case *bun.InsertQuery:
+// 		return "INSERT"
+// 	case *bun.UpdateQuery:
+// 		return "UPDATE"
+// 	case *bun.DeleteQuery:
+// 		return "DELETE"
+// 	case *bun.CreateTableQuery:
+// 		return "CREATE TABLE"
+// 	case *bun.DropTableQuery:
+// 		return "DROP TABLE"
+// 	}
+// 	return queryOperation(event.Query)
+// }
+
+// func queryOperation(name []byte) string {
+// 	if idx := bytes.IndexByte(name, ' '); idx > 0 {
+// 		name = name[:idx]
+// 	}
+// 	if len(name) > 16 {
+// 		name = name[:16]
+// 	}
+// 	return string(name)
+// }
+
+func operationColor(operation string) *color.Color {
+	switch operation {
+	case "SELECT":
+		return color.New(color.BgGreen)
+	case "INSERT":
+		return color.New(color.BgBlue)
+	case "UPDATE":
+		return color.New(color.BgYellow)
+	case "DELETE":
+		return color.New(color.BgRed)
+	default:
+		return color.New(color.FgBlack, color.BgWhite)
+	}
 }

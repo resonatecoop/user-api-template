@@ -1,11 +1,11 @@
 package pgsql
 
 import (
+	"context"
 	"strings"
 
 	"github.com/resonatecoop/user-api/internal/model"
-
-	"github.com/go-pg/pg/orm"
+	"github.com/uptrace/bun"
 )
 
 // NewUser returns a new User instance
@@ -17,36 +17,44 @@ func NewUser() *User {
 type User struct{}
 
 // FindByAuth finds user by either username or email
-func (s *User) FindByAuth(cl orm.DB, auth string) (*model.User, error) {
+func (s *User) FindByAuth(ctx context.Context, db *bun.DB, auth string) (*model.User, error) {
 	var user = new(model.User)
 
 	lAuth := strings.ToLower(auth)
-	if err := cl.Model(user).
-		// Where("deleted_at is null").
-		Where("lower(username) = ? or lower(email) = ?",
-			lAuth, lAuth).Select(); err != nil {
-		return nil, err
+	dberr := db.NewSelect().
+		Model(user).
+		//	Column("email", "username", "password").
+		Where("lower(username) = ? or lower(email) = ?", lAuth, lAuth).
+		Scan(ctx)
+
+	if dberr != nil {
+		return nil, dberr
 	}
 
 	return user, nil
 }
 
 // FindByToken finds user by either username or email
-func (s *User) FindByToken(cl orm.DB, token string) (*model.User, error) {
+func (s *User) FindByToken(ctx context.Context, db *bun.DB, token string) (*model.User, error) {
 	var user = new(model.User)
 
-	if err := cl.Model(user).Where("token = ?", token).
+	if dberr := db.NewSelect().
+		Model(user).
+		Where("token = ?", token).
 		// Where("deleted_at is null").
-		Select(); err != nil {
-		return nil, err
+		Scan(ctx); dberr != nil {
+		return nil, dberr
 	}
 
 	return user, nil
 }
 
 // UpdateLastLogin updates user's last login details
-func (s *User) UpdateLastLogin(cl orm.DB, user *model.User) error {
-	_, err := cl.Model(user).Column("last_login", "token").
-		WherePK().Update()
-	return err
+func (s *User) UpdateLastLogin(ctx context.Context, db *bun.DB, user *model.User) error {
+	_, dberr := db.NewUpdate().
+		Model(user).
+		Column("last_login", "token").
+		WherePK().
+		Exec(ctx)
+	return dberr
 }

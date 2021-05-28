@@ -3,7 +3,7 @@ package structs_test
 import (
 	"testing"
 
-	"user-api/internal/pkg/structs"
+	"github.com/resonatecoop/user-api/internal/pkg/structs"
 	"github.com/stretchr/testify/assert"
 )
 
