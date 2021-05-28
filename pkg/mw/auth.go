@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	pkgctx "user-api/pkg/context"
+	pkgctx "github.com/resonatecoop/user-api/pkg/context"
 )
 
 // AuthContext adds context with autorization key to http request
