@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/resonatecoop/user-api/internal/model"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Service is RBAC application service
