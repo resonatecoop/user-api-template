@@ -4,9 +4,10 @@ import (
 	"context"
 	"strings"
 
-	"user-api/internal/model"
+	"github.com/resonatecoop/user-api/internal/model"
 
-	pkgctx "user-api/pkg/context"
+	pkgctx "github.com/resonatecoop/user-api/pkg/context"
+
 	"github.com/twitchtv/twirp"
 )
 

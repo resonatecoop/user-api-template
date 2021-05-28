@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"user-api/internal/model"
+	"github.com/resonatecoop/user-api/internal/model"
 )
 
 // Auth mock

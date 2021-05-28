@@ -3,7 +3,7 @@ package query
 import (
 	"fmt"
 
-	"model"
+	"github.com/resonatecoop/user-api/internal/model"
 )
 
 // ForTenant returns query for filtering rows by tenant_id
