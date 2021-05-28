@@ -6,7 +6,6 @@ import (
 
 	"github.com/resonatecoop/user-api/internal/model"
 	"github.com/uptrace/bun"
-	//"github.com/go-pg/pg/orm"
 )
 
 // NewUser returns a new User instance
