@@ -3,7 +3,7 @@ package query
 import (
 	"fmt"
 
-	"user-api/internal/model"
+	"model"
 )
 
 // ForTenant returns query for filtering rows by tenant_id
