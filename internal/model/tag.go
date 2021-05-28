@@ -15,9 +15,9 @@ import (
 
 // Tag provides basic tag structure
 type Tag struct {
-	ID   uuid.UUID `sql:"type:uuid,default:uuid_generate_v4()"`
-	Type string    `sql:",notnull"`
-	Name string    `sql:",notnull"`
+	ID   uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	Type string    `bun:",notnull"`
+	Name string    `bun:",notnull"`
 }
 
 // SearchTags find a tag by query string on Name

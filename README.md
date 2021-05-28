@@ -84,18 +84,18 @@ From `./cmd/migration`:
 * Init migrations
 
 ```sh
-$ go run *.go init
+$  go run main.go db init
 ```
 
 * Run migrations
 
 ```sh
-$ go run *.go
+$ go run main.go db migrate
 ```
 
 ## Running!
 
-Now you can run the web server with `go run main.go`.
+Now you can run the web server with `go run main.go runserver`.
 
 ## Maintenance
 

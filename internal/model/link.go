@@ -4,9 +4,9 @@ import uuid "github.com/satori/go.uuid"
 
 // Link is an internet hyperlink
 type Link struct {
-	ID           uuid.UUID `sql:"type:uuid,default:uuid_generate_v4()"`
-	URI          string    `sql:",notnull"`
+	ID           uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	URI          string    `bun:",notnull"`
 	Type         string
-	Platform     string `sql:",notnull"`
-	PersonalData bool   `sql:",notnull"`
+	Platform     string `bun:",notnull"`
+	PersonalData bool   `bun:",notnull"`
 }

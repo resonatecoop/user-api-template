@@ -7,10 +7,10 @@ import (
 )
 
 type UserGroupMember struct {
-	CreatedAt   time.Time `sql:"default:now()"`
+	CreatedAt   time.Time `bun:"default:now()"`
 	UpdatedAt   time.Time
-	UserGroupID uuid.UUID `sql:",pk,type:uuid,notnull"`
-	MemberID    uuid.UUID `sql:",pk,type:uuid,notnull"`
+	UserGroupID uuid.UUID `bun:",pk,type:uuid,notnull"`
+	MemberID    uuid.UUID `bun:",pk,type:uuid,notnull"`
 	DisplayName string
-	Tags        []uuid.UUID `sql:",type:uuid[]" pg:",array"`
+	Tags        []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 }

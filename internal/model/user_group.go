@@ -1,7 +1,6 @@
 package model
 
 import (
-	"context"
 	"time"
 
 	// "log"
@@ -24,62 +23,62 @@ import (
 
 // UserGroup represents a group of Users and maintains a set of metadata
 type UserGroup struct {
-	ID                 uuid.UUID `sql:"type:uuid,default:uuid_generate_v4()"`
-	CreatedAt          time.Time `sql:"default:now()"`
-	UpdatedAt          time.Time
-	DisplayName        string `sql:",unique,notnull"`
-	Description        string
-	ShortBio           string
-	Avatar             []byte `sql:",notnull"`
-	Banner             []byte
-	GroupEmailAddress  string
-	PrivacyID          uuid.UUID `sql:"type:uuid,notnull"`
-	Privacy            *UserGroupPrivacy
-	AddressID          uuid.UUID `sql:"type:uuid,notnull"`
-	Address            *StreetAddress
-	TypeID             uuid.UUID `sql:"type:uuid,notnull"`
-	Type               *GroupTaxonomy
-	OwnerID            uuid.UUID `sql:"type:uuid,notnull"`
-	Owner              *User
-	Links              []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	Tags               []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	RecommendedArtists []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	RecommendedBy      []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	Followers          []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	AdminUsers         []uuid.UUID       `sql:",type:uuid[]" pg:",array"`
-	Members            []UserGroup       `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
-	MemberOfGroups     []UserGroup       `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
-	Kvstore            map[string]string `pg:",hstore"`
-	Publisher          map[string]string `pg:",hstore"`
-	Pro                map[string]string `pg:",hstore"`
+	ID                uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	CreatedAt         time.Time `bun:"default:now()"`
+	UpdatedAt         time.Time
+	DisplayName       string `bun:",unique,notnull"`
+	Description       string
+	ShortBio          string
+	GroupEmailAddress string
+	AddressID         uuid.UUID `bun:"type:uuid,notnull"` //for Country
+	Address           *StreetAddress
+	TypeID            uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
+	Type              *GroupTaxonomy
+	OwnerID           uuid.UUID `bun:"type:uuid,notnull"`
+	Owner             *User
+	Links             []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	Members           []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
+	MemberOfGroups    []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
+	// Avatar             []byte
+	// Banner             []byte
+	// AdminUsers         []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	// Followers          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	// Tags               []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	// RecommendedArtists []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	// RecommendedBy      []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	// PrivacyID          uuid.UUID   `bun:"type:uuid,notnull"`
+	// Privacy            *UserGroupPrivacy
+	// Kvstore            map[string]string `pg:",hstore"`
+	// Publisher          map[string]string `pg:",hstore"`
+	// Pro                map[string]string `pg:",hstore"`
 }
 
 // Address            *StreetAddress
 // Type               GroupType
 
-//TypeID             uuid.UUID `sql:"type:uuid,notnull"`
-//AddressID          uuid.UUID `sql:"type:uuid,notnull"`
-//HighlightedTracks    []uuid.UUID `sql:",type:uuid[]" pg:",array"`
-//FeaturedTrackGroupID uuid.UUID   `sql:"type:uuid,default:uuid_nil()"`
+//TypeID             uuid.UUID `bun:"type:uuid,notnull"`
+//AddressID          uuid.UUID `bun:"type:uuid,notnull"`
+//HighlightedTracks    []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+//FeaturedTrackGroupID uuid.UUID   `bun:"type:uuid,default:uuid_nil()"`
 
 // Members        []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
 // MemberOfGroups []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
 
 //OwnerOfTracks      []Track      `pg:"fk:user_group_id"`          // user group gets paid for these tracks
-//ArtistOfTracks     []uuid.UUID  `sql:",type:uuid[]" pg:",array"` // user group displayed as artist for these tracks
+//ArtistOfTracks     []uuid.UUID  `bun:",type:uuid[]" pg:",array"` // user group displayed as artist for these tracks
 //OwnerOfTrackGroups []TrackGroup `pg:"fk:user_group_id"`          // user group owner of these track groups
 //LabelOfTrackGroups []TrackGroup `pg:"fk:label_id"`               // label of these track groups
 
-func (u *UserGroup) BeforeInsert(c context.Context, db orm.DB) error {
-	newPrivacy := &UserGroupPrivacy{Private: false, OwnedTracks: true, SupportedArtists: true}
-	_, pgerr := db.Model(newPrivacy).Returning("*").Insert()
-	if pgerr != nil {
-		return pgerr
-	}
-	u.PrivacyID = newPrivacy.ID
+// func (u *UserGroup) BeforeInsert(c context.Context, db orm.DB) error {
+// 	newPrivacy := &UserGroupPrivacy{Private: false, OwnedTracks: true, SupportedArtists: true}
+// 	_, pgerr := db.Model(newPrivacy).Returning("*").Insert()
+// 	if pgerr != nil {
+// 		return pgerr
+// 	}
+// 	u.PrivacyID = newPrivacy.ID
 
-	return nil
-}
+// 	return nil
+// }
 
 // Create creates a new UserGroup
 func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
@@ -114,17 +113,17 @@ func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	}
 	u.Links = linkIDs
 
-	tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
-	if pgerr != nil {
-		return pgerr, "tag"
-	}
-	u.Tags = tagIDs
+	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
+	// if pgerr != nil {
+	// 	return pgerr, "tag"
+	// }
+	// u.Tags = tagIDs
 
-	recommendedArtistIDs, pgerr := GetRelatedUserGroupIDs(userGroup.RecommendedArtists, tx)
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
-	u.RecommendedArtists = recommendedArtistIDs
+	// recommendedArtistIDs, pgerr := GetRelatedUserGroupIDs(userGroup.RecommendedArtists, tx)
+	// if pgerr != nil {
+	// 	return pgerr, "user_group"
+	// }
+	// u.RecommendedArtists = recommendedArtistIDs
 
 	_, pgerr = tx.Model(u).Returning("*").Insert()
 	if pgerr != nil {
@@ -132,16 +131,16 @@ func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 		return pgerr, "user_group"
 	}
 
-	if len(recommendedArtistIDs) > 0 {
-		_, pgerr = tx.Exec(`
-      UPDATE user_groups
-      SET recommended_by = (select array_agg(distinct e) from unnest(recommended_by || ?) e)
-      WHERE id IN (?)
-    `, pg.Array([]uuid.UUID{u.ID}), pg.In(recommendedArtistIDs))
-		if pgerr != nil {
-			return pgerr, "user_group"
-		}
-	}
+	// if len(recommendedArtistIDs) > 0 {
+	// 	_, pgerr = tx.Exec(`
+	//     UPDATE user_groups
+	//     SET recommended_by = (select array_agg(distinct e) from unnest(recommended_by || ?) e)
+	//     WHERE id IN (?)
+	//   `, pg.Array([]uuid.UUID{u.ID}), pg.In(recommendedArtistIDs))
+	// 	if pgerr != nil {
+	// 		return pgerr, "user_group"
+	// 	}
+	// }
 
 	pgerr = tx.Model(u).
 		Column("Privacy").
@@ -154,12 +153,12 @@ func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	// Building response
 	userGroup.Address.Id = u.AddressID.String()
 	userGroup.Type.ID = u.TypeID.String()
-	userGroup.Privacy = &pbUser.Privacy{
-		ID:               u.Privacy.ID.String(),
-		Private:          u.Privacy.Private,
-		OwnedTracks:      u.Privacy.OwnedTracks,
-		SupportedArtists: u.Privacy.SupportedArtists,
-	}
+	// userGroup.Privacy = &pbUser.Privacy{
+	// 	ID:               u.Privacy.ID.String(),
+	// 	Private:          u.Privacy.Private,
+	// 	OwnedTracks:      u.Privacy.OwnedTracks,
+	// 	SupportedArtists: u.Privacy.SupportedArtists,
+	// }
 
 	return tx.Commit(), table
 }
@@ -183,15 +182,15 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 
 	columns := []string{
 		"updated_at",
-		"pro",
-		"publisher",
+		// "pro",
+		// "publisher",
 		"links",
-		"tags",
+		// "tags",
 		"display_name",
-		"avatar",
+		// "avatar",
 		"description",
 		"short_bio",
-		"banner",
+		// "banner",
 		"group_email_address",
 	}
 
@@ -224,26 +223,26 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	}
 
 	// Update privacy
-	privacyID, twerr := uuidpkg.GetUUIDFromString(userGroup.Privacy.ID)
-	if twerr != nil {
-		return twerr, "user_group_privacy"
-	}
-	privacy := &UserGroupPrivacy{
-		ID:               privacyID,
-		Private:          userGroup.Privacy.Private,
-		OwnedTracks:      userGroup.Privacy.OwnedTracks,
-		SupportedArtists: userGroup.Privacy.SupportedArtists,
-	}
-	_, pgerr = tx.Model(privacy).WherePK().Returning("*").UpdateNotNull()
-	if pgerr != nil {
-		return pgerr, "user_group_privacy"
-	}
+	// privacyID, twerr := uuidpkg.GetUUIDFromString(userGroup.Privacy.ID)
+	// if twerr != nil {
+	// 	return twerr, "user_group_privacy"
+	// }
+	// privacy := &UserGroupPrivacy{
+	// 	ID:               privacyID,
+	// 	Private:          userGroup.Privacy.Private,
+	// 	OwnedTracks:      userGroup.Privacy.OwnedTracks,
+	// 	SupportedArtists: userGroup.Privacy.SupportedArtists,
+	// }
+	// _, pgerr = tx.Model(privacy).WherePK().Returning("*").UpdateNotNull()
+	// if pgerr != nil {
+	// 	return pgerr, "user_group_privacy"
+	// }
 
 	// Update tags
-	tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
-	if pgerr != nil {
-		return pgerr, "tag"
-	}
+	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
+	// if pgerr != nil {
+	// 	return pgerr, "tag"
+	// }
 
 	// Update links
 	linkIDs, pgerr := getLinkIDs(userGroup.Links, tx)
@@ -262,7 +261,7 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	}
 
 	// Update user group
-	u.Tags = tagIDs
+	// u.Tags = tagIDs
 	u.Links = linkIDs
 	// u.RecommendedArtists = recommendedArtistIDs
 	u.UpdatedAt = time.Now()
@@ -297,7 +296,7 @@ func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Err
 		searchUserGroup := &pbUser.RelatedUserGroup{
 			Id:          userGroup.ID.String(),
 			DisplayName: userGroup.DisplayName,
-			Avatar:      userGroup.Avatar,
+			// Avatar:      userGroup.Avatar,
 		}
 		switch userGroup.Type.Type {
 		case "user":
@@ -368,38 +367,38 @@ func (u *UserGroup) Delete(tx *pg.Tx) (error, string) {
 		}
 	}
 
-	if len(u.RecommendedBy) > 0 {
-		_, pgerr = tx.Exec(`
-      UPDATE user_groups
-      SET recommended_artists = array_remove(recommended_artists, ?)
-      WHERE id IN (?)
-    `, u.ID, pg.In(u.RecommendedBy))
-		if pgerr != nil {
-			return pgerr, "user_group"
-		}
-	}
+	// if len(u.RecommendedBy) > 0 {
+	// 	_, pgerr = tx.Exec(`
+	//     UPDATE user_groups
+	//     SET recommended_artists = array_remove(recommended_artists, ?)
+	//     WHERE id IN (?)
+	//   `, u.ID, pg.In(u.RecommendedBy))
+	// 	if pgerr != nil {
+	// 		return pgerr, "user_group"
+	// 	}
+	// }
 
-	if len(u.RecommendedArtists) > 0 {
-		_, pgerr = tx.Exec(`
-      UPDATE user_groups
-      SET recommended_by = array_remove(recommended_by, ?)
-      WHERE id IN (?)
-    `, u.ID, pg.In(u.RecommendedArtists))
-		if pgerr != nil {
-			return pgerr, "user_group"
-		}
-	}
+	// if len(u.RecommendedArtists) > 0 {
+	// 	_, pgerr = tx.Exec(`
+	//     UPDATE user_groups
+	//     SET recommended_by = array_remove(recommended_by, ?)
+	//     WHERE id IN (?)
+	//   `, u.ID, pg.In(u.RecommendedArtists))
+	// 	if pgerr != nil {
+	// 		return pgerr, "user_group"
+	// 	}
+	// }
 
-	if len(u.Followers) > 0 {
-		_, pgerr = tx.Exec(`
-      UPDATE users
-      SET followed_groups = array_remove(followed_groups, ?)
-      WHERE id IN (?)
-    `, u.ID, pg.In(u.Followers))
-		if pgerr != nil {
-			return pgerr, "user"
-		}
-	}
+	// if len(u.Followers) > 0 {
+	// 	_, pgerr = tx.Exec(`
+	//     UPDATE users
+	//     SET followed_groups = array_remove(followed_groups, ?)
+	//     WHERE id IN (?)
+	//   `, u.ID, pg.In(u.Followers))
+	// 	if pgerr != nil {
+	// 		return pgerr, "user"
+	// 	}
+	// }
 
 	var userGroupMembers []UserGroupMember
 	_, pgerr = tx.Model(&userGroupMembers).
@@ -420,10 +419,10 @@ func (u *UserGroup) Delete(tx *pg.Tx) (error, string) {
 		return pgerr, "street_address"
 	}
 
-	_, pgerr = tx.Model(u.Privacy).WherePK().Delete()
-	if pgerr != nil {
-		return pgerr, "user_group_privacy"
-	}
+	// _, pgerr = tx.Model(u.Privacy).WherePK().Delete()
+	// if pgerr != nil {
+	// 	return pgerr, "user_group_privacy"
+	// }
 
 	return nil, ""
 }
@@ -514,7 +513,7 @@ func GetRelatedUserGroups(ids []uuid.UUID, db orm.DB) ([]*pbUser.RelatedUserGrou
 			groupsResponse[i] = &pbUser.RelatedUserGroup{
 				Id:          group.ID.String(),
 				DisplayName: group.DisplayName,
-				Avatar:      group.Avatar,
+				// Avatar:      group.Avatar,
 			}
 		}
 	}
@@ -542,7 +541,7 @@ func GetRelatedUserGroupIDs(userGroups []*pbUser.RelatedUserGroup, db *pg.Tx) ([
 			return nil, pgerr
 		}
 		userGroup.DisplayName = relatedUserGroups[i].DisplayName
-		userGroup.Avatar = relatedUserGroups[i].Avatar
+		// userGroup.Avatar = relatedUserGroups[i].Avatar
 		relatedUserGroupIDs[i] = relatedUserGroups[i].ID
 	}
 	return relatedUserGroupIDs, nil

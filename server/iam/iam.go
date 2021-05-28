@@ -4,25 +4,24 @@ import (
 	"context"
 
 	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/uptrace/bun"
 
 	"github.com/rs/xid"
 
 	"github.com/twitchtv/twirp"
 
 	"github.com/resonatecoop/user-api/proto/iam"
-
-	"github.com/go-pg/pg"
-	"github.com/go-pg/pg/orm"
+	//"github.com/go-pg/pg/orm"
 )
 
 // New instantiates new IAM service
-func New(db *pg.DB, tg TokenGenerator, udb UserDB, sec Securer) *Service {
+func New(db *bun.DB, tg TokenGenerator, udb UserDB, sec Securer) *Service {
 	return &Service{db: db, tg: tg, udb: udb, sec: sec}
 }
 
 // Service represents IAM application service
 type Service struct {
-	db  *pg.DB
+	db  *bun.DB
 	tg  TokenGenerator
 	udb UserDB
 	sec Securer
@@ -35,9 +34,9 @@ type TokenGenerator interface {
 
 // UserDB represents user database interface
 type UserDB interface {
-	FindByAuth(orm.DB, string) (*model.User, error)
-	FindByToken(orm.DB, string) (*model.User, error)
-	UpdateLastLogin(orm.DB, *model.User) error
+	FindByAuth(context.Context, *bun.DB, string) (*model.User, error)
+	FindByToken(context.Context, *bun.DB, string) (*model.User, error)
+	UpdateLastLogin(context.Context, *bun.DB, *model.User) error
 }
 
 // Securer represents password securing service
@@ -56,9 +55,11 @@ func (s *Service) Auth(c context.Context, req *iam.AuthReq) (*iam.AuthResp, erro
 		return nil, err
 	}
 
-	dbCtx := s.db.WithContext(c)
+	// dbCtx := s.db.
 
-	usr, err := s.udb.FindByAuth(dbCtx, req.Auth)
+	// WithContext(c)
+
+	usr, err := s.udb.FindByAuth(c, s.db, req.Auth)
 	if err != nil {
 		return nil, invalidUserPW
 	}
@@ -83,7 +84,7 @@ func (s *Service) Auth(c context.Context, req *iam.AuthReq) (*iam.AuthResp, erro
 
 	usr.UpdateLoginDetails(uToken)
 
-	if err = s.udb.UpdateLastLogin(dbCtx, usr); err != nil {
+	if err = s.udb.UpdateLastLogin(c, s.db, usr); err != nil {
 		return nil, err
 	}
 
@@ -99,7 +100,7 @@ func (s *Service) Refresh(c context.Context, req *iam.RefreshReq) (*iam.RefreshR
 		return nil, err
 	}
 
-	usr, err := s.udb.FindByToken(s.db.WithContext(c), req.Token)
+	usr, err := s.udb.FindByToken(c, s.db, req.Token)
 	if err != nil {
 		return nil, invalidToken
 	}

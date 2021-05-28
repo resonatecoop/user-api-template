@@ -7,9 +7,10 @@ import (
 
 	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
+	uuid "github.com/satori/go.uuid"
 
-	"github.com/go-pg/pg"
 	"github.com/twitchtv/twirp"
+	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/internal/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
@@ -17,12 +18,12 @@ import (
 
 // Server implements the UserService
 type Server struct {
-	db  *pg.DB
+	db  *bun.DB
 	sec Securer
 }
 
 // New creates an instance of our server
-func New(db *pg.DB, sec Securer) *Server {
+func New(db *bun.DB, sec Securer) *Server {
 	return &Server{db: db, sec: sec}
 }
 
@@ -46,9 +47,9 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.AddUserRequest) (*pbU
 		Email:    user.Email,
 		// DisplayName: user.DisplayName,
 	}
-	_, err := s.db.Model(newUser).Returning("*").Insert()
+	_, dberr := s.db.NewInsert().Model(newUser).Exec(ctx)
 
-	returnErr := errorpkg.CheckError(err, "user")
+	returnErr := errorpkg.CheckError(dberr, "user")
 	if returnErr != nil {
 		return nil, returnErr
 	}
@@ -71,11 +72,11 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 		return nil, err
 	}
 
-	pgerr := s.db.Model(u).
+	dberr := s.db.NewSelect().Model(u).
 		Column("user.*", "OwnerOfGroups").
 		Where("id = ?", u.ID).
-		Select()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Scan(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -103,11 +104,11 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 		return nil, err
 	}
 
-	pgerr := s.db.Model(u).
+	dberr := s.db.NewSelect().Model(u).
 		Column("user.*", "OwnerOfGroups").
 		Where("id = ?", u.ID).
-		Select()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Scan(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -137,11 +138,11 @@ func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbU
 		return nil, err
 	}
 
-	_, pgerr := s.db.Model(u).
-		Column("user.*").
+	_, dberr := s.db.NewDelete().
+		Model(u).
 		Where("id = ?", u.ID).
-		Delete()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Exec(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -174,12 +175,12 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	}
 
 	u.UpdatedAt = time.Now()
-	_, pgerr := s.db.Model(u).
+	_, dberr := s.db.NewUpdate().
+		Model(u).
 		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
 		WherePK().
-		Returning("*").
-		Update()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Exec(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -213,12 +214,12 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedR
 	}
 
 	u.UpdatedAt = time.Now()
-	_, pgerr := s.db.Model(u).
+	_, dberr := s.db.NewUpdate().
+		Model(u).
 		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "role_id", "tenant_id", "member", "newsletter_notification").
 		WherePK().
-		Returning("*").
-		Update()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Exec(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -241,12 +242,12 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 
 	u.UpdatedAt = time.Now()
 	u.Password = hashedPassword
-	_, pgerr := s.db.Model(u).
+	_, dberr := s.db.NewUpdate().
+		Model(u).
 		Column("updated_at", "password").
 		Where("email = ?", u.Email).
-		Returning("*").
-		Update()
-	twerr := errorpkg.CheckError(pgerr, "user")
+		Exec(ctx)
+	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
 		return nil, twerr
 	}
@@ -256,16 +257,21 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 // ListUsers lists all users in the store.
 func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.UserListResponse, error) {
 
-	var users []pbUser.User
+	//var users []pbUser.User
+	var users []model.User
 	var results pbUser.UserListResponse
-	err := s.db.Model(&users).Select()
-	if err != nil {
-		return nil, err
+	dberr := s.db.NewSelect().
+		Model(&users).
+		//	Column("id", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
+		Scan(ctx)
+
+	if dberr != nil {
+		return nil, dberr
 	}
 
 	for _, user := range users {
 		var result pbUser.UserPrivateResponse
-		result.Id = user.Id
+		result.Id = uuid.UUID.String(user.ID)
 		result.Username = user.Username
 		result.FullName = user.FullName
 		result.Email = user.Email
@@ -273,6 +279,7 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.LastName = user.LastName
 		result.Member = user.Member
 		result.NewsletterNotification = user.NewsletterNotification
+		result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
 		// DisplayName: user.DisplayName,
 		results.User = append(results.User, &result)
 	}
@@ -419,7 +426,8 @@ func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest,
 func getUserGroupResponse(ownerOfGroup []model.UserGroup) []*pbUser.RelatedUserGroup {
 	groups := make([]*pbUser.RelatedUserGroup, len(ownerOfGroup))
 	for i, group := range ownerOfGroup {
-		groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName, Avatar: group.Avatar}
+		groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName}
+		//groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName, Avatar: group.Avatar}
 	}
 	return groups
 }
