@@ -17,16 +17,15 @@ type AuthUser struct {
 
 // User basic definition of a User and its meta
 type User struct {
-	ID                     uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	IDRecord
 	LegacyID               int32
-	CreatedAt              time.Time `bun:"default:now()"`
-	UpdatedAt              time.Time
 	Username               string `bun:",notnull,unique"`
 	FullName               string `bun:",notnull"`
 	FirstName              string
 	LastName               string
 	Email                  string `bun:",unique,notnull"`
-	Member                 bool   `bun:",notnull"`
+	EmailConfirmed         bool
+	Member                 bool `bun:",notnull"`
 	NewsletterNotification bool
 	FollowedGroups         []uuid.UUID  `bun:",type:uuid[],array"`
 	OwnerOfGroups          []*UserGroup `bun:"rel:has-many,join:id=owner_id""`

@@ -4,8 +4,8 @@ go 1.16
 
 require (
 	github.com/bufbuild/buf v0.32.0
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
+	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
 	github.com/go-pg/migrations v6.7.3+incompatible
 	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/golang/protobuf v1.4.3
