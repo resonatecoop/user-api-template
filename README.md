@@ -12,6 +12,9 @@ It builds on that work in several important ways:
 - implements full RBAC using native Golang Interceptors (arguably better than using Twirp Handlers)
 - RBAC is based on User role and interface access config in the config file
 - built with Go modules for dependency management
+- adds a CLI for database management and for running the server
+- replaces `go-pg` with `bun`
+- merges in the models from `resonatecoop\id`
 
 It is WIP, do NOT use this in Production yet!
 
