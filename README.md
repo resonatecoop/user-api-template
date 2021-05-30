@@ -79,7 +79,7 @@ You can confirm with
 SELECT * FROM pg_extension;
 ```
 
-From `./cmd/migration`:
+From the root of the user-api:
 
 * Init migrations
 
