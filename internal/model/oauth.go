@@ -15,37 +15,37 @@ import (
 // OauthClient ...
 type OauthClient struct {
 	IDRecord
-	Key                 string         `bun:"type:varchar(254);unique;not null"`
-	Secret              string         `bun:"type:varchar(60);not null"`
+	Key                 string         `bun:"type:varchar(254),unique,notnull"`
+	Secret              string         `bun:"type:varchar(60),notnull"`
 	RedirectURI         sql.NullString `bun:"type:varchar(200)"`
 	ApplicationName     sql.NullString `bun:"type:varchar(200)"`
 	ApplicationHostname sql.NullString `bun:"type:varchar(200)"`
 	ApplicationURL      sql.NullString `bun:"type:varchar(200)"`
 }
 
-// TableName specifies table name
-func (c *OauthClient) TableName() string {
-	return "oauth_clients"
-}
+// // TableName specifies table name
+// func (c *OauthClient) TableName() string {
+// 	return "oauth_clients"
+// }
 
 // OauthScope ...
 type OauthScope struct {
 	IDRecord
-	Scope       string `bun:"type:varchar(200);unique;not null"`
+	Scope       string `bun:"type:varchar(200),unique,notnull"`
 	Description sql.NullString
 	IsDefault   bool `bun:"default:false"`
 }
 
-// TableName specifies table name
-func (s *OauthScope) TableName() string {
-	return "oauth_scopes"
-}
+// // TableName specifies table name
+// func (s *OauthScope) TableName() string {
+// 	return "oauth_scopes"
+// }
 
 // // OauthRole is a one of roles user can have (currently superuser or user)
 // type OauthRole struct {
 // 	TimestampModel
 // 	ID   string `gorm:"primary_key" sql:"type:varchar(20)"`
-// 	Name string `bun:"type:varchar(50);unique;not null"`
+// 	Name string `bun:"type:varchar(50),unique,notnull"`
 // }
 
 // // TableName specifies table name
@@ -56,11 +56,11 @@ func (s *OauthScope) TableName() string {
 // OauthUser ...
 // type OauthUser struct {
 // 	RecordBasics
-// 	RoleID         sql.NullString `bun:"type:varchar(20);index;not null"`
+// 	RoleID         sql.NullString `bun:"type:varchar(20);index,notnull"`
 // 	Role           *OauthRole
-// 	Username       string         `bun:"type:varchar(254);unique;not null"`
+// 	Username       string         `bun:"type:varchar(254),unique,notnull"`
 // 	Password       sql.NullString `bun:"type:varchar(60)"`
-// 	EmailConfirmed bool           `bun:"default:false;not null"`
+// 	EmailConfirmed bool           `bun:"default:false,notnull"`
 // }
 
 // // TableName specifies table name
@@ -71,54 +71,54 @@ func (s *OauthScope) TableName() string {
 // OauthRefreshToken ...
 type OauthRefreshToken struct {
 	IDRecord
-	ClientID  sql.NullString `bun:"index;not null"`
+	ClientID  sql.NullString `bun:"index,notnull"`
 	UserID    sql.NullString `bun:"index"`
 	Client    *OauthClient
 	User      *User
 	Token     uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
-	ExpiresAt time.Time `bun:"not null"`
-	Scope     string    `bun:"type:varchar(200);not null"`
+	ExpiresAt time.Time `bun:",notnull"`
+	Scope     string    `bun:"type:varchar(200),notnull"`
 }
 
-// TableName specifies table name
-func (rt *OauthRefreshToken) TableName() string {
-	return "oauth_refresh_tokens"
-}
+// // TableName specifies table name
+// func (rt *OauthRefreshToken) TableName() string {
+// 	return "oauth_refresh_tokens"
+// }
 
 // OauthAccessToken ...
 type OauthAccessToken struct {
 	IDRecord
-	ClientID  sql.NullString `bun:"index;not null"`
+	ClientID  sql.NullString `bun:"index,notnull"`
 	UserID    sql.NullString `bun:"index"`
 	Client    *OauthClient
 	User      *User
 	Token     string    `bun:"type:uuid,default:uuid_generate_v4()"`
-	ExpiresAt time.Time `bun:"not null"`
-	Scope     string    `bun:"type:varchar(200);not null"`
+	ExpiresAt time.Time `bun:",notnull"`
+	Scope     string    `bun:"type:varchar(200),notnull"`
 }
 
-// TableName specifies table name
-func (at *OauthAccessToken) TableName() string {
-	return "oauth_access_tokens"
-}
+// // TableName specifies table name
+// func (at *OauthAccessToken) TableName() string {
+// 	return "oauth_access_tokens"
+// }
 
 // OauthAuthorizationCode ...
 type OauthAuthorizationCode struct {
 	IDRecord
-	ClientID    sql.NullString `bun:"index;not null"`
-	UserID      sql.NullString `bun:"index;not null"`
+	ClientID    sql.NullString `bun:"index,notnull"`
+	UserID      sql.NullString `bun:"index,notnull"`
 	Client      *OauthClient
 	User        *User
 	Code        string         `bun:"type:uuid,default:uuid_generate_v4()"`
 	RedirectURI sql.NullString `bun:"type:varchar(200)"`
-	ExpiresAt   time.Time      `bun:"not null"`
-	Scope       string         `bun:"type:varchar(200);not null"`
+	ExpiresAt   time.Time      `bun:",notnull"`
+	Scope       string         `bun:"type:varchar(200),notnull"`
 }
 
-// TableName specifies table name
-func (ac *OauthAuthorizationCode) TableName() string {
-	return "oauth_authorization_codes"
-}
+// // TableName specifies table name
+// func (ac *OauthAuthorizationCode) TableName() string {
+// 	return "oauth_authorization_codes"
+// }
 
 // NewOauthRefreshToken creates new OauthRefreshToken instance
 func NewOauthRefreshToken(client *OauthClient, user *User, expiresIn int, scope string) *OauthRefreshToken {

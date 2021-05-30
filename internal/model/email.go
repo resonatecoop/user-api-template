@@ -9,7 +9,7 @@ import (
 
 // EmailTokenModel is an abstract model which can be used for objects from which
 // we derive redirect emails (email confirmation, password reset and such)
-type EmailTokenModel struct {
+type EmailToken struct {
 	IDRecord
 	Reference   uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
 	EmailSent   bool      `bun:"index;not null"`
@@ -17,34 +17,34 @@ type EmailTokenModel struct {
 	ExpiresAt   time.Time `bun:"index;not null"`
 }
 
-type EmailTokenClaimsModel struct {
+type EmailTokenClaims struct {
 	Username  string `json:"username"`
 	Reference string `json:"reference"`
 	jwt.StandardClaims
 }
 
-type MailgunEmailModel struct {
+type Email struct {
 	Recipient string
 	Subject   string
 	Template  string
 }
 
-// TableName specifies table name
-func (ac *EmailTokenModel) TableName() string {
-	return "oauth_email_tokens"
-}
+// // TableName specifies table name
+// func (ac *EmailToken) TableName() string {
+// 	return "oauth_email_tokens"
+// }
 
 // NewEmailToken creates new OauthEmailToken instance
-func NewOauthEmailToken(expiresIn *time.Duration) *EmailTokenModel {
-	return &EmailTokenModel{
+func NewOauthEmailToken(expiresIn *time.Duration) *EmailToken {
+	return &EmailToken{
 		EmailSent: false,
 		ExpiresAt: time.Now().UTC().Add(*expiresIn),
 	}
 }
 
 // NewOauthEmailTokenClaims creates new NewOauthEmailTokenClaims instance
-func NewOauthEmailTokenClaims(email string, emailToken *EmailTokenModel) *EmailTokenClaimsModel {
-	return &EmailTokenClaimsModel{
+func NewOauthEmailTokenClaims(email string, emailToken *EmailToken) *EmailTokenClaims {
+	return &EmailTokenClaims{
 		Username:  email,
 		Reference: emailToken.Reference.String(),
 		StandardClaims: jwt.StandardClaims{
@@ -55,8 +55,8 @@ func NewOauthEmailTokenClaims(email string, emailToken *EmailTokenModel) *EmailT
 }
 
 // NewOauthEmail
-func NewOauthEmail(email, subject, template string) *MailgunEmailModel {
-	return &MailgunEmailModel{
+func NewOauthEmail(email, subject, template string) *Email {
+	return &Email{
 		Recipient: email,
 		Subject:   subject,
 		Template:  template,
