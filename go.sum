@@ -505,6 +505,8 @@ github.com/twitchtv/twirp v7.1.0+incompatible/go.mod h1:RRJoFSAmTEh2weEqWtpPE3vF
 github.com/uptrace/bun v0.1.1/go.mod h1:y7OgTXdMe3wrAyp1He4Sx1o41kzCQQ8TeBFZyQp3SOg=
 github.com/uptrace/bun v0.1.15 h1:3D51Gg3vHGofQuZuAsVpBTq+8YB9YDzBqCbCKq9xe0o=
 github.com/uptrace/bun v0.1.15/go.mod h1:y7OgTXdMe3wrAyp1He4Sx1o41kzCQQ8TeBFZyQp3SOg=
+github.com/uptrace/bun/dbfixture v0.1.15 h1:12oiTu6Byznv/v+WL1+AV5kWgI376mXuqhsZkpVFsqQ=
+github.com/uptrace/bun/dbfixture v0.1.15/go.mod h1:kJmClyWQOgwbOQayFesy+uNMHe0Yob3qdVVEYijlGhQ=
 github.com/uptrace/bun/dialect/pgdialect v0.1.15 h1:YMgCANba95/UA0LyDLUwG/yDP9Cv2J56dKqnZTif7BA=
 github.com/uptrace/bun/dialect/pgdialect v0.1.15/go.mod h1:qr7yaz3EQDBF/txR3JN3Rx1fHxJOhpegrIsMivwdvRM=
 github.com/uptrace/bun/extra/bundebug v0.1.15 h1:W52NBZyVu8p6spBRI0u+37IeSiZ/CiGJ/YED66RFBks=
@@ -882,6 +884,8 @@ gopkg.in/yaml.v2 v2.3.0/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 h1:tQIYjPdBoyREyB9XMu+nnTclpTYkz2zFM+lzLJFO4gQ=
 gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b h1:h8qDotaEPuJATrMmW04NCwg7v22aHH28wwpauUhK9Oo=
+gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 honnef.co/go/tools v0.0.0-20180728063816-88497007e858/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190102054323-c2f93a96b099/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=
 honnef.co/go/tools v0.0.0-20190106161140-3f1c8253044a/go.mod h1:rf3lG4BRIbNafJWhAfAdb/ePZxsR/4RtNHQocxwk9r4=

@@ -1,0 +1,18 @@
+- model: User
+  rows:
+    - username: jhendrix
+      full_name: Jimmy 
+      first_name: Jimmy
+      last_name: Hendrix
+      tenant_id: 0
+      role_id: 3
+      member: true
+      email: jimmy@hendrix.com
+    - username: mdavis
+      full_name: Miles Davis
+      first_name: Miles
+      last_name: Davis
+      tenant_id: 0
+      role_id: 5
+      member: false
+      email: miles@davis.com
