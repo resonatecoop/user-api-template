@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 	bun "github.com/uptrace/bun"
+	"github.com/uptrace/bun/dbfixture"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/migrate"
 
@@ -18,6 +19,7 @@ import (
 
 	"github.com/resonatecoop/user-api/app"
 	"github.com/resonatecoop/user-api/cmd/migrations"
+	"github.com/resonatecoop/user-api/internal/model"
 	acc "github.com/resonatecoop/user-api/pkg/access"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -31,7 +33,7 @@ import (
 	iamdb "github.com/resonatecoop/user-api/server/iam/platform/postgres"
 	"github.com/resonatecoop/user-api/server/iam/secure"
 	userserver "github.com/resonatecoop/user-api/server/user"
-	"github.com/uptrace/bun/extra/bundebug"
+	bundebug "github.com/uptrace/bun/extra/bundebug"
 
 	// Static files
 	_ "github.com/resonatecoop/user-api/statik"
@@ -244,6 +246,33 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 					defer app.Stop()
 
 					return migrations.CreateSQL(ctx, app.DB(), c.Args().Get(0))
+				},
+			},
+			{
+				Name:  "load_fixtures",
+				Usage: "load test data",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
+
+					cfg := app.Cfg
+
+					sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
+					if err != nil {
+						return err
+					}
+
+					db := bun.NewDB(sqldb, pgdialect.New())
+
+					// Let the db know about the models.
+					db.RegisterModel((*model.User)(nil))
+
+					fixture := dbfixture.New(db)
+
+					return fixture.Load(ctx, os.DirFS("test_data"), "fixtures.yaml")
 				},
 			},
 		},

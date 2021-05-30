@@ -8,7 +8,7 @@ import (
 
 	"github.com/resonatecoop/user-api/internal/model"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/form3tech-oss/jwt-go"
 )
 
 // New instantiates new JWT service

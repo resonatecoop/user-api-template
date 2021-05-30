@@ -93,6 +93,11 @@ $  go run main.go db init
 $ go run main.go db migrate
 ```
 
+* Loading test data (fixtures)
+```sh
+$ go run main.go db load_fixtures
+```
+
 ## Running!
 
 Now you can run the web server with `go run main.go runserver`.

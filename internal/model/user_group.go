@@ -23,9 +23,7 @@ import (
 
 // UserGroup represents a group of Users and maintains a set of metadata
 type UserGroup struct {
-	ID                uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
-	CreatedAt         time.Time `bun:"default:now()"`
-	UpdatedAt         time.Time
+	IDRecord
 	DisplayName       string `bun:",unique,notnull"`
 	Description       string
 	ShortBio          string
@@ -171,7 +169,7 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	}
 	defer tx.Rollback()
 
-	userGroupToUpdate := &UserGroup{ID: u.ID}
+	userGroupToUpdate := &UserGroup{IDRecord: IDRecord{ID: u.ID}}
 	pgerr := tx.Model(userGroupToUpdate).
 		Column("user_group.links", "Type").
 		WherePK().
@@ -532,7 +530,7 @@ func GetRelatedUserGroupIDs(userGroups []*pbUser.RelatedUserGroup, db *pg.Tx) ([
 		if twerr != nil {
 			return nil, twerr.(error)
 		}
-		relatedUserGroups[i] = &UserGroup{ID: id}
+		relatedUserGroups[i] = &UserGroup{IDRecord: IDRecord{ID: id}}
 		pgerr := db.Model(relatedUserGroups[i]).
 			WherePK().
 			Returning("id", "display_name", "avatar").

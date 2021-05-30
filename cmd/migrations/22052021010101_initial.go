@@ -26,6 +26,13 @@ func init() {
 		(*model.UserGroupPrivacy)(nil),
 		(*model.GroupTaxonomy)(nil),
 		(*model.UserGroupMember)(nil),
+		(*model.EmailToken)(nil),
+		(*model.EmailTokenClaims)(nil),
+		(*model.Email)(nil),
+		(*model.OauthClient)(nil),
+		(*model.OauthScope)(nil),
+		(*model.OauthRefreshToken)(nil),
+		(*model.OauthAuthorizationCode)(nil),
 	}
 
 	Migrations.MustRegister(func(ctx context.Context, db *bun.DB) error {

@@ -19,7 +19,7 @@ jwt:
   signing_algorithm: HS256
 
 access:
-  no_token_methods: "/iam.ResonateIAM/Auth,/user.ResonateUser/ResetUserPassword"
+  no_token_methods: "/iam.ResonateIAM/Auth,/user.ResonateUser/ResetUserPassword" # Usually only Auth method
   public_user_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser"
 
 application:

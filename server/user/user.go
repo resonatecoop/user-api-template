@@ -165,7 +165,7 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	}
 
 	u := &model.User{
-		ID:        existingID,
+		IDRecord:  model.IDRecord{ID: existingID},
 		Username:  updateUserRequest.Username,
 		FullName:  updateUserRequest.FullName,
 		Email:     updateUserRequest.Email,
@@ -202,7 +202,7 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedR
 	}
 
 	u := &model.User{
-		ID:        existingID,
+		IDRecord:  model.IDRecord{ID: existingID},
 		Username:  updateUserRestrictedRequest.Username,
 		FullName:  updateUserRestrictedRequest.FullName,
 		Email:     updateUserRestrictedRequest.Email,
@@ -280,8 +280,8 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.Member = user.Member
 		result.NewsletterNotification = user.NewsletterNotification
 		result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
-		// DisplayName: user.DisplayName,
 		results.User = append(results.User, &result)
+		// DisplayName: user.DisplayName,
 	}
 
 	return &results, nil
@@ -293,7 +293,7 @@ func getUserModelFromID(user string) (returneduser *model.User, err error) {
 		return nil, err
 	}
 	return &model.User{
-		ID:                     ID,
+		IDRecord:               model.IDRecord{ID: ID},
 		Username:               "",
 		FullName:               "",
 		Email:                  "",
@@ -311,15 +311,15 @@ func getUserModel(user string) (returneduser *model.User, err error) {
 		return nil, err
 	}
 	return &model.User{
-		ID:       ID,
-		Username: returneduser.Username,
-		// DisplayName: user.DisplayName,
+		IDRecord:               model.IDRecord{ID: ID},
+		Username:               returneduser.Username,
 		FullName:               returneduser.FullName,
 		Email:                  returneduser.Email,
 		FirstName:              returneduser.FirstName,
 		LastName:               returneduser.LastName,
 		Member:                 returneduser.Member,
 		NewsletterNotification: returneduser.NewsletterNotification,
+		// DisplayName: user.DisplayName,
 	}, nil
 }
 
@@ -329,15 +329,15 @@ func getUserModelforUpdate(user string) (returneduser *model.User, err error) {
 		return nil, err
 	}
 	return &model.User{
-		ID:       ID,
-		Username: returneduser.Username,
-		// DisplayName: user.DisplayName,
+		IDRecord:               model.IDRecord{ID: ID},
+		Username:               returneduser.Username,
 		FullName:               returneduser.FullName,
 		Email:                  returneduser.Email,
 		FirstName:              returneduser.FirstName,
 		LastName:               returneduser.LastName,
 		Member:                 returneduser.Member,
 		NewsletterNotification: returneduser.NewsletterNotification,
+		// DisplayName: user.DisplayName,
 	}, nil
 }
 
