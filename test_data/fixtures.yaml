@@ -1,7 +1,7 @@
 - model: User
   rows:
     - username: jhendrix
-      full_name: Jimmy 
+      full_name: Jimmy Hendrix
       first_name: Jimmy
       last_name: Hendrix
       tenant_id: 0
