@@ -20,12 +20,12 @@ It is WIP, do NOT use this in Production yet!
 
 ## Running
 
-Running `main.go` starts a web server on https://0.0.0.0:11000/. You can configure
+Running `go run main.go runserver` starts a web server on https://0.0.0.0:11000/. You can configure
 the port used with the `$PORT` environment variable, and to serve on HTTP set
 `$SERVE_HTTP=true`.
 
 ```
-$ go run main.go
+$ go run main.go runserver
 ```
 
 An OpenAPI UI is served on https://0.0.0.0:11000/.
