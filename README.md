@@ -30,15 +30,6 @@ $ go run main.go runserver
 
 An OpenAPI UI is served on https://0.0.0.0:11000/.
 
-### Running the standalone server
-
-If you want to use a separate gRPC server, for example one written in Java or C++, you can run the
-standalone web server instead:
-
-```
-$ go run ./cmd/standalone/ --server-address dns:///0.0.0.0:10000
-```
-
 ## Getting started
 
 After cloning the repo, there are a couple of initial steps;
