@@ -3,7 +3,7 @@ package rbac
 import (
 	"context"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 	uuid "github.com/satori/go.uuid"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 
 	iam "github.com/resonatecoop/user-api/proto/iam"
 )

@@ -18,8 +18,8 @@ import (
 	grpclog "google.golang.org/grpc/grpclog"
 
 	"github.com/resonatecoop/user-api/app"
-	"github.com/resonatecoop/user-api/cmd/migrations"
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/migrations"
+	"github.com/resonatecoop/user-api/model"
 	acc "github.com/resonatecoop/user-api/pkg/access"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"

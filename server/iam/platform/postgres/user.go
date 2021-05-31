@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 	"github.com/uptrace/bun"
 )
 

@@ -12,7 +12,7 @@ import (
 	"github.com/twitchtv/twirp"
 	"github.com/uptrace/bun"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 )
 

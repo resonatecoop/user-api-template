@@ -3,7 +3,7 @@ package iamserver
 import (
 	"context"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 	"github.com/uptrace/bun"
 
 	"github.com/rs/xid"

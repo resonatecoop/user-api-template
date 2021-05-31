@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/resonatecoop/user-api/internal/model"
+	"github.com/resonatecoop/user-api/model"
 
 	pkgctx "github.com/resonatecoop/user-api/pkg/context"
 
