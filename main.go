@@ -249,7 +249,41 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 				},
 			},
 			{
-				Name:  "load_fixtures",
+				Name:  "load_default_fixtures",
+				Usage: "load default data",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
+
+					cfg := app.Cfg
+
+					sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
+					if err != nil {
+						return err
+					}
+
+					db := bun.NewDB(sqldb, pgdialect.New())
+
+					// Let the db know about the models.
+					models := []interface{}{
+						(*model.Role)(nil),
+						(*model.Scope)(nil),
+					}
+
+					for _, this_model := range models {
+						db.RegisterModel(this_model)
+					}
+
+					fixture := dbfixture.New(db)
+
+					return fixture.Load(ctx, os.DirFS("fixtures/default"), "default_fixtures.yaml")
+				},
+			},
+			{
+				Name:  "load_test_fixtures",
 				Usage: "load test data",
 				Action: func(c *cli.Context) error {
 					ctx, app, err := app.StartCLI(c)
@@ -268,11 +302,33 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 					db := bun.NewDB(sqldb, pgdialect.New())
 
 					// Let the db know about the models.
-					db.RegisterModel((*model.User)(nil))
+					models := []interface{}{
+						(*model.UserGroup)(nil),
+						(*model.StreetAddress)(nil),
+						(*model.Tag)(nil),
+						(*model.Role)(nil),
+						(*model.User)(nil),
+						(*model.Link)(nil),
+						(*model.UserGroupPrivacy)(nil),
+						(*model.GroupTaxonomy)(nil),
+						(*model.UserGroupMember)(nil),
+						(*model.EmailToken)(nil),
+						(*model.EmailTokenClaims)(nil),
+						(*model.Email)(nil),
+						(*model.Client)(nil),
+						(*model.Scope)(nil),
+						(*model.RefreshToken)(nil),
+						(*model.AuthorizationCode)(nil),
+						(*model.AccessToken)(nil),
+					}
+
+					for _, this_model := range models {
+						db.RegisterModel(this_model)
+					}
 
 					fixture := dbfixture.New(db)
 
-					return fixture.Load(ctx, os.DirFS("test_data"), "fixtures.yaml")
+					return fixture.Load(ctx, os.DirFS("fixtures/test"), "test_fixtures.yaml")
 				},
 			},
 		},

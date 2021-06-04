@@ -14,9 +14,9 @@ type IDRecord struct {
 	DeletedAt *time.Time
 }
 
-// // TimestampModel ...
+// TimestampModel ...
 // type TimestampModel struct {
-// 	CreatedAt time.Time
+// 	CreatedAt time.Time `bun:"default:now()"`
 // 	UpdatedAt time.Time
 // 	DeletedAt *time.Time
 // }

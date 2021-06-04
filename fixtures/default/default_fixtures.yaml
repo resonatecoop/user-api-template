@@ -1,0 +1,42 @@
+- model: Role
+  rows:
+    - id: 1
+      name: superadmin
+      description: SuperAdminRole has all permissions and can assign admins
+    - id: 2
+      name: admin
+      description: AdminRole has Admin permissions across all tenants, except the ability to assign other Admins
+    - id: 3
+      name: tenantadmin
+      description: TenantAdmin has Admin permissions over other users in their tenant.
+    - id: 4
+      name: label
+      description: Label is like an Artist user, but can administer content for Artists
+    - id: 5
+      name: artist
+      description: Artist is a like a standard User, but can have multiple Personas and the ability to upload
+    - id: 6
+      name: user
+      description: User is a basic user, that can have only one Persona and is limited to control over their own account only
+      is_default: true
+- model: Scope
+  rows:
+    - id: 1
+      name: superadmin
+      description: SuperAdminRole has all permissions and can assign admins
+    - id: 2
+      name: admin
+      description: AdminRole has Admin permissions across all tenants, except the ability to assign other Admins
+    - id: 3
+      name: tenantadmin
+      description: TenantAdmin has Admin permissions over other users in their tenant.
+    - id: 4
+      name: label
+      description: Label is like an Artist user, but can administer content for Artists
+    - id: 5
+      name: artist
+      description: Artist is a like a standard User, but can have multiple Personas and the ability to upload
+    - id: 6
+      name: user
+      description: User is a basic user, that can have only one Persona and is limited to control over their own account only
+      is_default: true

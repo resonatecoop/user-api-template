@@ -28,7 +28,7 @@ type User struct {
 	Member                 bool `bun:",notnull"`
 	NewsletterNotification bool
 	FollowedGroups         []uuid.UUID  `bun:",type:uuid[],array"`
-	OwnerOfGroups          []*UserGroup `bun:"rel:has-many,join:id=owner_id""`
+	OwnerOfGroups          []*UserGroup `bun:"rel:has-many"`
 	TenantID               int32
 	RoleID                 int32
 	LastLogin              time.Time

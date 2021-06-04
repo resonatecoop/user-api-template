@@ -13,7 +13,7 @@ import (
 )
 
 // OauthClient ...
-type OauthClient struct {
+type Client struct {
 	IDRecord
 	Key                 string         `bun:"type:varchar(254),unique,notnull"`
 	Secret              string         `bun:"type:varchar(60),notnull"`
@@ -29,11 +29,11 @@ type OauthClient struct {
 // }
 
 // OauthScope ...
-type OauthScope struct {
-	IDRecord
-	Scope       string `bun:"type:varchar(200),unique,notnull"`
-	Description sql.NullString
-	IsDefault   bool `bun:"default:false"`
+type Scope struct {
+	ID          int8   `bun:"type:,unique"`
+	Name        string `bun:"type:varchar(50),unique,notnull"`
+	Description string `bun:"type:varchar(200)"`
+	IsDefault   bool   `bun:"default:false"`
 }
 
 // // TableName specifies table name
@@ -41,11 +41,11 @@ type OauthScope struct {
 // 	return "oauth_scopes"
 // }
 
-// // OauthRole is a one of roles user can have (currently superuser or user)
-// type OauthRole struct {
-// 	TimestampModel
-// 	ID   string `gorm:"primary_key" sql:"type:varchar(20)"`
-// 	Name string `bun:"type:varchar(50),unique,notnull"`
+// // Role is a one of roles user can have (currently superuser or user)
+// type Role struct {
+// 	ID          int8   `bun:"primary_key" sql:"type:varchar(20)"`
+// 	Name        string `bun:"type:varchar(50),unique,notnull"`
+// 	Description string `bun:"type:varchar(200),notnull"`
 // }
 
 // // TableName specifies table name
@@ -69,12 +69,12 @@ type OauthScope struct {
 // }
 
 // OauthRefreshToken ...
-type OauthRefreshToken struct {
+type RefreshToken struct {
 	IDRecord
-	ClientID  sql.NullString `bun:"index,notnull"`
-	UserID    sql.NullString `bun:"index"`
-	Client    *OauthClient
-	User      *User
+	ClientID  uuid.UUID `bun:"index,notnull"`
+	UserID    uuid.UUID `bun:"index"`
+	Client    *Client   `bun:"rel:has-one"`
+	User      *User     `bun:"rel:has-one"`
 	Token     uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
 	ExpiresAt time.Time `bun:",notnull"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
@@ -86,12 +86,12 @@ type OauthRefreshToken struct {
 // }
 
 // OauthAccessToken ...
-type OauthAccessToken struct {
+type AccessToken struct {
 	IDRecord
-	ClientID  sql.NullString `bun:"index,notnull"`
-	UserID    sql.NullString `bun:"index"`
-	Client    *OauthClient
-	User      *User
+	ClientID  uuid.UUID `bun:"index,notnull"`
+	UserID    uuid.UUID `bun:"index"`
+	Client    *Client   `bun:"rel:has-one"`
+	User      *User     `bun:"rel:has-one"`
 	Token     string    `bun:"type:uuid,default:uuid_generate_v4()"`
 	ExpiresAt time.Time `bun:",notnull"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
@@ -103,12 +103,12 @@ type OauthAccessToken struct {
 // }
 
 // OauthAuthorizationCode ...
-type OauthAuthorizationCode struct {
+type AuthorizationCode struct {
 	IDRecord
-	ClientID    sql.NullString `bun:"index,notnull"`
-	UserID      sql.NullString `bun:"index,notnull"`
-	Client      *OauthClient
-	User        *User
+	ClientID    uuid.UUID      `bun:"index,notnull"`
+	UserID      uuid.UUID      `bun:"index,notnull"`
+	Client      *Client        `bun:"rel:has-one"`
+	User        *User          `bun:"rel:has-one"`
 	Code        string         `bun:"type:uuid,default:uuid_generate_v4()"`
 	RedirectURI sql.NullString `bun:"type:varchar(200)"`
 	ExpiresAt   time.Time      `bun:",notnull"`
@@ -121,36 +121,36 @@ type OauthAuthorizationCode struct {
 // }
 
 // NewOauthRefreshToken creates new OauthRefreshToken instance
-func NewOauthRefreshToken(client *OauthClient, user *User, expiresIn int, scope string) *OauthRefreshToken {
-	refreshToken := &OauthRefreshToken{
-		ClientID:  StringOrNull(client.ID.String()),
+func NewOauthRefreshToken(client *Client, user *User, expiresIn int, scope string) *RefreshToken {
+	refreshToken := &RefreshToken{
+		ClientID:  client.ID,
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
 	}
 	if user != nil {
-		refreshToken.UserID = StringOrNull(user.ID.String())
+		refreshToken.UserID = user.ID
 	}
 	return refreshToken
 }
 
 // NewOauthAccessToken creates new OauthAccessToken instance
-func NewOauthAccessToken(client *OauthClient, user *User, expiresIn int, scope string) *OauthAccessToken {
-	accessToken := &OauthAccessToken{
-		ClientID:  StringOrNull(client.ID.String()),
+func NewOauthAccessToken(client *Client, user *User, expiresIn int, scope string) *AccessToken {
+	accessToken := &AccessToken{
+		ClientID:  client.ID,
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
 	}
 	if user != nil {
-		accessToken.UserID = StringOrNull(user.ID.String())
+		accessToken.UserID = user.ID
 	}
 	return accessToken
 }
 
 // NewOauthAuthorizationCode creates new OauthAuthorizationCode instance
-func NewOauthAuthorizationCode(client *OauthClient, user *User, expiresIn int, redirectURI, scope string) *OauthAuthorizationCode {
-	return &OauthAuthorizationCode{
-		ClientID:    StringOrNull(client.ID.String()),
-		UserID:      StringOrNull(user.ID.String()),
+func NewOauthAuthorizationCode(client *Client, user *User, expiresIn int, redirectURI, scope string) *AuthorizationCode {
+	return &AuthorizationCode{
+		ClientID:    client.ID,
+		UserID:      user.ID,
 		ExpiresAt:   time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		RedirectURI: StringOrNull(redirectURI),
 		Scope:       scope,
@@ -172,6 +172,11 @@ func NewOauthAuthorizationCode(client *OauthClient, user *User, expiresIn int, r
 // // OauthAccessTokenPreload sets up Gorm preloads for an access token object
 // func OauthAccessTokenPreload(db *bun.DB) *bun.DB {
 // 	return OauthAccessTokenPreloadWithPrefix(db, "")
+// }
+
+// OauthAccessTokenPreload sets up Gorm preloads for an access token object
+// func OauthAccessTokenPreload(db *bun.DB) *bun.DB {
+// 	return db.Relation("Client").Relation("User")
 // }
 
 // OauthAccessTokenPreloadWithPrefix sets up Gorm preloads for an access token object,

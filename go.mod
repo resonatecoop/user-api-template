@@ -22,7 +22,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/twitchtv/twirp v7.1.0+incompatible
 	github.com/uptrace/bun v0.1.15
-	github.com/uptrace/bun/dbfixture v0.1.15 // indirect
+	github.com/uptrace/bun/dbfixture v0.1.15
 	github.com/uptrace/bun/dialect/pgdialect v0.1.15
 	github.com/uptrace/bun/extra/bundebug v0.1.15
 	github.com/urfave/cli/v2 v2.3.0

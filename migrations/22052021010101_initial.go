@@ -21,6 +21,7 @@ func init() {
 		(*model.UserGroup)(nil),
 		(*model.StreetAddress)(nil),
 		(*model.Tag)(nil),
+		(*model.Role)(nil),
 		(*model.User)(nil),
 		(*model.Link)(nil),
 		(*model.UserGroupPrivacy)(nil),
@@ -29,10 +30,11 @@ func init() {
 		(*model.EmailToken)(nil),
 		(*model.EmailTokenClaims)(nil),
 		(*model.Email)(nil),
-		(*model.OauthClient)(nil),
-		(*model.OauthScope)(nil),
-		(*model.OauthRefreshToken)(nil),
-		(*model.OauthAuthorizationCode)(nil),
+		(*model.Client)(nil),
+		(*model.Scope)(nil),
+		(*model.RefreshToken)(nil),
+		(*model.AuthorizationCode)(nil),
+		(*model.AccessToken)(nil),
 	}
 
 	Migrations.MustRegister(func(ctx context.Context, db *bun.DB) error {
@@ -61,8 +63,8 @@ func init() {
 		return nil
 	}, func(ctx context.Context, db *bun.DB) error {
 		fmt.Print(" [down migration] ")
-		for _, model := range models {
-			_, err := db.NewDropTable().Model(model).IfExists().Exec(ctx)
+		for _, this_model := range models {
+			_, err := db.NewDropTable().Model(this_model).IfExists().Exec(ctx)
 			if err != nil {
 				panic(err)
 			}

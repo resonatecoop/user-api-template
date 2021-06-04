@@ -32,13 +32,13 @@ type UserGroup struct {
 	Address           *StreetAddress
 	TypeID            uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
 	Type              *GroupTaxonomy
-	OwnerID           uuid.UUID `bun:"type:uuid,notnull"`
-	Owner             *User
+	OwnerID           uuid.UUID   `bun:"type:uuid,notnull"`
+	Owner             *User       `bun:"rel:has-one"`
 	Links             []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	Members           []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
 	MemberOfGroups    []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
-	// Avatar             []byte
-	// Banner             []byte
+	Avatar            uuid.UUID   `bun:"type:uuid"`
+	Banner            uuid.UUID   `bun:"type:uuid"`
 	// AdminUsers         []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Followers          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Tags               []uuid.UUID `bun:",type:uuid[]" pg:",array"`

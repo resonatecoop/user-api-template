@@ -37,7 +37,15 @@ type RBACService interface {
 }
 
 // Role entity
+// type Role struct {
+// 	Id   int    `json:"id"`
+// 	Name string `json:"name"`
+// }
+
+// Role is a one of roles user can have
 type Role struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	ID          int8   `bun:"type:,unique"`
+	Name        string `bun:"type:varchar(50),unique,notnull"`
+	Description string `bun:"type:varchar(200),notnull"`
+	IsDefault   bool   `bun:"default:false"`
 }
