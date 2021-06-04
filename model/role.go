@@ -19,11 +19,14 @@ const (
 	// TenantAdminRole has admin permissions over other users in their tenant.
 	TenantAdminRole // 3
 
+	// LabelRole is a like an artist user, but can manage their artists content.
+	LabelRole // 4
+
 	// ArtistRole is a like a standard user, but can have multiple personas and the ability to upload
-	ArtistRole // 4
+	ArtistRole // 5
 
 	// UserRole is a standard user
-	UserRole // 5
+	UserRole // 6
 )
 
 // RBACService represents role-based access control service interface

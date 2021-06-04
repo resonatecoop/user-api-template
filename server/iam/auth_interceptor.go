@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	"github.com/resonatecoop/user-api/model"
 	"github.com/resonatecoop/user-api/pkg/access"
 	jwt "github.com/resonatecoop/user-api/pkg/jwt"
 	uuid "github.com/resonatecoop/user-api/pkg/uuid"
@@ -126,8 +127,8 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 
 	if isPublicAccessMethod {
 		// everyone can access but check it's against their own ID
-		if claims.Role > 3 {
-			// dealing with normal users
+		if claims.Role > model.LabelRole {
+			// dealing with normal users, Label admins can maintain own artist content.
 			// attempt to extract the Id from all the possible request types dealing with failure
 			// TODO a bit nasty, can we make this more elegant and less opinionated?
 			var id string
@@ -158,7 +159,7 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 	}
 
 	// If not an admin, you can't access the remaining non-public methods
-	if claims.Role > 3 {
+	if claims.Role > model.TenantAdminRole {
 		return status.Errorf(codes.PermissionDenied, "requestor is not authorized for this method")
 	}
 
