@@ -26,6 +26,7 @@
       tenant_id: 0
       role_id: 4
       member: true
+      email: john@coltrane.com
 - model: AccessToken
   rows:
     - client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
