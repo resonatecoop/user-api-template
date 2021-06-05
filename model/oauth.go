@@ -71,8 +71,8 @@ type Scope struct {
 // OauthRefreshToken ...
 type RefreshToken struct {
 	IDRecord
-	ClientID  uuid.UUID `bun:"index,notnull"`
-	UserID    uuid.UUID `bun:"index"`
+	ClientID  uuid.UUID `bun:"type:uuid,notnull"`
+	UserID    uuid.UUID `bun:"type:uuid"`
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
 	Token     uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
@@ -88,8 +88,8 @@ type RefreshToken struct {
 // OauthAccessToken ...
 type AccessToken struct {
 	IDRecord
-	ClientID  uuid.UUID `bun:"index,notnull"`
-	UserID    uuid.UUID `bun:"index"`
+	ClientID  uuid.UUID `bun:"type:uuid,notnull"`
+	UserID    uuid.UUID `bun:"type:uuid"`
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
 	Token     string    `bun:"type:uuid,default:uuid_generate_v4()"`
@@ -105,8 +105,8 @@ type AccessToken struct {
 // OauthAuthorizationCode ...
 type AuthorizationCode struct {
 	IDRecord
-	ClientID    uuid.UUID      `bun:"index,notnull"`
-	UserID      uuid.UUID      `bun:"index,notnull"`
+	ClientID    uuid.UUID      `bun:"type:uuid,notnull"`
+	UserID      uuid.UUID      `bun:"type:uuid,notnull"`
 	Client      *Client        `bun:"rel:has-one"`
 	User        *User          `bun:"rel:has-one"`
 	Code        string         `bun:"type:uuid,default:uuid_generate_v4()"`
