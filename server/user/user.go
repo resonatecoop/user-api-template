@@ -133,18 +133,15 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 
 // DeleteUser Deletes a user from the DB
 func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser.Empty, error) {
-	u, err := getUserModelFromID(user.Id)
+	u := new(model.User)
+
+	_, err := s.db.NewDelete().
+		Model(u).
+		Where("id = ?", user.Id).
+		Exec(ctx)
+
 	if err != nil {
 		return nil, err
-	}
-
-	_, dberr := s.db.NewDelete().
-		Model(u).
-		Where("id = ?", u.ID).
-		Exec(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
 	}
 
 	return &pbUser.Empty{}, nil
