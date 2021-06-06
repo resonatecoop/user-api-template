@@ -78,18 +78,43 @@ From the root of the user-api:
 * Init migrations
 
 ```sh
-$  go run main.go db init
+$  go run main.go db dev init
 ```
 
 * Run migrations
 
 ```sh
-$ go run main.go db migrate
+$ go run main.go db dev migrate
+```
+
+rolling back:
+
+```sh
+$ go run main.go db dev rollback
+```
+
+* Loading default fixtures
+```sh
+$ go run main.go db dev load_default_fixtures
 ```
 
 * Loading test data (fixtures)
 ```sh
-$ go run main.go db load_fixtures
+$ go run main.go db dev load_test_fixtures
+```
+
+The same can be repeated for the test database (`resonate_test`) substituting `dev` for `test`, e.g:
+
+```sh
+$  go run main.go db test init
+```
+
+## Tests
+
+Ongoing WIP atm, but for example, can be run with:
+
+```sh
+$  go test -timeout 30s -run ^TestDeleteUser$ github.com/resonatecoop/user-api/server/users
 ```
 
 ## Running!
