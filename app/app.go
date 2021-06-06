@@ -139,12 +139,21 @@ func (app *App) Stopping() bool {
 // 	return app.apiRouter
 // }
 
-func (app *App) DB() *bun.DB {
+func (app *App) DB(env string) *bun.DB {
 	app.dbOnce.Do(func() {
-		sqldb, _ := sql.Open("pgx", app.Cfg.DB.Dev.PSN)
-		// if err != nil {
-		// 	panic(err)
-		// }
+
+		var sqldb *sql.DB
+		var err error
+
+		if env == "test" {
+			sqldb, err = sql.Open("pgx", app.Cfg.DB.Test.PSN)
+		} else {
+			sqldb, err = sql.Open("pgx", app.Cfg.DB.Dev.PSN)
+		}
+
+		if err != nil {
+			panic(err)
+		}
 
 		//checkErr(log, err)
 

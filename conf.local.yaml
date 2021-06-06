@@ -9,7 +9,7 @@ database:
     log_queries: false
     timeout_seconds: 10
   test:
-    psn: postgres://resonate_testing_user:@127.0.0.1:5432/resonate_testing?sslmode=disable
+    psn: postgres://resonate_test_user:password@127.0.0.1:5432/resonate_test?sslmode=disable
     log_queries: false
     timeout_seconds: 10
 
