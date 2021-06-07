@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"time"
 
 	uuid "github.com/google/uuid"
@@ -38,7 +39,7 @@ type User struct {
 	RoleID                 int32
 	LastLogin              time.Time
 	LastPasswordChange     time.Time
-	Password               string
+	Password               sql.NullString `bun:"type:varchar(60)"`
 	Token                  string
 	// FavoriteTracks []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Playlists      []uuid.UUID `bun:",type:uuid[]" pg:",array"`

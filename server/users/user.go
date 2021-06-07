@@ -238,7 +238,7 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 	}
 
 	u.UpdatedAt = time.Now()
-	u.Password = hashedPassword
+	u.Password.String = hashedPassword
 	_, dberr := s.db.NewUpdate().
 		Model(u).
 		Column("updated_at", "password").

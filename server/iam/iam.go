@@ -64,7 +64,7 @@ func (s *Service) Auth(c context.Context, req *iam.AuthReq) (*iam.AuthResp, erro
 		return nil, invalidUserPW
 	}
 
-	if !s.sec.MatchesHash(usr.Password, req.Password) {
+	if !s.sec.MatchesHash(usr.Password.String, req.Password) {
 		return nil, invalidUserPW
 	}
 
