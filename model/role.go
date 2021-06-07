@@ -3,11 +3,11 @@ package model
 import (
 	"context"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 )
 
 // AccessRole represents access role type
-type AccessRole int8
+type AccessRole int32
 
 const (
 	// SuperAdminRole has all permissions and can assign admins
@@ -47,7 +47,7 @@ type RBACService interface {
 
 // Role is a one of roles user can have
 type Role struct {
-	ID          int8   `bun:"type:,unique"`
+	ID          int32  `bun:"type:,unique"`
 	Name        string `bun:"type:varchar(50),unique,notnull"`
 	Description string `bun:"type:varchar(200),notnull"`
 	IsDefault   bool   `bun:"default:false"`

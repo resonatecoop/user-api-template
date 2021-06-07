@@ -4,9 +4,9 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/twitchtv/twirp"
 
-	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
+	//uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 
@@ -71,7 +71,7 @@ func GetTagIDs(t []*pbUser.Tag, db *pg.Tx) ([]uuid.UUID, error) {
 			tagIDs[i] = tags[i].ID
 			tag.Id = tags[i].ID.String()
 		} else {
-			tagID, twerr := uuidpkg.GetUUIDFromString(tag.Id)
+			tagID, twerr := uuid.Parse(tag.Id)
 			if twerr != nil {
 				return nil, twerr.(error)
 			}

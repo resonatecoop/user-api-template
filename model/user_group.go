@@ -15,8 +15,8 @@ import (
 
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 
+	uuid "github.com/google/uuid"
 	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
-	uuid "github.com/satori/go.uuid"
 
 	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
@@ -30,18 +30,20 @@ type UserGroup struct {
 	GroupEmailAddress string
 	AddressID         uuid.UUID `bun:"type:uuid,notnull"` //for Country
 	Address           *StreetAddress
-	TypeID            uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
-	Type              *GroupTaxonomy
-	OwnerID           uuid.UUID   `bun:"type:uuid,notnull"`
-	Owner             *User       `bun:"rel:has-one"`
-	Links             []uuid.UUID `bun:",type:uuid[]" pg:",array"`
-	Members           []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
-	MemberOfGroups    []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
-	Avatar            uuid.UUID   `bun:"type:uuid"`
-	Banner            uuid.UUID   `bun:"type:uuid"`
+	//TODO Add ISO Country Code
+	TypeID         uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
+	Type           *GroupTaxonomy
+	OwnerID        uuid.UUID   `bun:"type:uuid,notnull"`
+	Owner          *User       `bun:"rel:has-one"`
+	Links          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	Members        []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
+	MemberOfGroups []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
+	Avatar         uuid.UUID   `bun:"type:uuid"`
+	Banner         uuid.UUID   `bun:"type:uuid"`
+	//TODO add Tags
+	//Tags               []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// AdminUsers         []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Followers          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
-	// Tags               []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// RecommendedArtists []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// RecommendedBy      []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// PrivacyID          uuid.UUID   `bun:"type:uuid,notnull"`
@@ -209,7 +211,7 @@ func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, strin
 	}
 
 	// Update address
-	addressID, twerr := uuidpkg.GetUUIDFromString(userGroup.Address.Id)
+	addressID, twerr := uuid.Parse(userGroup.Address.Id)
 	if twerr != nil {
 		return twerr, "street_address"
 	}
@@ -526,7 +528,7 @@ func GetRelatedUserGroupIDs(userGroups []*pbUser.RelatedUserGroup, db *pg.Tx) ([
 	relatedUserGroups := make([]*UserGroup, len(userGroups))
 	relatedUserGroupIDs := make([]uuid.UUID, len(userGroups))
 	for i, userGroup := range userGroups {
-		id, twerr := uuidpkg.GetUUIDFromString(userGroup.Id)
+		id, twerr := uuid.Parse(userGroup.Id)
 		if twerr != nil {
 			return nil, twerr.(error)
 		}
@@ -558,7 +560,7 @@ func getLinkIDs(l []*pbUser.Link, db *pg.Tx) ([]uuid.UUID, error) {
 			linkIDs[i] = links[i].ID
 			link.ID = links[i].ID.String()
 		} else {
-			linkID, twerr := uuidpkg.GetUUIDFromString(link.ID)
+			linkID, twerr := uuid.Parse(link.ID)
 			if twerr != nil {
 				return nil, twerr.(error)
 			}

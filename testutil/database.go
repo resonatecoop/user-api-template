@@ -9,6 +9,8 @@ import (
 	"os"
 
 	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dbfixture"
+	"github.com/uptrace/bun/dialect/sqlitedialect"
 
 	// Drivers
 	_ "github.com/lib/pq"
@@ -26,7 +28,7 @@ func CreateTestDatabase(dbPath string, fixtureFiles []string) (*bun.DB, error) {
 		return nil, err
 	}
 
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	// Run all migrations
 	migrations.Init(ctx, inMemoryDB)

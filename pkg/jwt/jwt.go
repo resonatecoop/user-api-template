@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 
 	"github.com/resonatecoop/user-api/model"
 
@@ -82,7 +82,7 @@ func (j *JWT) ParseToken(token string) (*model.AuthUser, error) {
 		return nil, fmt.Errorf("unauthorized: no role claim present")
 	}
 
-	uid, err := uuid.FromString(id.(string))
+	uid, err := uuid.Parse(id.(string))
 	if err != nil {
 		return nil, fmt.Errorf("id claim is not a valid uuid")
 	}

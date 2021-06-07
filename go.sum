@@ -201,6 +201,7 @@ github.com/google/pprof v0.0.0-20200430221834-fc25d7d30c6d/go.mod h1:ZgVRPoUq/hf
 github.com/google/pprof v0.0.0-20200708004538-1a94d8640e99/go.mod h1:ZgVRPoUq/hfqzAqh7sHMqb3I9Rq5C59dIz2SbBwJ4eM=
 github.com/google/renameio v0.1.0/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/google/uuid v1.0.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.1.2 h1:EVhdT+1Kseyi1/pUmXKaFxYsDNy9RQYkMWRH68J/W7Y=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/googleapis/gax-go/v2 v2.0.4/go.mod h1:0Wqv26UfaUD9n4G6kQubkQ+KchISgw+vpHVxEJEs9eg=
 github.com/googleapis/gax-go/v2 v2.0.5/go.mod h1:DWXyrwAJ9X0FpwwEdw+IPEYBICEFu5mhpdKc/us6bOk=
@@ -355,6 +356,8 @@ github.com/mattn/go-isatty v0.0.9/go.mod h1:YNRxwqDuOph6SZLI9vUUz6OYw3QyUt7WiY2y
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
 github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+github.com/mattn/go-sqlite3 v1.14.7 h1:fxWBnXkxfM6sRiuH3bqJ4CfzZojMOLVc0UTsTglEghA=
+github.com/mattn/go-sqlite3 v1.14.7/go.mod h1:NyWgC/yNuGj7Q9rpYnZvas74GogHl5/Z4A/KQRfk6bU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
 github.com/mitchellh/cli v1.0.0/go.mod h1:hNIlj7HEI86fIcpObd7a0FcrxTWetlwJDGcceTlRvqc=
@@ -454,7 +457,6 @@ github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQD
 github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd/go.mod h1:hPqNNc0+uJM6H+SuU8sEs5K5IQeKccPqeSjfgcKGgPk=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
 github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da/go.mod h1:gi+0XIa01GRL2eRQVjQkKGqKF3SF9vZR/HnPullcV2E=
-github.com/satori/go.uuid v1.2.0 h1:0uYX9dsZ2yD7q2RtLRtPSdGDWzjeM3TbMJP9utgA0ww=
 github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
 github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529/go.mod h1:DxrIzT+xaE7yg65j358z/aeFdxmN0P9QXhEzd20vsDc=
 github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24/go.mod h1:M+9NzErvs504Cn4c5DxATwIqPbtswREoFCre64PpcG4=
@@ -503,14 +505,14 @@ github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc/go.mod h1:bciPuU6GH
 github.com/twitchtv/twirp v7.1.0+incompatible h1:3fNSDoSPyq+fTrifIvGue9XM/tptzuhiGY83rxPVNUg=
 github.com/twitchtv/twirp v7.1.0+incompatible/go.mod h1:RRJoFSAmTEh2weEqWtpPE3vFK5YBhA6bqp2l1kfCC5A=
 github.com/uptrace/bun v0.1.1/go.mod h1:y7OgTXdMe3wrAyp1He4Sx1o41kzCQQ8TeBFZyQp3SOg=
-github.com/uptrace/bun v0.1.15 h1:3D51Gg3vHGofQuZuAsVpBTq+8YB9YDzBqCbCKq9xe0o=
-github.com/uptrace/bun v0.1.15/go.mod h1:y7OgTXdMe3wrAyp1He4Sx1o41kzCQQ8TeBFZyQp3SOg=
+github.com/uptrace/bun v0.1.17 h1:k+M7ueThBkIXL/7HaaoEVWxCHqwMyzQ5M03uzwPlmdA=
+github.com/uptrace/bun v0.1.17/go.mod h1:y7OgTXdMe3wrAyp1He4Sx1o41kzCQQ8TeBFZyQp3SOg=
 github.com/uptrace/bun/dbfixture v0.1.15 h1:12oiTu6Byznv/v+WL1+AV5kWgI376mXuqhsZkpVFsqQ=
 github.com/uptrace/bun/dbfixture v0.1.15/go.mod h1:kJmClyWQOgwbOQayFesy+uNMHe0Yob3qdVVEYijlGhQ=
-github.com/uptrace/bun/dialect/pgdialect v0.1.15 h1:YMgCANba95/UA0LyDLUwG/yDP9Cv2J56dKqnZTif7BA=
-github.com/uptrace/bun/dialect/pgdialect v0.1.15/go.mod h1:qr7yaz3EQDBF/txR3JN3Rx1fHxJOhpegrIsMivwdvRM=
-github.com/uptrace/bun/extra/bundebug v0.1.15 h1:W52NBZyVu8p6spBRI0u+37IeSiZ/CiGJ/YED66RFBks=
-github.com/uptrace/bun/extra/bundebug v0.1.15/go.mod h1:7l3ovRZQS+hqY+hAd/xzMjIYTYX8OmCHRYoKjD6m11o=
+github.com/uptrace/bun/dialect/pgdialect v0.1.17 h1:vxP0bKEGDih0bs2LcKrZAMPK0cPRjT9ydVkwkVtg4N4=
+github.com/uptrace/bun/dialect/pgdialect v0.1.17/go.mod h1:qr7yaz3EQDBF/txR3JN3Rx1fHxJOhpegrIsMivwdvRM=
+github.com/uptrace/bun/extra/bundebug v0.1.17 h1:D5xBs8wTBDaBFIZDVQfcuVHQvzHZkOGBgwBGuakmyzk=
+github.com/uptrace/bun/extra/bundebug v0.1.17/go.mod h1:7l3ovRZQS+hqY+hAd/xzMjIYTYX8OmCHRYoKjD6m11o=
 github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.22.1 h1:+mkCCcOFKPnCmVYVcURKps1Xe+3zP90gSYGNfRkjoIY=
 github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=

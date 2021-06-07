@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"time"
 
+	uuid "github.com/google/uuid"
 	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
-	uuid "github.com/satori/go.uuid"
 
 	"github.com/twitchtv/twirp"
 	"github.com/uptrace/bun"
@@ -155,7 +155,7 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 		return nil, err
 	}
 
-	existingID, err := uuidpkg.GetUUIDFromString(updateUserRequest.Id)
+	existingID, err := uuid.Parse(updateUserRequest.Id)
 
 	if err != nil {
 		return nil, err
@@ -192,7 +192,7 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedR
 		return nil, err
 	}
 
-	existingID, err := uuidpkg.GetUUIDFromString(updateUserRestrictedRequest.Id)
+	existingID, err := uuid.Parse(updateUserRestrictedRequest.Id)
 
 	if err != nil {
 		return nil, err
@@ -285,7 +285,7 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 }
 
 func getUserModelFromID(user string) (returneduser *model.User, err error) {
-	ID, err := uuidpkg.GetUUIDFromString(user)
+	ID, err := uuid.Parse(user)
 	if err != nil {
 		return nil, err
 	}
@@ -303,7 +303,7 @@ func getUserModelFromID(user string) (returneduser *model.User, err error) {
 }
 
 func getUserModel(user string) (returneduser *model.User, err error) {
-	ID, err := uuidpkg.GetUUIDFromString(user)
+	ID, err := uuid.Parse(user)
 	if err != nil {
 		return nil, err
 	}
@@ -321,7 +321,7 @@ func getUserModel(user string) (returneduser *model.User, err error) {
 }
 
 func getUserModelforUpdate(user string) (returneduser *model.User, err error) {
-	ID, err := uuidpkg.GetUUIDFromString(user)
+	ID, err := uuid.Parse(user)
 	if err != nil {
 		return nil, err
 	}

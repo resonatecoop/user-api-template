@@ -1,7 +1,7 @@
 package model
 
 // GroupType provides the key of the Group
-type GroupType int8
+type GroupType int32
 
 const (
 	// Persona is a representation of a User.  A User can have multiple Personas

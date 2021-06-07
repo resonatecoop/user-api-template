@@ -3,7 +3,7 @@ package iamserver_test
 //
 // import (
 // 	"testing"
-// 	"github.com/satori/go.uuid"
+// 	"github.com/google/uuid"
 // 	"github.com/go-pg/pg/orm"
 //
 // 	"user-api/internal/iam"

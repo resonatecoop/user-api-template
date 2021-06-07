@@ -11,10 +11,10 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	uuid "github.com/google/uuid"
 	"github.com/resonatecoop/user-api/model"
 	"github.com/resonatecoop/user-api/pkg/access"
 	jwt "github.com/resonatecoop/user-api/pkg/jwt"
-	uuid "github.com/resonatecoop/user-api/pkg/uuid"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	grpclog "google.golang.org/grpc/grpclog"
 
@@ -144,7 +144,7 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 				id = userReq.Id
 			}
 
-			ID, err := uuid.GetUUIDFromString(id)
+			ID, err := uuid.Parse(id)
 
 			if err != nil {
 				return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")

@@ -4,8 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"fmt"
 	"testing"
 
+	"github.com/resonatecoop/user-api/model"
 	userserver "github.com/resonatecoop/user-api/server/users"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
@@ -30,7 +32,7 @@ func (suite *UserApiTestSuite) SetupTest() {
 
 func TestDeleteUser(T *testing.T) {
 
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	cfgPath := flag.String("p", "./../../conf.local.yaml", "Path to config file")
 	flag.Parse()
@@ -71,12 +73,12 @@ func TestDeleteUser(T *testing.T) {
 
 	assert.Equal(T, len(response.User), 3)
 
-	_, err = server.DeleteUser(context.TODO(), &users[0])
+	_, err = server.DeleteUser(ctx, &users[0])
 	if err != nil {
 		panic(err)
 	}
 
-	response, err = server.ListUsers(context.TODO(), empty)
+	response, err = server.ListUsers(ctx, empty)
 	if err != nil {
 		panic(err)
 	}
@@ -88,16 +90,40 @@ func TestDeleteUser(T *testing.T) {
 		Username: "jbloggs",
 	}
 
-	_, err = server.AddUser(context.TODO(), &newuser)
+	_, err = server.AddUser(ctx, &newuser)
 	if err != nil {
 		panic(err)
 	}
 
-	response, err = server.ListUsers(context.TODO(), empty)
+	response, err = server.ListUsers(ctx, empty)
 	if err != nil {
 		panic(err)
 	}
 	assert.Equal(T, len(response.User), 3)
+
+	user := new(model.User)
+	empty_user := new(model.User)
+
+	if err = db.NewSelect().
+		Model(user).
+		Where("id = ?", "80b26113-37e0-456a-9f75-01db0eb550f8").
+		Limit(1).
+		Scan(ctx); err != nil {
+		fmt.Printf("No such user returned!")
+	}
+
+	if user.ID.String() == empty_user.ID.String() {
+		fmt.Printf("No such user!")
+	}
+
+	fmt.Printf("user: %v\n\n", user)
+
+	var number int64
+	if number, err = rows.RowsAffected(); number < 1 {
+		fmt.Printf("None found")
+	} else {
+		fmt.Printf("One found")
+	}
 }
 
 // func (db *bun.DB, ctx context.Context) RunUserTests() {

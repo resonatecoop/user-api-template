@@ -3,8 +3,8 @@ package rbac
 import (
 	"context"
 
+	uuid "github.com/google/uuid"
 	"github.com/resonatecoop/user-api/model"
-	uuid "github.com/satori/go.uuid"
 )
 
 // Service is RBAC application service

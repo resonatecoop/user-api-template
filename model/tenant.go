@@ -1,6 +1,6 @@
 package model
 
-import uuid "github.com/satori/go.uuid"
+import uuid "github.com/google/uuid"
 
 // Tenant table
 type Tenant struct {

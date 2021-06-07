@@ -1,6 +1,6 @@
 package model
 
-import uuid "github.com/satori/go.uuid"
+import uuid "github.com/google/uuid"
 
 type GroupTaxonomy struct {
 	ID   uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`

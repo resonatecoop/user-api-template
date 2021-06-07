@@ -1,6 +1,6 @@
 package model
 
-import uuid "github.com/satori/go.uuid"
+import uuid "github.com/google/uuid"
 
 // UserGroupPrivacy describes meta data for User Group private data
 type UserGroupPrivacy struct {

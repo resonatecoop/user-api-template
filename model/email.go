@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/form3tech-oss/jwt-go"
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 )
 
 // EmailTokenModel is an abstract model which can be used for objects from which

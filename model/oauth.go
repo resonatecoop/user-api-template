@@ -9,7 +9,7 @@ import (
 
 	//"github.com/jinzhu/gorm"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 )
 
 // OauthClient ...
@@ -30,7 +30,7 @@ type Client struct {
 
 // OauthScope ...
 type Scope struct {
-	ID          int8   `bun:"type:,unique"`
+	ID          int32  `bun:"type:,unique"`
 	Name        string `bun:"type:varchar(50),unique,notnull"`
 	Description string `bun:"type:varchar(200)"`
 	IsDefault   bool   `bun:"default:false"`

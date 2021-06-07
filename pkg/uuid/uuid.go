@@ -1,11 +1,10 @@
 package uuidpkg
 
 import (
-	uuid "github.com/satori/go.uuid"
-	"github.com/twitchtv/twirp"
+	uuid "github.com/google/uuid"
 )
 
-// ConvertUUIDToStrArray returns a slice of uuids for given slive of strings
+//ConvertUUIDToStrArray returns a slice of uuids for given slive of strings
 func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	strArray := make([]string, len(uuids))
 	for i := range uuids {
@@ -14,14 +13,14 @@ func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	return strArray
 }
 
-// GetUUIDFromString returns id as string and returns error if not a valid uuid
-func GetUUIDFromString(id string) (uuid.UUID, twirp.Error) {
-	uid, err := uuid.FromString(id)
-	if err != nil {
-		return uuid.UUID{}, twirp.InvalidArgumentError("id", "must be a valid uuid")
-	}
-	return uid, nil
-}
+// // GetUUIDFromString returns id as string and returns error if not a valid uuid
+// func GetUUIDFromString(id string) (uuid.UUID, twirp.Error) {
+// 	uid, err := uuid.FromString(id)
+// 	if err != nil {
+// 		return uuid.UUID{}, twirp.InvalidArgumentError("id", "must be a valid uuid")
+// 	}
+// 	return uid, nil
+// }
 
 // Difference returns difference between two slices of uuids
 func Difference(a, b []uuid.UUID) []uuid.UUID {

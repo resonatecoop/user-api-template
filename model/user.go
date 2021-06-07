@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	uuid "github.com/google/uuid"
 )
 
 // AuthUser represents data stored in session/context for a user
@@ -18,6 +18,11 @@ type AuthUser struct {
 // User basic definition of a User and its meta
 type User struct {
 	IDRecord
+	// ID        uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	// CreatedAt time.Time `bun:"default:now()"`
+	// UpdatedAt time.Time
+	// DeletedAt *time.Time
+	//TODO Replace with IDRecord
 	LegacyID               int32
 	Username               string `bun:",notnull,unique"`
 	FullName               string `bun:",notnull"`
