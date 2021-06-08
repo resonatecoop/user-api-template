@@ -75,7 +75,7 @@ type RefreshToken struct {
 	UserID    uuid.UUID `bun:"type:uuid"`
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
-	Token     uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	Token     string    `bun:"type:varchar(40);unique;not null"`
 	ExpiresAt time.Time `bun:",notnull"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
 }
@@ -92,7 +92,7 @@ type AccessToken struct {
 	UserID    uuid.UUID `bun:"type:uuid"`
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
-	Token     string    `bun:"type:uuid,default:uuid_generate_v4()"`
+	Token     string
 	ExpiresAt time.Time `bun:",notnull"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
 }
@@ -109,7 +109,7 @@ type AuthorizationCode struct {
 	UserID      uuid.UUID      `bun:"type:uuid,notnull"`
 	Client      *Client        `bun:"rel:has-one"`
 	User        *User          `bun:"rel:has-one"`
-	Code        string         `bun:"type:uuid,default:uuid_generate_v4()"`
+	Code        string         `bun:"type:varchar(40);unique;not null"`
 	RedirectURI sql.NullString `bun:"type:varchar(200)"`
 	ExpiresAt   time.Time      `bun:",notnull"`
 	Scope       string         `bun:"type:varchar(200),notnull"`
