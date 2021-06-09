@@ -28,20 +28,18 @@ type UserGroup struct {
 	Description       string
 	ShortBio          string
 	GroupEmailAddress string
-	AddressID         uuid.UUID `bun:"type:uuid,notnull"` //for Country
+	AddressID         uuid.UUID `bun:"type:uuid,notnull"` //for Country see User model
 	Address           *StreetAddress
-	//TODO Add ISO Country Code
-	TypeID         uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
-	Type           *GroupTaxonomy
-	OwnerID        uuid.UUID   `bun:"type:uuid,notnull"`
-	Owner          *User       `bun:"rel:has-one"`
-	Links          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
-	Members        []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
-	MemberOfGroups []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
-	Avatar         uuid.UUID   `bun:"type:uuid"`
-	Banner         uuid.UUID   `bun:"type:uuid"`
-	//TODO add Tags
-	//Tags               []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	TypeID            uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
+	Type              *GroupTaxonomy
+	OwnerID           uuid.UUID   `bun:"type:uuid,notnull"`
+	Owner             *User       `bun:"rel:has-one"`
+	Links             []uuid.UUID `bun:",type:uuid[],array"`
+	Members           []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
+	MemberOfGroups    []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
+	Avatar            uuid.UUID   `bun:"type:uuid"`
+	Banner            uuid.UUID   `bun:"type:uuid"`
+	Tags              []uuid.UUID `bun:",type:uuid[],array"`
 	// AdminUsers         []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Followers          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// RecommendedArtists []uuid.UUID `bun:",type:uuid[]" pg:",array"`
