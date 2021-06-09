@@ -31,7 +31,7 @@ type User struct {
 	LastName               string
 	Email                  string `bun:",unique,notnull"`
 	EmailConfirmed         bool
-	CountryCode            string `bun:"type:varchar(2)"`
+	Country                string `bun:"type:varchar(2)"`
 	Member                 bool   `bun:",notnull"`
 	NewsletterNotification bool
 	FollowedGroups         []uuid.UUID  `bun:",type:uuid[],array"`
