@@ -76,7 +76,7 @@ type RefreshToken struct {
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
 	Token     string    `bun:"type:varchar(40),unique,notnull"`
-	ExpiresAt time.Time `bun:",notnull"`
+	ExpiresAt time.Time `bun:",notnull,default:now()"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
 }
 

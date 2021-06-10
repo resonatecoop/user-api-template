@@ -32,22 +32,21 @@
     - client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 243b4178-6f98-4bf1-bbb1-46b57a901816
       token: 'test_superuser_token'
-      expires_at: '2099-01-08 04:05:06'
     - client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
       token: 'test_user_token'
-      expires_at: '2099-01-08 04:05:06'
     - client_id: 295be195-898c-4f0c-b6a0-8c62105f42de
       user_id: 90b26113-37e0-456a-9f75-01db0eb550f8
       token: 'test_user_token_2'
-      expires_at: '2099-01-08 04:05:06'
-- model: OauthClient
+- model: Client
   rows:
     - id: 3392e754-ba3e-424f-a687-add9a8ab39c9
+      application_name: 'test_client_1'
       key: 'test_client_1'
       secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
       redirect_uri: 'https://www.example.com'
     - id: 295be195-898c-4f0c-b6a0-8c62105f42de
+      application_name: 'test_client_2'
       key: 'test_client_2'
       secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
       redirect_uri: 'https://www.example.com'
