@@ -473,7 +473,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 								db.RegisterModel(this_model)
 							}
 
-							fixture := dbfixture.New(db)
+							fixture := dbfixture.New(db, dbfixture.WithTruncateTables())
 
 							return fixture.Load(ctx, os.DirFS("fixtures/default"), "default_fixtures.yaml")
 						},
@@ -522,7 +522,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 								db.RegisterModel(this_model)
 							}
 
-							fixture := dbfixture.New(db)
+							fixture := dbfixture.New(db, dbfixture.WithTruncateTables())
 
 							return fixture.Load(ctx, os.DirFS("fixtures/test"), "test_fixtures.yaml")
 						},

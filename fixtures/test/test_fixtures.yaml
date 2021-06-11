@@ -41,12 +41,20 @@
 - model: Client
   rows:
     - id: 3392e754-ba3e-424f-a687-add9a8ab39c9
-      application_name: 'test_client_1'
-      key: 'test_client_1'
+      application_name:
+        string: test_client_1
+        valid: true
+      key: test_client_1
       secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
-      redirect_uri: 'https://www.example.com'
+      redirect_uri:
+        string: https://www.example.com
+        valid: true
     - id: 295be195-898c-4f0c-b6a0-8c62105f42de
-      application_name: 'test_client_2'
-      key: 'test_client_2'
+      application_name:
+        string: test_client_2
+        valid: true
+      key: test_client_2
       secret: '$2a$10$CUoGytf1pR7CC6Y043gt/.vFJUV4IRqvH5R6F0VfITP8s2TqrQ.4e'
-      redirect_uri: 'https://www.example.com'
+      redirect_uri:
+        string: https://www.example.com
+        valid: true
