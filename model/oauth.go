@@ -92,7 +92,7 @@ type AccessToken struct {
 	UserID    uuid.UUID `bun:"type:uuid"`
 	Client    *Client   `bun:"rel:has-one"`
 	User      *User     `bun:"rel:has-one"`
-	Token     string
+	Token     string    `bun:"type:varchar(40),unique,notnull"`
 	ExpiresAt time.Time `bun:",notnull"`
 	Scope     string    `bun:"type:varchar(200),notnull"`
 }

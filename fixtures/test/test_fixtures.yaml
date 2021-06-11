@@ -1,6 +1,7 @@
 - model: User
   rows:
     - id: 243b4178-6f98-4bf1-bbb1-46b57a901816
+      created_at: '{{ now }}'
       username: jhendrix
       full_name: Jimmy Hendrix
       first_name: Jimmy
@@ -10,6 +11,7 @@
       member: true
       email: jimmy@hendrix.com
     - id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
+      created_at: '{{ now }}'
       username: mdavis
       full_name: Miles Davis
       first_name: Miles
@@ -19,6 +21,7 @@
       member: false
       email: miles@davis.com
     - id: 90b26113-37e0-456a-9f75-01db0eb550f8
+      created_at: '{{ now }}'
       username: jcoltrane
       full_name: John Coltrane
       first_name: John
@@ -27,20 +30,42 @@
       role_id: 4
       member: true
       email: john@coltrane.com
+    - role_id: 1
+      created_at: '{{ now }}'
+      username: 'test@superuser'
+      password:
+        string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+        valid: true
+    - role_id: 5
+      created_at: '{{ now }}'
+      username: 'test@user'
+      password:
+        string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+        valid: true
+    - role_id: 5
+      created_at: '{{ now }}'
+      username: 'test@user2'
+      password:
+        string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
+        valid: true
 - model: AccessToken
   rows:
-    - client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
+    - created_at: '{{ now }}'
+      client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 243b4178-6f98-4bf1-bbb1-46b57a901816
       token: 'test_superuser_token'
-    - client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
+    - created_at: '{{ now }}'
+      client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
       token: 'test_user_token'
-    - client_id: 295be195-898c-4f0c-b6a0-8c62105f42de
+    - created_at: '{{ now }}'
+      client_id: 295be195-898c-4f0c-b6a0-8c62105f42de
       user_id: 90b26113-37e0-456a-9f75-01db0eb550f8
       token: 'test_user_token_2'
 - model: Client
   rows:
     - id: 3392e754-ba3e-424f-a687-add9a8ab39c9
+      created_at: '{{ now }}'
       application_name:
         string: test_client_1
         valid: true
@@ -50,6 +75,7 @@
         string: https://www.example.com
         valid: true
     - id: 295be195-898c-4f0c-b6a0-8c62105f42de
+      created_at: '{{ now }}'
       application_name:
         string: test_client_2
         valid: true

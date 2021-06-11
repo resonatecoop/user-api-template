@@ -21,13 +21,13 @@ type User struct {
 	IDRecord
 	LegacyID               int32
 	Username               string `bun:",notnull,unique"`
-	FullName               string `bun:",notnull"`
+	FullName               string
 	FirstName              string
 	LastName               string
 	Email                  string `bun:",unique,notnull"`
-	EmailConfirmed         bool
+	EmailConfirmed         bool   `bun:"default:false"`
 	Country                string `bun:"type:varchar(2)"`
-	Member                 bool   `bun:",notnull"`
+	Member                 bool   `bun:"default:false,notnull"`
 	NewsletterNotification bool
 	FollowedGroups         []uuid.UUID  `bun:",type:uuid[],array"`
 	OwnerOfGroups          []*UserGroup `bun:"rel:has-many"`
