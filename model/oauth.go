@@ -123,6 +123,7 @@ type AuthorizationCode struct {
 // NewOauthRefreshToken creates new OauthRefreshToken instance
 func NewOauthRefreshToken(client *Client, user *User, expiresIn int, scope string) *RefreshToken {
 	refreshToken := &RefreshToken{
+		IDRecord:  IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:  client.ID,
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
@@ -136,6 +137,7 @@ func NewOauthRefreshToken(client *Client, user *User, expiresIn int, scope strin
 // NewOauthAccessToken creates new OauthAccessToken instance
 func NewOauthAccessToken(client *Client, user *User, expiresIn int, scope string) *AccessToken {
 	accessToken := &AccessToken{
+		IDRecord:  IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:  client.ID,
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
@@ -149,6 +151,7 @@ func NewOauthAccessToken(client *Client, user *User, expiresIn int, scope string
 // NewOauthAuthorizationCode creates new OauthAuthorizationCode instance
 func NewOauthAuthorizationCode(client *Client, user *User, expiresIn int, redirectURI, scope string) *AuthorizationCode {
 	return &AuthorizationCode{
+		IDRecord:    IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:    client.ID,
 		UserID:      user.ID,
 		ExpiresAt:   time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
