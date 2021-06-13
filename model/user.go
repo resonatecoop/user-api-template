@@ -24,7 +24,6 @@ type User struct {
 	FullName               string
 	FirstName              string
 	LastName               string
-	Email                  string `bun:",unique,notnull"`
 	EmailConfirmed         bool   `bun:"default:false"`
 	Country                string `bun:"type:varchar(2)"`
 	Member                 bool   `bun:"default:false,notnull"`
@@ -37,6 +36,7 @@ type User struct {
 	LastPasswordChange     time.Time
 	Password               sql.NullString `bun:"type:varchar(60)"`
 	Token                  string
+	//	Email                  string `bun:",unique,notnull"`
 	// FavoriteTracks []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Playlists      []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Plays []Track `pg:"many2many:plays"` Payment API

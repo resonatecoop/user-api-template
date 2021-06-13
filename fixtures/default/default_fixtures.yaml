@@ -40,3 +40,11 @@
       name: user
       description: User is a basic user, that can have only one Persona and is limited to control over their own account only
       is_default: true
+    - id: 7
+      name: read
+      description: Read only access! No ability to change.
+      is_default: true
+    - id: 8
+      name: read_write
+      description: Read/write access!  Ability to change.
+      is_default: true

@@ -44,7 +44,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.AddUserRequest) (*pbU
 	newUser := &model.User{
 		Username: user.Username,
 		FullName: user.FullName,
-		Email:    user.Email,
+		//Email:    user.Email,
 		// DisplayName: user.DisplayName,
 	}
 	_, dberr := s.db.NewInsert().Model(newUser).Exec(ctx)
@@ -82,7 +82,7 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 	}
 
 	return &pbUser.UserPublicResponse{
-		Username:       u.Username,
+		//Username:       u.Username,
 		FullName:       u.FullName,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
@@ -117,13 +117,13 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 		Id:             u.ID.String(),
 		Username:       u.Username,
 		FullName:       u.FullName,
-		Email:          u.Email,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
 		Member:         u.Member,
 		RoleId:         u.RoleID,
 		TenantId:       u.TenantID,
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
+		//Email:          u.Email,
 		//DisplayName: u.DisplayName,
 		//NewsletterNotification: u.NewsletterNotification,
 		//OwnerOfGroups:  getUserGroupResponse(u.OwnerOfGroups),
@@ -165,16 +165,16 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 		IDRecord:  model.IDRecord{ID: existingID},
 		Username:  updateUserRequest.Username,
 		FullName:  updateUserRequest.FullName,
-		Email:     updateUserRequest.Email,
 		FirstName: updateUserRequest.FirstName,
 		LastName:  updateUserRequest.LastName,
+		// Email:     updateUserRequest.Email,
 		// DisplayName: user.DisplayName,
 	}
 
 	u.UpdatedAt = time.Now()
 	_, dberr := s.db.NewUpdate().
 		Model(u).
-		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
+		Column("updated_at", "username", "full_name", "first_name", "last_name", "member", "newsletter_notification").
 		WherePK().
 		Exec(ctx)
 	twerr := errorpkg.CheckError(dberr, "user")
@@ -202,18 +202,18 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedR
 		IDRecord:  model.IDRecord{ID: existingID},
 		Username:  updateUserRestrictedRequest.Username,
 		FullName:  updateUserRestrictedRequest.FullName,
-		Email:     updateUserRestrictedRequest.Email,
 		FirstName: updateUserRestrictedRequest.FirstName,
 		LastName:  updateUserRestrictedRequest.LastName,
 		RoleID:    updateUserRestrictedRequest.RoleId,
 		TenantID:  updateUserRestrictedRequest.TenantId,
+		// Email:     updateUserRestrictedRequest.Email,
 		// DisplayName: user.DisplayName,
 	}
 
 	u.UpdatedAt = time.Now()
 	_, dberr := s.db.NewUpdate().
 		Model(u).
-		Column("updated_at", "username", "full_name", "email", "first_name", "last_name", "role_id", "tenant_id", "member", "newsletter_notification").
+		Column("updated_at", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "newsletter_notification").
 		WherePK().
 		Exec(ctx)
 	twerr := errorpkg.CheckError(dberr, "user")
@@ -234,7 +234,7 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 	hashedPassword := s.sec.Hash(ResetUserPasswordRequest.Password)
 
 	u := &model.User{
-		Email: ResetUserPasswordRequest.Email,
+		Username: ResetUserPasswordRequest.Username,
 	}
 
 	u.UpdatedAt = time.Now()
@@ -242,7 +242,7 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 	_, dberr := s.db.NewUpdate().
 		Model(u).
 		Column("updated_at", "password").
-		Where("email = ?", u.Email).
+		Where("username = ?", u.Username).
 		Exec(ctx)
 	twerr := errorpkg.CheckError(dberr, "user")
 	if twerr != nil {
@@ -271,13 +271,13 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.Id = uuid.UUID.String(user.ID)
 		result.Username = user.Username
 		result.FullName = user.FullName
-		result.Email = user.Email
 		result.FirstName = user.FirstName
 		result.LastName = user.LastName
 		result.Member = user.Member
 		result.NewsletterNotification = user.NewsletterNotification
 		result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
 		results.User = append(results.User, &result)
+		// result.Email = user.Email
 		// DisplayName: user.DisplayName,
 	}
 
@@ -293,11 +293,11 @@ func getUserModelFromID(user string) (returneduser *model.User, err error) {
 		IDRecord:               model.IDRecord{ID: ID},
 		Username:               "",
 		FullName:               "",
-		Email:                  "",
 		FirstName:              "",
 		LastName:               "",
 		Member:                 false,
 		NewsletterNotification: false,
+		// Email:                  "",
 		// DisplayName: user.DisplayName,
 	}, nil
 }
@@ -311,11 +311,11 @@ func getUserModel(user string) (returneduser *model.User, err error) {
 		IDRecord:               model.IDRecord{ID: ID},
 		Username:               returneduser.Username,
 		FullName:               returneduser.FullName,
-		Email:                  returneduser.Email,
 		FirstName:              returneduser.FirstName,
 		LastName:               returneduser.LastName,
 		Member:                 returneduser.Member,
 		NewsletterNotification: returneduser.NewsletterNotification,
+		//Email:                  returneduser.Email,
 		// DisplayName: user.DisplayName,
 	}, nil
 }
@@ -329,21 +329,19 @@ func getUserModelforUpdate(user string) (returneduser *model.User, err error) {
 		IDRecord:               model.IDRecord{ID: ID},
 		Username:               returneduser.Username,
 		FullName:               returneduser.FullName,
-		Email:                  returneduser.Email,
 		FirstName:              returneduser.FirstName,
 		LastName:               returneduser.LastName,
 		Member:                 returneduser.Member,
 		NewsletterNotification: returneduser.NewsletterNotification,
+		//		Email:                  returneduser.Email,
 		// DisplayName: user.DisplayName,
 	}, nil
 }
 
 func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
-	if user.Email == "" || user.Username == "" || user.FullName == "" {
+	if user.Username == "" || user.FullName == "" {
 		var argument string
 		switch {
-		case user.Email == "":
-			argument = "email"
 		case user.Username == "":
 			argument = "username"
 		case user.FullName == "":
@@ -352,18 +350,16 @@ func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
 		return twirp.RequiredArgumentError(argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Email) == false {
-		return twirp.InvalidArgumentError("email", "must be a valid email")
+	if re.MatchString(user.Username) == false {
+		return twirp.InvalidArgumentError("Username", "must be a valid email")
 	}
 	return nil
 }
 
 func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
-	if user.Email == "" || user.Username == "" || user.FullName == "" {
+	if user.Username == "" || user.FullName == "" {
 		var argument string
 		switch {
-		case user.Email == "":
-			argument = "email"
 		case user.Username == "":
 			argument = "username"
 		case user.FullName == "":
@@ -372,18 +368,16 @@ func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
 		return twirp.RequiredArgumentError(argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Email) == false {
-		return twirp.InvalidArgumentError("email", "must be a valid email")
+	if re.MatchString(user.Username) == false {
+		return twirp.InvalidArgumentError("Username", "must be a valid email")
 	}
 	return nil
 }
 
 func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRequest) error {
-	if user.Email == "" || user.Username == "" || user.FullName == "" {
+	if user.Username == "" || user.FullName == "" {
 		var argument string
 		switch {
-		case user.Email == "":
-			argument = "email"
 		case user.Username == "":
 			argument = "username"
 		case user.FullName == "":
@@ -392,17 +386,17 @@ func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRe
 		return twirp.RequiredArgumentError(argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Email) == false {
-		return twirp.InvalidArgumentError("email", "must be a valid email")
+	if re.MatchString(user.Username) == false {
+		return twirp.InvalidArgumentError("Username", "must be a valid email")
 	}
 	return nil
 }
 
 func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest, s *Server) error {
-	if user.Email == "" || user.Password == "" {
+	if user.Username == "" || user.Password == "" {
 		var argument string
 		switch {
-		case user.Email == "":
+		case user.Username == "":
 			argument = "email"
 		case user.Password == "":
 			argument = "Password"
@@ -410,8 +404,8 @@ func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest,
 		return twirp.RequiredArgumentError(argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Email) == false {
-		return twirp.InvalidArgumentError("Email", "must be a valid email")
+	if re.MatchString(user.Username) == false {
+		return twirp.InvalidArgumentError("Username", "must be a valid email")
 	}
 	if !s.sec.Password(user.Password) {
 		return twirp.InvalidArgumentError("Password", "is not strong enough")

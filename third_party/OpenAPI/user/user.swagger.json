@@ -312,9 +312,6 @@
         "username": {
           "type": "string"
         },
-        "email": {
-          "type": "string"
-        },
         "fullName": {
           "type": "string"
         },
@@ -344,7 +341,7 @@
     "userResetUserPasswordRequest": {
       "type": "object",
       "properties": {
-        "email": {
+        "username": {
           "type": "string"
         },
         "password": {
@@ -359,9 +356,6 @@
           "type": "string"
         },
         "username": {
-          "type": "string"
-        },
-        "email": {
           "type": "string"
         },
         "fullName": {
@@ -394,9 +388,6 @@
           "type": "string"
         },
         "username": {
-          "type": "string"
-        },
-        "email": {
           "type": "string"
         },
         "fullName": {
@@ -450,9 +441,6 @@
         "username": {
           "type": "string"
         },
-        "email": {
-          "type": "string"
-        },
         "fullName": {
           "type": "string"
         },
@@ -487,11 +475,9 @@
     "userUserPublicResponse": {
       "type": "object",
       "properties": {
-        "username": {
-          "type": "string"
-        },
         "fullName": {
-          "type": "string"
+          "type": "string",
+          "title": "string username = 2; // required"
         },
         "firstName": {
           "type": "string"

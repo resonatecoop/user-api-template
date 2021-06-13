@@ -152,20 +152,21 @@ message UserRequest {
 }
 
 message ResetUserPasswordRequest {
-  string email = 1;
+  string username = 1;
   string password = 2;
+  //string email = 1;
 }
 
 message UpdateUserRequest {
   string id = 1; // required
   string username = 2; // required
-  string email = 3; // required
-  string full_name = 5; // required
-  string first_name = 6;
-  string last_name = 7;
-  bool member = 8;
-  bool newsletter_notification = 10;
-  repeated string followed_groups = 12;
+  string full_name = 3; // required
+  string first_name = 4;
+  string last_name = 5;
+  bool member = 6;
+  bool newsletter_notification = 7;
+  repeated string followed_groups = 8;
+  //string email = 3; // required
   //repeated string favorite_tracks = 11;
   //repeated RelatedUserGroup owner_of_groups = 13;
   //string display_name = 4; // required TODO remove
@@ -177,15 +178,15 @@ message UpdateUserRequest {
 message UpdateUserRestrictedRequest {
   string id = 1; // required
   string username = 2; // required
-  string email = 3; // required
-  string full_name = 5; // required
-  string first_name = 6;
-  string last_name = 7;
-  bool member = 8;
-  int32 role_id = 9;
-  int32 tenant_id = 10;
-  bool newsletter_notification = 11;
-  repeated string followed_groups = 12;
+  string full_name = 3; // required
+  string first_name = 4;
+  string last_name = 5;
+  bool member = 6;
+  int32 role_id = 7;
+  int32 tenant_id = 8;
+  bool newsletter_notification = 9;
+  repeated string followed_groups = 10;
+  //string email = 3; // required
   //repeated string favorite_tracks = 11;
   //repeated RelatedUserGroup owner_of_groups = 13;
   //string display_name = 4; // required TODO remove
@@ -197,41 +198,41 @@ message UpdateUserRestrictedRequest {
 message UserPrivateResponse {
   string id = 1; // required
   string username = 2; // required
-  string email = 3; // required
-  string full_name = 5; // required
-  string first_name = 6;
-  string last_name = 7;
-  bool member = 8;
-  int32 role_id = 9;
-  int32 tenant_id = 10;
-  bool newsletter_notification = 11;
-  repeated string followed_groups = 12;
-    //bytes avatar = 9;
-    //string display_name = 4; // required TODO remove
- // repeated RelatedUserGroup owner_of_groups = 13;
- // StreetAddress residence_address = 14;
+  string full_name = 3; // required
+  string first_name = 4;
+  string last_name = 5;
+  bool member = 6;
+  int32 role_id = 7;
+  int32 tenant_id = 8;
+  bool newsletter_notification = 9;
+  repeated string followed_groups = 10;
+  //string email = 3; // required
+  //bytes avatar = 9;
+  //string display_name = 4; // required TODO remove
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
 }
 
 message UserPublicResponse {
-  string username = 2; // required
-  string full_name = 5; // required
-  string first_name = 6;
-  string last_name = 7;
-  bool member = 8;
-  repeated string followed_groups = 12;
+  //string username = 2; // required
+  string full_name = 1; // required
+  string first_name = 2;
+  string last_name = 3;
+  bool member = 4;
+  repeated string followed_groups = 5;
   //bytes avatar = 9;
-   // string display_name = 4; // required TODO remove
+  //string display_name = 4; // required TODO remove
 }
 
 message AddUserRequest {
   string username = 1; // required
-  string email = 2; // required
-  string full_name = 4; // required
-  string first_name = 5;
-  string last_name = 6;
-  bool member = 7;
-  bool newsletter_notification = 9;
-  repeated string followed_groups = 11;
+  string full_name = 2; // required
+  string first_name = 3;
+  string last_name = 4;
+  bool member = 5;
+  bool newsletter_notification = 6;
+  repeated string followed_groups = 7;
+  //string email = 2; // required
   //repeated string favorite_tracks = 10;
   //bytes avatar = 8;
   //string display_name = 3; // required TODO remove

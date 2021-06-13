@@ -2,49 +2,46 @@
   rows:
     - id: 243b4178-6f98-4bf1-bbb1-46b57a901816
       created_at: '{{ now }}'
-      username: jhendrix
+      username: jimmy@hendrix.com
       full_name: Jimmy Hendrix
       first_name: Jimmy
       last_name: Hendrix
       tenant_id: 0
       role_id: 3
       member: true
-      email: jimmy@hendrix.com
     - id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
       created_at: '{{ now }}'
-      username: mdavis
+      username: miles@davis.com
       full_name: Miles Davis
       first_name: Miles
       last_name: Davis
       tenant_id: 0
       role_id: 5
       member: false
-      email: miles@davis.com
     - id: 90b26113-37e0-456a-9f75-01db0eb550f8
       created_at: '{{ now }}'
-      username: jcoltrane
+      username: john@coltrane.com
       full_name: John Coltrane
       first_name: John
       last_name: Coltrane
       tenant_id: 0
       role_id: 4
       member: true
-      email: john@coltrane.com
     - role_id: 1
       created_at: '{{ now }}'
-      username: 'test@superuser'
+      username: 'test@superuser.com'
       password:
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
     - role_id: 5
       created_at: '{{ now }}'
-      username: 'test@user'
+      username: 'test@user.com'
       password:
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
     - role_id: 5
       created_at: '{{ now }}'
-      username: 'test@user2'
+      username: 'test@user2.com'
       password:
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true

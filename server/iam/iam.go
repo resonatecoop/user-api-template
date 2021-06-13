@@ -72,8 +72,8 @@ func (s *Service) Auth(c context.Context, req *iam.AuthReq) (*iam.AuthResp, erro
 		ID:       usr.ID,
 		TenantID: usr.TenantID,
 		Username: usr.Username,
-		Email:    usr.Email,
 		Role:     model.AccessRole(usr.RoleID),
+		//Email:    usr.Email,
 	})
 
 	if err != nil {
@@ -109,8 +109,8 @@ func (s *Service) Refresh(c context.Context, req *iam.RefreshReq) (*iam.RefreshR
 		ID:       usr.ID,
 		TenantID: usr.TenantID,
 		Username: usr.Username,
-		Email:    usr.Email,
 		Role:     model.AccessRole(usr.RoleID),
+		//Email:    usr.Email,
 	})
 
 	if err != nil {
