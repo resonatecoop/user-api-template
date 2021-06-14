@@ -47,4 +47,4 @@
     - id: 8
       name: read_write
       description: Read/write access!  Ability to change.
-      is_default: true
+      is_default: false

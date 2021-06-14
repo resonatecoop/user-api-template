@@ -27,19 +27,22 @@
       tenant_id: 0
       role_id: 4
       member: true
-    - role_id: 1
+    - id: f40cf437-eef2-4659-8eb3-7ee93f6dfcea
+      role_id: 1
       created_at: '{{ now }}'
       username: 'test@superuser.com'
       password:
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
-    - role_id: 5
+    - id: 046e7a23-a9f0-4fb8-a60f-861b2df05d95
+      role_id: 5
       created_at: '{{ now }}'
       username: 'test@user.com'
       password:
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
-    - role_id: 5
+    - id: 953c3537-3149-4164-9c73-ec785a3c17c4
+      role_id: 5
       created_at: '{{ now }}'
       username: 'test@user2.com'
       password:
