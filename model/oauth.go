@@ -125,6 +125,7 @@ func NewOauthRefreshToken(client *Client, user *User, expiresIn int, scope strin
 	refreshToken := &RefreshToken{
 		IDRecord:  IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:  client.ID,
+		Token:     uuid.New().String(),
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
 	}
@@ -139,6 +140,7 @@ func NewOauthAccessToken(client *Client, user *User, expiresIn int, scope string
 	accessToken := &AccessToken{
 		IDRecord:  IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:  client.ID,
+		Token:     uuid.New().String(),
 		ExpiresAt: time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		Scope:     scope,
 	}
@@ -154,6 +156,7 @@ func NewOauthAuthorizationCode(client *Client, user *User, expiresIn int, redire
 		IDRecord:    IDRecord{CreatedAt: time.Now().UTC()},
 		ClientID:    client.ID,
 		UserID:      user.ID,
+		Code:        uuid.New().String(),
 		ExpiresAt:   time.Now().UTC().Add(time.Duration(expiresIn) * time.Second),
 		RedirectURI: StringOrNull(redirectURI),
 		Scope:       scope,
