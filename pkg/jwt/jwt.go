@@ -42,7 +42,6 @@ func (j *JWT) GenerateToken(u *model.AuthUser) (string, error) {
 		"id":  u.ID.String(),
 		"t":   u.TenantID,
 		"u":   u.Username,
-		"e":   u.Email,
 		"r":   u.Role,
 		"exp": time.Now().Add(j.duration).Unix(),
 	})
