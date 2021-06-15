@@ -233,21 +233,19 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 
 	hashedPassword := s.sec.Hash(ResetUserPasswordRequest.Password)
 
-	u := &model.User{
-		Username: ResetUserPasswordRequest.Username,
+	u := new(model.User)
+
+	_, err = s.db.NewUpdate().
+		Model(u).
+		Set("updated_at = ?", time.Now().UTC()).
+		Set("password = ?", hashedPassword).
+		Where("username = ?", ResetUserPasswordRequest.Username).
+		Exec(ctx)
+
+	if err != nil {
+		return nil, err
 	}
 
-	u.UpdatedAt = time.Now()
-	u.Password.String = hashedPassword
-	_, dberr := s.db.NewUpdate().
-		Model(u).
-		Column("updated_at", "password").
-		Where("username = ?", u.Username).
-		Exec(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
-	}
 	return &pbUser.Empty{}, nil
 }
 
@@ -404,7 +402,7 @@ func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest,
 		return twirp.RequiredArgumentError(argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Username) == false {
+	if !re.MatchString(user.Username) {
 		return twirp.InvalidArgumentError("Username", "must be a valid email")
 	}
 	if !s.sec.Password(user.Password) {
