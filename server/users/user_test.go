@@ -55,9 +55,7 @@ func TestDeleteUser(T *testing.T) {
 
 	type cases []pbUser.UserRequest
 
-	var users cases
-
-	users = cases{
+	users := cases{
 		{Id: "243b4178-6f98-4bf1-bbb1-46b57a901816"},
 		{Id: "5253747c-2b8c-40e2-8a70-bab91348a9bd"},
 		{Id: "90b26113-37e0-456a-9f75-01db0eb550f8"},
@@ -85,9 +83,8 @@ func TestDeleteUser(T *testing.T) {
 	assert.Equal(T, len(response.User), 2)
 
 	newuser := pbUser.AddUserRequest{
-		Email:    "joe@bloggs.com",
+		Username: "joe@bloggs.com",
 		FullName: "Joe Bloggs",
-		Username: "jbloggs",
 	}
 
 	_, err = server.AddUser(ctx, &newuser)
@@ -102,7 +99,6 @@ func TestDeleteUser(T *testing.T) {
 	assert.Equal(T, len(response.User), 3)
 
 	user := new(model.User)
-	empty_user := new(model.User)
 
 	if err = db.NewSelect().
 		Model(user).
@@ -110,19 +106,6 @@ func TestDeleteUser(T *testing.T) {
 		Limit(1).
 		Scan(ctx); err != nil {
 		fmt.Printf("No such user returned!")
-	}
-
-	if user.ID.String() == empty_user.ID.String() {
-		fmt.Printf("No such user!")
-	}
-
-	fmt.Printf("user: %v\n\n", user)
-
-	var number int64
-	if number, err = rows.RowsAffected(); number < 1 {
-		fmt.Printf("None found")
-	} else {
-		fmt.Printf("One found")
 	}
 }
 

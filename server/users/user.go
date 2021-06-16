@@ -2,6 +2,8 @@ package userserver
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"regexp"
 	"time"
 
@@ -9,7 +11,6 @@ import (
 	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
-	"github.com/twitchtv/twirp"
 	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
@@ -42,92 +43,70 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.AddUserRequest) (*pbU
 	}
 
 	newUser := &model.User{
-		Username: user.Username,
-		FullName: user.FullName,
-		//Email:    user.Email,
-		// DisplayName: user.DisplayName,
+		Username:               user.Username,
+		FullName:               user.FullName,
+		FirstName:              user.FirstName,
+		LastName:               user.LastName,
+		Member:                 user.Member,
+		NewsletterNotification: user.NewsletterNotification,
 	}
-	_, dberr := s.db.NewInsert().Model(newUser).Exec(ctx)
+	_, err := s.db.NewInsert().Model(newUser).Exec(ctx)
 
-	returnErr := errorpkg.CheckError(dberr, "user")
-	if returnErr != nil {
-		return nil, returnErr
-	}
-
-	return &pbUser.Empty{}, nil
-
-	// return &pbUser.User{
-	// 	Id:       newUser.ID.String(),
-	// 	Username: newUser.Username,
-	// 	// DisplayName: newUser.DisplayName,
-	// 	FullName: newUser.FullName,
-	// 	Email:    newUser.Email,
-	// }, nil
-}
-
-// GetUser Gets a user from the DB
-func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserPublicResponse, error) {
-	u, err := getUserModelFromID(user.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	dberr := s.db.NewSelect().Model(u).
-		Column("user.*", "OwnerOfGroups").
+	return &pbUser.Empty{}, nil
+}
+
+// GetUser Gets a user from the DB
+func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserPublicResponse, error) {
+
+	u := new(model.User)
+
+	err := s.db.NewSelect().Model(u).
+		Column("user.*").
 		Where("id = ?", u.ID).
 		Scan(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
+
+	if err != nil {
+		return nil, err
 	}
 
 	return &pbUser.UserPublicResponse{
-		//Username:       u.Username,
 		FullName:       u.FullName,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
 		Member:         u.Member,
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
-		// id:       u.ID.String(),
-		//DisplayName: u.DisplayName,
-		//NewsletterNotification: u.NewsletterNotification,
-		// Email:                  u.Email,
-		//OwnerOfGroups:  getUserGroupResponse(u.OwnerOfGroups),
-		//FavoriteTracks:         uuidpkg.ConvertUUIDToStrArray(u.FavoriteTracks),
 	}, nil
 }
 
 // GetUserRestricted intended for privileged roles only supplies more detailed, private info about user.
 func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserPrivateResponse, error) {
-	u, err := getUserModelFromID(user.Id)
+
+	u := new(model.User)
+
+	err := s.db.NewSelect().Model(u).
+		Column("user.*").
+		Where("id = ?", user.Id).
+		Scan(ctx)
+
 	if err != nil {
 		return nil, err
 	}
 
-	dberr := s.db.NewSelect().Model(u).
-		Column("user.*", "OwnerOfGroups").
-		Where("id = ?", u.ID).
-		Scan(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
-	}
-
 	return &pbUser.UserPrivateResponse{
-		Id:             u.ID.String(),
-		Username:       u.Username,
-		FullName:       u.FullName,
-		FirstName:      u.FirstName,
-		LastName:       u.LastName,
-		Member:         u.Member,
-		RoleId:         u.RoleID,
-		TenantId:       u.TenantID,
-		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
-		//Email:          u.Email,
-		//DisplayName: u.DisplayName,
-		//NewsletterNotification: u.NewsletterNotification,
-		//OwnerOfGroups:  getUserGroupResponse(u.OwnerOfGroups),
-		//FavoriteTracks:         uuidpkg.ConvertUUIDToStrArray(u.FavoriteTracks),
+		Id:                     u.ID.String(),
+		Username:               u.Username,
+		FullName:               u.FullName,
+		FirstName:              u.FirstName,
+		LastName:               u.LastName,
+		Member:                 u.Member,
+		RoleId:                 u.RoleID,
+		TenantId:               u.TenantID,
+		FollowedGroups:         uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
+		NewsletterNotification: u.NewsletterNotification,
 	}, nil
 }
 
@@ -162,25 +141,31 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	}
 
 	u := &model.User{
-		IDRecord:  model.IDRecord{ID: existingID},
-		Username:  updateUserRequest.Username,
-		FullName:  updateUserRequest.FullName,
-		FirstName: updateUserRequest.FirstName,
-		LastName:  updateUserRequest.LastName,
-		// Email:     updateUserRequest.Email,
-		// DisplayName: user.DisplayName,
+		IDRecord:               model.IDRecord{ID: existingID, UpdatedAt: time.Now().UTC()},
+		Username:               updateUserRequest.Username,
+		FullName:               updateUserRequest.FullName,
+		FirstName:              updateUserRequest.FirstName,
+		LastName:               updateUserRequest.LastName,
+		Member:                 updateUserRequest.Member,
+		NewsletterNotification: updateUserRequest.NewsletterNotification,
 	}
 
-	u.UpdatedAt = time.Now()
-	_, dberr := s.db.NewUpdate().
+	rows, err := s.db.NewUpdate().
 		Model(u).
 		Column("updated_at", "username", "full_name", "first_name", "last_name", "member", "newsletter_notification").
 		WherePK().
 		Exec(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
+
+	if err != nil {
+		return nil, err
 	}
+
+	number, _ := rows.RowsAffected()
+
+	if number == 0 {
+		return nil, errors.New("warning: no rows were updated")
+	}
+
 	return &pbUser.Empty{}, nil
 }
 
@@ -206,8 +191,6 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedR
 		LastName:  updateUserRestrictedRequest.LastName,
 		RoleID:    updateUserRestrictedRequest.RoleId,
 		TenantID:  updateUserRestrictedRequest.TenantId,
-		// Email:     updateUserRestrictedRequest.Email,
-		// DisplayName: user.DisplayName,
 	}
 
 	u.UpdatedAt = time.Now()
@@ -252,16 +235,15 @@ func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest
 // ListUsers lists all users in the store.
 func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.UserListResponse, error) {
 
-	//var users []pbUser.User
 	var users []model.User
 	var results pbUser.UserListResponse
-	dberr := s.db.NewSelect().
+
+	err := s.db.NewSelect().
 		Model(&users).
-		//	Column("id", "username", "full_name", "email", "first_name", "last_name", "member", "newsletter_notification").
 		Scan(ctx)
 
-	if dberr != nil {
-		return nil, dberr
+	if err != nil {
+		return nil, err
 	}
 
 	for _, user := range users {
@@ -275,65 +257,9 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.NewsletterNotification = user.NewsletterNotification
 		result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
 		results.User = append(results.User, &result)
-		// result.Email = user.Email
-		// DisplayName: user.DisplayName,
 	}
 
 	return &results, nil
-}
-
-func getUserModelFromID(user string) (returneduser *model.User, err error) {
-	ID, err := uuid.Parse(user)
-	if err != nil {
-		return nil, err
-	}
-	return &model.User{
-		IDRecord:               model.IDRecord{ID: ID},
-		Username:               "",
-		FullName:               "",
-		FirstName:              "",
-		LastName:               "",
-		Member:                 false,
-		NewsletterNotification: false,
-		// Email:                  "",
-		// DisplayName: user.DisplayName,
-	}, nil
-}
-
-func getUserModel(user string) (returneduser *model.User, err error) {
-	ID, err := uuid.Parse(user)
-	if err != nil {
-		return nil, err
-	}
-	return &model.User{
-		IDRecord:               model.IDRecord{ID: ID},
-		Username:               returneduser.Username,
-		FullName:               returneduser.FullName,
-		FirstName:              returneduser.FirstName,
-		LastName:               returneduser.LastName,
-		Member:                 returneduser.Member,
-		NewsletterNotification: returneduser.NewsletterNotification,
-		//Email:                  returneduser.Email,
-		// DisplayName: user.DisplayName,
-	}, nil
-}
-
-func getUserModelforUpdate(user string) (returneduser *model.User, err error) {
-	ID, err := uuid.Parse(user)
-	if err != nil {
-		return nil, err
-	}
-	return &model.User{
-		IDRecord:               model.IDRecord{ID: ID},
-		Username:               returneduser.Username,
-		FullName:               returneduser.FullName,
-		FirstName:              returneduser.FirstName,
-		LastName:               returneduser.LastName,
-		Member:                 returneduser.Member,
-		NewsletterNotification: returneduser.NewsletterNotification,
-		//		Email:                  returneduser.Email,
-		// DisplayName: user.DisplayName,
-	}, nil
 }
 
 func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
@@ -345,11 +271,11 @@ func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
 		case user.FullName == "":
 			argument = "full_name"
 		}
-		return twirp.RequiredArgumentError(argument)
+		return fmt.Errorf("argument %v is required", argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Username) == false {
-		return twirp.InvalidArgumentError("Username", "must be a valid email")
+	if !re.MatchString(user.Username) {
+		return errors.New("username must be a valid email")
 	}
 	return nil
 }
@@ -363,11 +289,11 @@ func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
 		case user.FullName == "":
 			argument = "full_name"
 		}
-		return twirp.RequiredArgumentError(argument)
+		return fmt.Errorf("argument %v is required", argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Username) == false {
-		return twirp.InvalidArgumentError("Username", "must be a valid email")
+	if !re.MatchString(user.Username) {
+		return errors.New("username must be a valid email")
 	}
 	return nil
 }
@@ -381,11 +307,11 @@ func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRe
 		case user.FullName == "":
 			argument = "full_name"
 		}
-		return twirp.RequiredArgumentError(argument)
+		return fmt.Errorf("argument %v is required", argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if re.MatchString(user.Username) == false {
-		return twirp.InvalidArgumentError("Username", "must be a valid email")
+	if !re.MatchString(user.Username) {
+		return errors.New("username must be a valid email")
 	}
 	return nil
 }
@@ -399,14 +325,14 @@ func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest,
 		case user.Password == "":
 			argument = "Password"
 		}
-		return twirp.RequiredArgumentError(argument)
+		return fmt.Errorf("argument %v is required", argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 	if !re.MatchString(user.Username) {
-		return twirp.InvalidArgumentError("Username", "must be a valid email")
+		return errors.New("username must be a valid email")
 	}
 	if !s.sec.Password(user.Password) {
-		return twirp.InvalidArgumentError("Password", "is not strong enough")
+		return errors.New("password is not strong enough")
 	}
 
 	return nil
@@ -416,7 +342,6 @@ func getUserGroupResponse(ownerOfGroup []model.UserGroup) []*pbUser.RelatedUserG
 	groups := make([]*pbUser.RelatedUserGroup, len(ownerOfGroup))
 	for i, group := range ownerOfGroup {
 		groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName}
-		//groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName, Avatar: group.Avatar}
 	}
 	return groups
 }
