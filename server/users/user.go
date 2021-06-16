@@ -66,7 +66,7 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 
 	err := s.db.NewSelect().Model(u).
 		Column("user.*").
-		Where("id = ?", u.ID).
+		Where("id = ?", user.Id).
 		Scan(ctx)
 
 	if err != nil {
