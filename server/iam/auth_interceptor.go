@@ -182,7 +182,7 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 
 	var activeRole int32
 
-	if userRoleValue < tokenRoleValue {
+	if userRoleValue > tokenRoleValue {
 		activeRole = userRoleValue
 	} else {
 		activeRole = tokenRoleValue
