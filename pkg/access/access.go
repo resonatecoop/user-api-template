@@ -1,16 +1,18 @@
 package access
 
 // New instantiates new Access config service
-func New(NoTokenMethods string, PublicUserMethods string) *AccessConfig {
+func New(NoTokenMethods string, PublicMethods string, ReadWriteMethods string) *AccessConfig {
 	return &AccessConfig{
-		NoTokenMethods:    NoTokenMethods,
-		PublicUserMethods: PublicUserMethods,
+		NoTokenMethods: NoTokenMethods,
+		PublicMethods:  PublicMethods,
+		WriteMethods:   ReadWriteMethods,
 	}
 }
 
 // Access contains the configuration that governs service access
 type AccessConfig struct {
 	// Secret key used for signing.
-	NoTokenMethods    string
-	PublicUserMethods string
+	NoTokenMethods string
+	PublicMethods  string
+	WriteMethods   string
 }

@@ -4,6 +4,11 @@ import (
 	uuid "github.com/google/uuid"
 )
 
+func IsValidUUID(u string) bool {
+	_, err := uuid.Parse(u)
+	return err == nil
+}
+
 //ConvertUUIDToStrArray returns a slice of uuids for given slive of strings
 func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	strArray := make([]string, len(uuids))

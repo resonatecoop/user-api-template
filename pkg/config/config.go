@@ -25,13 +25,13 @@ func Load(path string) (*Configuration, error) {
 
 // Configuration holds application configuration data
 type Configuration struct {
-	Server  Server      `yaml:"server,omitempty"`
-	DB      DatabaseEnv `yaml:"database,omitempty"`
-	JWT     JWT         `yaml:"jwt,omitempty"`
-	Access  Access      `yaml:"access,omitempty"`
-	App     Application `yaml:"application,omitempty"`
-	OpenAPI OpenAPI     `yaml:"openapi,omitempty"`
-	Storage Storage     `yaml:"storage,omitempty"`
+	Server       Server       `yaml:"server,omitempty"`
+	RefreshToken RefreshToken `yaml:"refreshtoken,omitempty"`
+	DB           DatabaseEnv  `yaml:"database,omitempty"`
+	Access       Access       `yaml:"access,omitempty"`
+	App          Application  `yaml:"application,omitempty"`
+	OpenAPI      OpenAPI      `yaml:"openapi,omitempty"`
+	Storage      Storage      `yaml:"storage,omitempty"`
 }
 
 // DatabaseEnv holds dev and test database data
@@ -54,17 +54,15 @@ type Server struct {
 	WriteTimeoutSeconds int    `yaml:"write_timeout_seconds,omitempty"`
 }
 
-// JWT holds data necessery for JWT configuration
-type JWT struct {
-	Secret    string `yaml:"secret,omitempty"`
-	Duration  int    `yaml:"duration_minutes,omitempty"`
-	Algorithm string `yaml:"signing_algorithm,omitempty"`
+type RefreshToken struct {
+	Lifetime int `yaml:"lifetime_seconds,omitempty"`
 }
 
 // Access holds service access configuration data
 type Access struct {
-	NoTokenMethods    string `yaml:"no_token_methods,omitempty"`
-	PublicUserMethods string `yaml:"public_user_methods,omitempty"`
+	NoTokenMethods string `yaml:"no_token_methods,omitempty"`
+	PublicMethods  string `yaml:"public_methods,omitempty"`
+	WriteMethods   string `yaml:"write_methods,omitempty"`
 }
 
 // Application represents application specific configuration

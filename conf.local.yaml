@@ -13,14 +13,13 @@ database:
     log_queries: false
     timeout_seconds: 10
 
-jwt:
-  secret: jwtsecret # Change this value
-  duration_minutes: 15
-  signing_algorithm: HS256
+refreshtoken:
+  lifetime_seconds: 1209600
 
 access:
   no_token_methods: "/iam.ResonateIAM/Auth,/user.ResonateUser/ResetUserPassword" # Usually only Auth method
-  public_user_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser"
+  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser"
+  write_methods: "/user.ResonateUser/DeleteUser, /user.ResonateUser/UpdateUser"
 
 application:
   min_password_strength: 0 # Minimum password zxcvbn strength

@@ -26,12 +26,8 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/resonatecoop/user-api/gateway"
 	"github.com/resonatecoop/user-api/insecure"
-	jwt "github.com/resonatecoop/user-api/pkg/jwt"
-	"github.com/resonatecoop/user-api/pkg/zerolog"
-	pbIAM "github.com/resonatecoop/user-api/proto/iam"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	iamserver "github.com/resonatecoop/user-api/server/iam"
-	iamdb "github.com/resonatecoop/user-api/server/iam/platform/postgres"
 	"github.com/resonatecoop/user-api/server/iam/secure"
 	userserver "github.com/resonatecoop/user-api/server/users"
 
@@ -113,17 +109,15 @@ var runServerCommand = &cli.Command{
 
 		//	db, err := pgsql.New(cfg.DB.Dev.PSN, cfg.DB.Dev.LogQueries, cfg.DB.Dev.TimeoutSeconds)
 
-		zerolog := zerolog.New()
+		//	zerolog := zerolog.New()
 
 		secureSvc := secure.New(cfg.App.MinPasswordStrength)
 
-		jwtService := jwt.New(cfg.JWT.Secret, cfg.JWT.Duration, cfg.JWT.Algorithm)
+		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicMethods, cfg.Access.WriteMethods)
 
-		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicUserMethods)
+		//iamServer := iamserver.New(db, jwtService, iamdb.NewUser(), secureSvc)
 
-		iamServer := iamserver.New(db, jwtService, iamdb.NewUser(), secureSvc)
-
-		interceptorAuth := iamserver.NewAuthInterceptor(jwtService, accService)
+		interceptorAuth := iamserver.NewAuthInterceptor(db, cfg.RefreshToken.Lifetime, accService)
 
 		addr := "0.0.0.0:10000"
 		lis, err := net.Listen("tcp", addr)
@@ -147,9 +141,9 @@ var runServerCommand = &cli.Command{
 
 		pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
 
-		iamserver.NewLoggingService(iamServer, zerolog)
+		// iamserver.NewLoggingService(iamServer, zerolog)
 
-		pbIAM.RegisterResonateIAMServer(s, iamServer)
+		//pbIAM.RegisterResonateIAMServer(s, iamServer)
 
 		// Serve gRPC Server
 		log.Info("Serving gRPC on https://", addr)
