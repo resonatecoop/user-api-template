@@ -154,7 +154,6 @@ message UserRequest {
 message ResetUserPasswordRequest {
   string username = 1;
   string password = 2;
-  //string email = 1;
 }
 
 message UpdateUserRequest {

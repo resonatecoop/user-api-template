@@ -71,11 +71,6 @@ func (j *JWT) ParseToken(token string) (*model.AuthUser, error) {
 		return nil, fmt.Errorf("unauthorized: no username claim present")
 	}
 
-	email, ok := claims["e"]
-	if !ok {
-		return nil, fmt.Errorf("unauthorized: no email claim present")
-	}
-
 	role, ok := claims["r"]
 	if !ok {
 		return nil, fmt.Errorf("unauthorized: no role claim present")
@@ -90,7 +85,6 @@ func (j *JWT) ParseToken(token string) (*model.AuthUser, error) {
 		ID:       uid,
 		TenantID: int32(tenantId.(float64)),
 		Username: username.(string),
-		Email:    email.(string),
 		Role:     model.AccessRole(role.(float64)),
 	}, nil
 
