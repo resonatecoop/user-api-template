@@ -302,10 +302,11 @@ func (interceptor *AuthInterceptor) delete(slice []string, val string) []string 
 	for i, item := range slice {
 		if item == val {
 			location = i
+			slice = append(slice[:location], slice[location+1:]...)
 		}
 	}
 
-	return append(slice[:location], slice[location+1:]...)
+	return slice
 }
 
 // func (h *QueryHook) AfterQuery(ctx context.Context, event *bun.QueryEvent) {
