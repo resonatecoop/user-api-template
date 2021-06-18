@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Resonate Service Documentation: User",
-    "version": "2.0.1"
+    "version": "2.0.2"
   },
   "schemes": [
     "https"
@@ -367,17 +367,8 @@
         "lastName": {
           "type": "string"
         },
-        "member": {
-          "type": "boolean"
-        },
         "newsletterNotification": {
           "type": "boolean"
-        },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -412,12 +403,6 @@
         },
         "newsletterNotification": {
           "type": "boolean"
-        },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },

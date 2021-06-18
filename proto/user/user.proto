@@ -17,7 +17,7 @@ option go_package = "github.com/resonatecoop/user-api/proto/user";
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    version: "2.0.1";
+    version: "2.0.2";
     title: "Resonate Service Documentation: User";
   };
   external_docs: {
@@ -158,13 +158,12 @@ message ResetUserPasswordRequest {
 
 message UpdateUserRequest {
   string id = 1; // required
-  string username = 2; // required
-  string full_name = 3; // required
-  string first_name = 4;
-  string last_name = 5;
-  bool member = 6;
-  bool newsletter_notification = 7;
-  repeated string followed_groups = 8;
+  optional string username = 2;
+  optional string full_name = 3; 
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional bool newsletter_notification = 7;
+  //repeated string followed_groups = 8;
   //string email = 3; // required
   //repeated string favorite_tracks = 11;
   //repeated RelatedUserGroup owner_of_groups = 13;
@@ -176,15 +175,15 @@ message UpdateUserRequest {
 
 message UpdateUserRestrictedRequest {
   string id = 1; // required
-  string username = 2; // required
-  string full_name = 3; // required
-  string first_name = 4;
-  string last_name = 5;
-  bool member = 6;
-  int32 role_id = 7;
-  int32 tenant_id = 8;
-  bool newsletter_notification = 9;
-  repeated string followed_groups = 10;
+  optional string username = 2; 
+  optional string full_name = 3; 
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional bool member = 6;
+  optional int32 role_id = 7;
+  optional int32 tenant_id = 8;
+  optional bool newsletter_notification = 9;
+  //repeated string followed_groups = 10; TODO implement elsewhere!
   //string email = 3; // required
   //repeated string favorite_tracks = 11;
   //repeated RelatedUserGroup owner_of_groups = 13;

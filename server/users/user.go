@@ -8,7 +8,6 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
-	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
 	"github.com/uptrace/bun"
@@ -126,35 +125,34 @@ func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbU
 	return &pbUser.Empty{}, nil
 }
 
-// UpdateUser gets a user to the in-memory store.
+// UpdateUser updates a users basic attributes
 func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.UpdateUserRequest) (*pbUser.Empty, error) {
-	err := checkRequiredUpdateAttributes(updateUserRequest)
 
-	if err != nil {
-		return nil, err
+	var updatedUserValues = make(map[string]interface{})
+
+	if updateUserRequest.Username != nil {
+		updatedUserValues["username"] = *updateUserRequest.Username
+		re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+		if !re.MatchString(*updateUserRequest.Username) {
+			return nil, errors.New("username must be a valid email")
+		}
+	}
+	if updateUserRequest.FirstName != nil {
+		updatedUserValues["first_name"] = *updateUserRequest.FirstName
+	}
+	if updateUserRequest.LastName != nil {
+		updatedUserValues["last_name"] = *updateUserRequest.LastName
+	}
+	if updateUserRequest.FullName != nil {
+		updatedUserValues["full_name"] = *updateUserRequest.FullName
+	}
+	if updateUserRequest.NewsletterNotification != nil {
+		updatedUserValues["newsletter_notification"] = *updateUserRequest.NewsletterNotification
 	}
 
-	existingID, err := uuid.Parse(updateUserRequest.Id)
+	updatedUserValues["updated_at"] = time.Now().UTC()
 
-	if err != nil {
-		return nil, err
-	}
-
-	u := &model.User{
-		IDRecord:               model.IDRecord{ID: existingID, UpdatedAt: time.Now().UTC()},
-		Username:               updateUserRequest.Username,
-		FullName:               updateUserRequest.FullName,
-		FirstName:              updateUserRequest.FirstName,
-		LastName:               updateUserRequest.LastName,
-		Member:                 updateUserRequest.Member,
-		NewsletterNotification: updateUserRequest.NewsletterNotification,
-	}
-
-	rows, err := s.db.NewUpdate().
-		Model(u).
-		Column("updated_at", "username", "full_name", "first_name", "last_name", "member", "newsletter_notification").
-		WherePK().
-		Exec(ctx)
+	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", updateUserRequest.Id).Exec(ctx)
 
 	if err != nil {
 		return nil, err
@@ -169,40 +167,54 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 	return &pbUser.Empty{}, nil
 }
 
-// UpdateUser gets a user to the in-memory store.
+// UpdateUserRestricted updates a users more restricted attributes
 func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedRequest *pbUser.UpdateUserRestrictedRequest) (*pbUser.Empty, error) {
-	err := checkRequiredRestrictedUpdateAttributes(updateUserRestrictedRequest)
+
+	var updatedUserValues = make(map[string]interface{})
+
+	if updateUserRestrictedRequest.Username != nil {
+		updatedUserValues["username"] = *updateUserRestrictedRequest.Username
+		re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+		if !re.MatchString(*updateUserRestrictedRequest.Username) {
+			return nil, errors.New("username must be a valid email")
+		}
+	}
+	if updateUserRestrictedRequest.FirstName != nil {
+		updatedUserValues["first_name"] = *updateUserRestrictedRequest.FirstName
+	}
+	if updateUserRestrictedRequest.LastName != nil {
+		updatedUserValues["last_name"] = *updateUserRestrictedRequest.LastName
+	}
+	if updateUserRestrictedRequest.FullName != nil {
+		updatedUserValues["full_name"] = *updateUserRestrictedRequest.FullName
+	}
+	if updateUserRestrictedRequest.Member != nil {
+		updatedUserValues["member"] = *updateUserRestrictedRequest.Member
+	}
+	if updateUserRestrictedRequest.RoleId != nil {
+		updatedUserValues["role_id"] = *updateUserRestrictedRequest.RoleId
+	}
+	if updateUserRestrictedRequest.TenantId != nil {
+		updatedUserValues["tenant_id"] = *updateUserRestrictedRequest.TenantId
+	}
+	if updateUserRestrictedRequest.NewsletterNotification != nil {
+		updatedUserValues["newsletter_notification"] = *updateUserRestrictedRequest.NewsletterNotification
+	}
+
+	updatedUserValues["updated_at"] = time.Now().UTC()
+
+	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", updateUserRestrictedRequest.Id).Exec(ctx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	existingID, err := uuid.Parse(updateUserRestrictedRequest.Id)
+	number, _ := rows.RowsAffected()
 
-	if err != nil {
-		return nil, err
+	if number == 0 {
+		return nil, errors.New("warning: no rows were updated")
 	}
 
-	u := &model.User{
-		IDRecord:  model.IDRecord{ID: existingID},
-		Username:  updateUserRestrictedRequest.Username,
-		FullName:  updateUserRestrictedRequest.FullName,
-		FirstName: updateUserRestrictedRequest.FirstName,
-		LastName:  updateUserRestrictedRequest.LastName,
-		RoleID:    updateUserRestrictedRequest.RoleId,
-		TenantID:  updateUserRestrictedRequest.TenantId,
-	}
-
-	u.UpdatedAt = time.Now()
-	_, dberr := s.db.NewUpdate().
-		Model(u).
-		Column("updated_at", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "newsletter_notification").
-		WherePK().
-		Exec(ctx)
-	twerr := errorpkg.CheckError(dberr, "user")
-	if twerr != nil {
-		return nil, twerr
-	}
 	return &pbUser.Empty{}, nil
 }
 
@@ -280,41 +292,41 @@ func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
 	return nil
 }
 
-func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
-	if user.Username == "" || user.FullName == "" {
-		var argument string
-		switch {
-		case user.Username == "":
-			argument = "username"
-		case user.FullName == "":
-			argument = "full_name"
-		}
-		return fmt.Errorf("argument %v is required", argument)
-	}
-	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if !re.MatchString(user.Username) {
-		return errors.New("username must be a valid email")
-	}
-	return nil
-}
+// func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
+// 	if user.Username == "" || user.FullName == "" {
+// 		var argument string
+// 		switch {
+// 		case user.Username == "":
+// 			argument = "username"
+// 		case user.FullName == "":
+// 			argument = "full_name"
+// 		}
+// 		return fmt.Errorf("argument %v is required", argument)
+// 	}
+// 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+// 	if !re.MatchString(user.Username) {
+// 		return errors.New("username must be a valid email")
+// 	}
+// 	return nil
+// }
 
-func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRequest) error {
-	if user.Username == "" || user.FullName == "" {
-		var argument string
-		switch {
-		case user.Username == "":
-			argument = "username"
-		case user.FullName == "":
-			argument = "full_name"
-		}
-		return fmt.Errorf("argument %v is required", argument)
-	}
-	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if !re.MatchString(user.Username) {
-		return errors.New("username must be a valid email")
-	}
-	return nil
-}
+// func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRequest) error {
+// 	if user.Username == "" || user.FullName == "" {
+// 		var argument string
+// 		switch {
+// 		case user.Username == "":
+// 			argument = "username"
+// 		case user.FullName == "":
+// 			argument = "full_name"
+// 		}
+// 		return fmt.Errorf("argument %v is required", argument)
+// 	}
+// 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+// 	if !re.MatchString(user.Username) {
+// 		return errors.New("username must be a valid email")
+// 	}
+// 	return nil
+// }
 
 func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest, s *Server) error {
 	if user.Username == "" || user.Password == "" {
@@ -344,4 +356,12 @@ func getUserGroupResponse(ownerOfGroup []model.UserGroup) []*pbUser.RelatedUserG
 		groups[i] = &pbUser.RelatedUserGroup{Id: group.ID.String(), DisplayName: group.DisplayName}
 	}
 	return groups
+}
+
+func (s *Server) DerefString(str *string) string {
+	if str != nil {
+		return *str
+	}
+
+	return ""
 }
