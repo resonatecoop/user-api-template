@@ -23,9 +23,10 @@ require (
 	github.com/rs/zerolog v1.20.0
 	github.com/stretchr/testify v1.7.0
 	github.com/twitchtv/twirp v7.1.0+incompatible
-	github.com/uptrace/bun v0.1.17
+	github.com/uptrace/bun v0.2.4
 	github.com/uptrace/bun/dbfixture v0.1.15
 	github.com/uptrace/bun/dialect/pgdialect v0.1.17
+	github.com/uptrace/bun/dialect/sqlitedialect v0.2.4
 	github.com/uptrace/bun/extra/bundebug v0.1.17
 	github.com/urfave/cli/v2 v2.3.0
 	go4.org v0.0.0-20201209231011-d4a079459e60

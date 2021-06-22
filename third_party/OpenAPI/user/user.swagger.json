@@ -14,40 +14,6 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/account/password": {
-      "put": {
-        "summary": "Update a user's password",
-        "description": "Update an existing user's password on the server.",
-        "operationId": "ResonateUser_ResetUserPassword",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/userEmpty"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/userResetUserPasswordRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Users Password"
-        ]
-      }
-    },
     "/api/v1/restricted/user/{id}": {
       "get": {
         "summary": "Get a user's restricted information",
@@ -139,7 +105,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/userUpdateUserRestrictedRequest"
+              "$ref": "#/definitions/userUserUpdateRestrictedRequest"
             }
           }
         ],
@@ -209,7 +175,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/userUpdateUserRequest"
+              "$ref": "#/definitions/userUserUpdateRequest"
             }
           }
         ],
@@ -265,7 +231,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/userAddUserRequest"
+              "$ref": "#/definitions/userUserAddRequest"
             }
           }
         ],
@@ -306,7 +272,10 @@
         }
       }
     },
-    "userAddUserRequest": {
+    "userEmpty": {
+      "type": "object"
+    },
+    "userUserAddRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -332,77 +301,6 @@
           "items": {
             "type": "string"
           }
-        }
-      }
-    },
-    "userEmpty": {
-      "type": "object"
-    },
-    "userResetUserPasswordRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "userUpdateUserRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
-        }
-      }
-    },
-    "userUpdateUserRestrictedRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "member": {
-          "type": "boolean"
-        },
-        "roleId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "tenantId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "newsletterNotification": {
-          "type": "boolean"
         }
       }
     },
@@ -435,6 +333,12 @@
         "lastName": {
           "type": "string"
         },
+        "country": {
+          "type": "string"
+        },
+        "emailConfirmed": {
+          "type": "boolean"
+        },
         "member": {
           "type": "boolean"
         },
@@ -449,6 +353,18 @@
         "newsletterNotification": {
           "type": "boolean"
         },
+        "personas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "followedGroups": {
           "type": "array",
           "items": {
@@ -460,9 +376,78 @@
     "userUserPublicResponse": {
       "type": "object",
       "properties": {
+        "username": {
+          "type": "string"
+        },
         "fullName": {
-          "type": "string",
-          "title": "string username = 2; // required"
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "member": {
+          "type": "boolean"
+        },
+        "personas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "followedGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "userUserUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
+        }
+      }
+    },
+    "userUserUpdateRestrictedRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
         },
         "firstName": {
           "type": "string"
@@ -473,11 +458,16 @@
         "member": {
           "type": "boolean"
         },
-        "followedGroups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "tenantId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "newsletterNotification": {
+          "type": "boolean"
         }
       }
     }

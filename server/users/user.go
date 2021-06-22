@@ -34,7 +34,7 @@ type Securer interface {
 }
 
 // AddUser gets a user to the in-memory store.
-func (s *Server) AddUser(ctx context.Context, user *pbUser.AddUserRequest) (*pbUser.Empty, error) {
+func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.Empty, error) {
 
 	requiredErr := checkRequiredAddAttributes(user)
 	if requiredErr != nil {
@@ -73,13 +73,25 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 	}
 
 	return &pbUser.UserPublicResponse{
+		Username:       u.Username,
 		FullName:       u.FullName,
 		FirstName:      u.FirstName,
 		LastName:       u.LastName,
 		Member:         u.Member,
+		Country:        u.Country,
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
 	}, nil
 }
+
+// string username = 1; // required
+// string full_name = 2; // required
+// string first_name = 3;
+// string last_name = 4;
+// string country = 5;
+// bool member = 6;
+// repeated string personas = 7;
+// repeated string owned_groups = 8;
+// repeated string followed_groups = 9;
 
 // GetUserRestricted intended for privileged roles only supplies more detailed, private info about user.
 func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserPrivateResponse, error) {
@@ -113,8 +125,9 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser.Empty, error) {
 	u := new(model.User)
 
-	_, err := s.db.NewDelete().
+	_, err := s.db.NewUpdate().
 		Model(u).
+		Set("deleted_at = ?", time.Now().UTC()).
 		Where("id = ?", user.Id).
 		Exec(ctx)
 
@@ -126,33 +139,33 @@ func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbU
 }
 
 // UpdateUser updates a users basic attributes
-func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.UpdateUserRequest) (*pbUser.Empty, error) {
+func (s *Server) UpdateUser(ctx context.Context, UserUpdateRequest *pbUser.UserUpdateRequest) (*pbUser.Empty, error) {
 
 	var updatedUserValues = make(map[string]interface{})
 
-	if updateUserRequest.Username != nil {
-		updatedUserValues["username"] = *updateUserRequest.Username
+	if UserUpdateRequest.Username != nil {
+		updatedUserValues["username"] = *UserUpdateRequest.Username
 		re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-		if !re.MatchString(*updateUserRequest.Username) {
+		if !re.MatchString(*UserUpdateRequest.Username) {
 			return nil, errors.New("username must be a valid email")
 		}
 	}
-	if updateUserRequest.FirstName != nil {
-		updatedUserValues["first_name"] = *updateUserRequest.FirstName
+	if UserUpdateRequest.FirstName != nil {
+		updatedUserValues["first_name"] = *UserUpdateRequest.FirstName
 	}
-	if updateUserRequest.LastName != nil {
-		updatedUserValues["last_name"] = *updateUserRequest.LastName
+	if UserUpdateRequest.LastName != nil {
+		updatedUserValues["last_name"] = *UserUpdateRequest.LastName
 	}
-	if updateUserRequest.FullName != nil {
-		updatedUserValues["full_name"] = *updateUserRequest.FullName
+	if UserUpdateRequest.FullName != nil {
+		updatedUserValues["full_name"] = *UserUpdateRequest.FullName
 	}
-	if updateUserRequest.NewsletterNotification != nil {
-		updatedUserValues["newsletter_notification"] = *updateUserRequest.NewsletterNotification
+	if UserUpdateRequest.NewsletterNotification != nil {
+		updatedUserValues["newsletter_notification"] = *UserUpdateRequest.NewsletterNotification
 	}
 
 	updatedUserValues["updated_at"] = time.Now().UTC()
 
-	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", updateUserRequest.Id).Exec(ctx)
+	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", UserUpdateRequest.Id).Exec(ctx)
 
 	if err != nil {
 		return nil, err
@@ -168,42 +181,42 @@ func (s *Server) UpdateUser(ctx context.Context, updateUserRequest *pbUser.Updat
 }
 
 // UpdateUserRestricted updates a users more restricted attributes
-func (s *Server) UpdateUserRestricted(ctx context.Context, updateUserRestrictedRequest *pbUser.UpdateUserRestrictedRequest) (*pbUser.Empty, error) {
+func (s *Server) UpdateUserRestricted(ctx context.Context, UserUpdateRestrictedRequest *pbUser.UserUpdateRestrictedRequest) (*pbUser.Empty, error) {
 
 	var updatedUserValues = make(map[string]interface{})
 
-	if updateUserRestrictedRequest.Username != nil {
-		updatedUserValues["username"] = *updateUserRestrictedRequest.Username
+	if UserUpdateRestrictedRequest.Username != nil {
+		updatedUserValues["username"] = *UserUpdateRestrictedRequest.Username
 		re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-		if !re.MatchString(*updateUserRestrictedRequest.Username) {
+		if !re.MatchString(*UserUpdateRestrictedRequest.Username) {
 			return nil, errors.New("username must be a valid email")
 		}
 	}
-	if updateUserRestrictedRequest.FirstName != nil {
-		updatedUserValues["first_name"] = *updateUserRestrictedRequest.FirstName
+	if UserUpdateRestrictedRequest.FirstName != nil {
+		updatedUserValues["first_name"] = *UserUpdateRestrictedRequest.FirstName
 	}
-	if updateUserRestrictedRequest.LastName != nil {
-		updatedUserValues["last_name"] = *updateUserRestrictedRequest.LastName
+	if UserUpdateRestrictedRequest.LastName != nil {
+		updatedUserValues["last_name"] = *UserUpdateRestrictedRequest.LastName
 	}
-	if updateUserRestrictedRequest.FullName != nil {
-		updatedUserValues["full_name"] = *updateUserRestrictedRequest.FullName
+	if UserUpdateRestrictedRequest.FullName != nil {
+		updatedUserValues["full_name"] = *UserUpdateRestrictedRequest.FullName
 	}
-	if updateUserRestrictedRequest.Member != nil {
-		updatedUserValues["member"] = *updateUserRestrictedRequest.Member
+	if UserUpdateRestrictedRequest.Member != nil {
+		updatedUserValues["member"] = *UserUpdateRestrictedRequest.Member
 	}
-	if updateUserRestrictedRequest.RoleId != nil {
-		updatedUserValues["role_id"] = *updateUserRestrictedRequest.RoleId
+	if UserUpdateRestrictedRequest.RoleId != nil {
+		updatedUserValues["role_id"] = *UserUpdateRestrictedRequest.RoleId
 	}
-	if updateUserRestrictedRequest.TenantId != nil {
-		updatedUserValues["tenant_id"] = *updateUserRestrictedRequest.TenantId
+	if UserUpdateRestrictedRequest.TenantId != nil {
+		updatedUserValues["tenant_id"] = *UserUpdateRestrictedRequest.TenantId
 	}
-	if updateUserRestrictedRequest.NewsletterNotification != nil {
-		updatedUserValues["newsletter_notification"] = *updateUserRestrictedRequest.NewsletterNotification
+	if UserUpdateRestrictedRequest.NewsletterNotification != nil {
+		updatedUserValues["newsletter_notification"] = *UserUpdateRestrictedRequest.NewsletterNotification
 	}
 
 	updatedUserValues["updated_at"] = time.Now().UTC()
 
-	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", updateUserRestrictedRequest.Id).Exec(ctx)
+	rows, err := s.db.NewUpdate().Model(&updatedUserValues).TableExpr("users").Where("id = ?", UserUpdateRestrictedRequest.Id).Exec(ctx)
 
 	if err != nil {
 		return nil, err
@@ -274,7 +287,7 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 	return &results, nil
 }
 
-func checkRequiredAddAttributes(user *pbUser.AddUserRequest) error {
+func checkRequiredAddAttributes(user *pbUser.UserAddRequest) error {
 	if user.Username == "" || user.FullName == "" {
 		var argument string
 		switch {

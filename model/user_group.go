@@ -1,10 +1,8 @@
 package model
 
 import (
-	"time"
 
 	// "log"
-	"fmt"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -16,7 +14,6 @@ import (
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 
 	uuid "github.com/google/uuid"
-	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
 	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
@@ -24,22 +21,22 @@ import (
 // UserGroup represents a group of Users and maintains a set of metadata
 type UserGroup struct {
 	IDRecord
-	DisplayName       string `bun:",unique,notnull"`
-	Description       string
-	ShortBio          string
-	GroupEmailAddress string
-	AddressID         uuid.UUID `bun:"type:uuid,notnull"` //for Country see User model
-	Address           *StreetAddress
-	TypeID            uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
-	Type              *GroupTaxonomy
-	OwnerID           uuid.UUID   `bun:"type:uuid,notnull"`
-	Owner             *User       `bun:"rel:has-one"`
-	Links             []uuid.UUID `bun:",type:uuid[],array"`
-	Members           []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
-	MemberOfGroups    []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
-	Avatar            uuid.UUID   `bun:"type:uuid"`
-	Banner            uuid.UUID   `bun:"type:uuid"`
-	Tags              []uuid.UUID `bun:",type:uuid[],array"`
+	DisplayName    string `bun:",unique,notnull"`
+	Description    string
+	ShortBio       string
+	GroupEmail     string
+	AddressID      uuid.UUID `bun:"type:uuid,notnull"` //for Country see User model
+	Address        *StreetAddress
+	TypeID         uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
+	Type           *GroupTaxonomy
+	OwnerID        uuid.UUID   `bun:"type:uuid,notnull"`
+	Owner          *User       `bun:"rel:has-one"`
+	Links          []uuid.UUID `bun:",type:uuid[],array"`
+	Members        []UserGroup `pg:"many2many:user_group_members,fk:user_group_id,joinFK:member_id"`
+	MemberOfGroups []UserGroup `pg:"many2many:user_group_members,fk:member_id,joinFK:user_group_id"`
+	Avatar         uuid.UUID   `bun:"type:uuid"`
+	Banner         uuid.UUID   `bun:"type:uuid"`
+	Tags           []uuid.UUID `bun:",type:uuid[],array"`
 	// AdminUsers         []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// Followers          []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	// RecommendedArtists []uuid.UUID `bun:",type:uuid[]" pg:",array"`
@@ -79,201 +76,201 @@ type UserGroup struct {
 // }
 
 // Create creates a new UserGroup
-func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
-	var table string
-	tx, err := db.Begin()
-	if err != nil {
-		return err, table
-	}
-	defer tx.Rollback()
+// func (u *UserGroup) Create(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
+// 	var table string
+// 	tx, err := db.Begin()
+// 	if err != nil {
+// 		return err, table
+// 	}
+// 	defer tx.Rollback()
 
-	groupTaxonomy := new(GroupTaxonomy)
-	pgerr := tx.Model(groupTaxonomy).Where("type = ?", userGroup.Type.Type).First()
+// 	groupTaxonomy := new(GroupTaxonomy)
+// 	pgerr := tx.Model(groupTaxonomy).Where("type = ?", userGroup.Type.Type).First()
 
-	if pgerr != nil {
-		return pgerr, "group_taxonomy"
-	}
-	u.TypeID = groupTaxonomy.ID
+// 	if pgerr != nil {
+// 		return pgerr, "group_taxonomy"
+// 	}
+// 	u.TypeID = groupTaxonomy.ID
 
-	var newAddress *StreetAddress
-	if userGroup.Address != nil {
-		newAddress = &StreetAddress{Data: userGroup.Address.Data}
-		_, pgerr = tx.Model(newAddress).Returning("*").Insert()
-		if pgerr != nil {
-			return pgerr, "street_address"
-		}
-	}
-	u.AddressID = newAddress.ID
+// 	var newAddress *StreetAddress
+// 	if userGroup.Address != nil {
+// 		newAddress = &StreetAddress{Data: userGroup.Address.Data}
+// 		_, pgerr = tx.Model(newAddress).Returning("*").Insert()
+// 		if pgerr != nil {
+// 			return pgerr, "street_address"
+// 		}
+// 	}
+// 	u.AddressID = newAddress.ID
 
-	linkIDs, pgerr := getLinkIDs(userGroup.Links, tx)
-	if pgerr != nil {
-		return pgerr, "link"
-	}
-	u.Links = linkIDs
+// 	linkIDs, pgerr := getLinkIDs(userGroup.Links, tx)
+// 	if pgerr != nil {
+// 		return pgerr, "link"
+// 	}
+// 	u.Links = linkIDs
 
-	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
-	// if pgerr != nil {
-	// 	return pgerr, "tag"
-	// }
-	// u.Tags = tagIDs
+// 	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
+// 	// if pgerr != nil {
+// 	// 	return pgerr, "tag"
+// 	// }
+// 	// u.Tags = tagIDs
 
-	// recommendedArtistIDs, pgerr := GetRelatedUserGroupIDs(userGroup.RecommendedArtists, tx)
-	// if pgerr != nil {
-	// 	return pgerr, "user_group"
-	// }
-	// u.RecommendedArtists = recommendedArtistIDs
+// 	// recommendedArtistIDs, pgerr := GetRelatedUserGroupIDs(userGroup.RecommendedArtists, tx)
+// 	// if pgerr != nil {
+// 	// 	return pgerr, "user_group"
+// 	// }
+// 	// u.RecommendedArtists = recommendedArtistIDs
 
-	_, pgerr = tx.Model(u).Returning("*").Insert()
-	if pgerr != nil {
-		fmt.Println("insert")
-		return pgerr, "user_group"
-	}
+// 	_, pgerr = tx.Model(u).Returning("*").Insert()
+// 	if pgerr != nil {
+// 		fmt.Println("insert")
+// 		return pgerr, "user_group"
+// 	}
 
-	// if len(recommendedArtistIDs) > 0 {
-	// 	_, pgerr = tx.Exec(`
-	//     UPDATE user_groups
-	//     SET recommended_by = (select array_agg(distinct e) from unnest(recommended_by || ?) e)
-	//     WHERE id IN (?)
-	//   `, pg.Array([]uuid.UUID{u.ID}), pg.In(recommendedArtistIDs))
-	// 	if pgerr != nil {
-	// 		return pgerr, "user_group"
-	// 	}
-	// }
+// 	// if len(recommendedArtistIDs) > 0 {
+// 	// 	_, pgerr = tx.Exec(`
+// 	//     UPDATE user_groups
+// 	//     SET recommended_by = (select array_agg(distinct e) from unnest(recommended_by || ?) e)
+// 	//     WHERE id IN (?)
+// 	//   `, pg.Array([]uuid.UUID{u.ID}), pg.In(recommendedArtistIDs))
+// 	// 	if pgerr != nil {
+// 	// 		return pgerr, "user_group"
+// 	// 	}
+// 	// }
 
-	pgerr = tx.Model(u).
-		Column("Privacy").
-		WherePK().
-		Select()
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
+// 	pgerr = tx.Model(u).
+// 		Column("Privacy").
+// 		WherePK().
+// 		Select()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
 
-	// Building response
-	userGroup.Address.Id = u.AddressID.String()
-	userGroup.Type.ID = u.TypeID.String()
-	// userGroup.Privacy = &pbUser.Privacy{
-	// 	ID:               u.Privacy.ID.String(),
-	// 	Private:          u.Privacy.Private,
-	// 	OwnedTracks:      u.Privacy.OwnedTracks,
-	// 	SupportedArtists: u.Privacy.SupportedArtists,
-	// }
+// 	// Building response
+// 	userGroup.Address.Id = u.AddressID.String()
+// 	userGroup.Type.ID = u.TypeID.String()
+// 	// userGroup.Privacy = &pbUser.Privacy{
+// 	// 	ID:               u.Privacy.ID.String(),
+// 	// 	Private:          u.Privacy.Private,
+// 	// 	OwnedTracks:      u.Privacy.OwnedTracks,
+// 	// 	SupportedArtists: u.Privacy.SupportedArtists,
+// 	// }
 
-	return tx.Commit(), table
-}
+// 	return tx.Commit(), table
+// }
 
-func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
-	var table string
-	tx, err := db.Begin()
-	if err != nil {
-		return err, "user_group"
-	}
-	defer tx.Rollback()
+// func (u *UserGroup) Update(db *pg.DB, userGroup *pbUser.UserGroup) (error, string) {
+// 	var table string
+// 	tx, err := db.Begin()
+// 	if err != nil {
+// 		return err, "user_group"
+// 	}
+// 	defer tx.Rollback()
 
-	userGroupToUpdate := &UserGroup{IDRecord: IDRecord{ID: u.ID}}
-	pgerr := tx.Model(userGroupToUpdate).
-		Column("user_group.links", "Type").
-		WherePK().
-		Select()
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
+// 	userGroupToUpdate := &UserGroup{IDRecord: IDRecord{ID: u.ID}}
+// 	pgerr := tx.Model(userGroupToUpdate).
+// 		Column("user_group.links", "Type").
+// 		WherePK().
+// 		Select()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
 
-	columns := []string{
-		"updated_at",
-		// "pro",
-		// "publisher",
-		"links",
-		// "tags",
-		"display_name",
-		// "avatar",
-		"description",
-		"short_bio",
-		// "banner",
-		"group_email_address",
-	}
+// 	columns := []string{
+// 		"updated_at",
+// 		// "pro",
+// 		// "publisher",
+// 		"links",
+// 		// "tags",
+// 		"display_name",
+// 		// "avatar",
+// 		"description",
+// 		"short_bio",
+// 		// "banner",
+// 		"group_email_address",
+// 	}
 
-	// User group type - changes allowed: user => artist, user => label
-	groupTaxonomy := new(GroupTaxonomy)
-	pgerr = tx.Model(groupTaxonomy).Where("type = ?", userGroup.Type.Type).First()
-	if pgerr != nil {
-		return pgerr, "group_taxonomy"
-	}
-	if userGroupToUpdate.Type.ID != groupTaxonomy.ID {
-		if userGroupToUpdate.Type.Type != "user" ||
-			(userGroupToUpdate.Type.Type == "user" && !(groupTaxonomy.Type == "artist" || groupTaxonomy.Type == "label")) {
-			twerr := twirp.InvalidArgumentError("type", "not allowed")
-			return twerr.(error), "user_group"
-		}
-		u.TypeID = groupTaxonomy.ID
-		columns = append(columns, "type_id")
-	}
+// 	// User group type - changes allowed: user => artist, user => label
+// 	groupTaxonomy := new(GroupTaxonomy)
+// 	pgerr = tx.Model(groupTaxonomy).Where("type = ?", userGroup.Type.Type).First()
+// 	if pgerr != nil {
+// 		return pgerr, "group_taxonomy"
+// 	}
+// 	if userGroupToUpdate.Type.ID != groupTaxonomy.ID {
+// 		if userGroupToUpdate.Type.Type != "user" ||
+// 			(userGroupToUpdate.Type.Type == "user" && !(groupTaxonomy.Type == "artist" || groupTaxonomy.Type == "label")) {
+// 			twerr := twirp.InvalidArgumentError("type", "not allowed")
+// 			return twerr.(error), "user_group"
+// 		}
+// 		u.TypeID = groupTaxonomy.ID
+// 		columns = append(columns, "type_id")
+// 	}
 
-	// Update address
-	addressID, twerr := uuid.Parse(userGroup.Address.Id)
-	if twerr != nil {
-		return twerr, "street_address"
-	}
-	address := &StreetAddress{ID: addressID, Data: userGroup.Address.Data}
-	_, pgerr = tx.Model(address).Column("data").WherePK().Update()
-	// _, pgerr := db.Model(address).Set("data = ?", pg.Hstore(userGroup.Address.Data)).Where("id = ?id").Update()
-	if pgerr != nil {
-		return pgerr, "street_address"
-	}
+// 	// Update address
+// 	addressID, twerr := uuid.Parse(userGroup.Address.Id)
+// 	if twerr != nil {
+// 		return twerr, "street_address"
+// 	}
+// 	address := &StreetAddress{ID: addressID, Data: userGroup.Address.Data}
+// 	_, pgerr = tx.Model(address).Column("data").WherePK().Update()
+// 	// _, pgerr := db.Model(address).Set("data = ?", pg.Hstore(userGroup.Address.Data)).Where("id = ?id").Update()
+// 	if pgerr != nil {
+// 		return pgerr, "street_address"
+// 	}
 
-	// Update privacy
-	// privacyID, twerr := uuidpkg.GetUUIDFromString(userGroup.Privacy.ID)
-	// if twerr != nil {
-	// 	return twerr, "user_group_privacy"
-	// }
-	// privacy := &UserGroupPrivacy{
-	// 	ID:               privacyID,
-	// 	Private:          userGroup.Privacy.Private,
-	// 	OwnedTracks:      userGroup.Privacy.OwnedTracks,
-	// 	SupportedArtists: userGroup.Privacy.SupportedArtists,
-	// }
-	// _, pgerr = tx.Model(privacy).WherePK().Returning("*").UpdateNotNull()
-	// if pgerr != nil {
-	// 	return pgerr, "user_group_privacy"
-	// }
+// 	// Update privacy
+// 	// privacyID, twerr := uuidpkg.GetUUIDFromString(userGroup.Privacy.ID)
+// 	// if twerr != nil {
+// 	// 	return twerr, "user_group_privacy"
+// 	// }
+// 	// privacy := &UserGroupPrivacy{
+// 	// 	ID:               privacyID,
+// 	// 	Private:          userGroup.Privacy.Private,
+// 	// 	OwnedTracks:      userGroup.Privacy.OwnedTracks,
+// 	// 	SupportedArtists: userGroup.Privacy.SupportedArtists,
+// 	// }
+// 	// _, pgerr = tx.Model(privacy).WherePK().Returning("*").UpdateNotNull()
+// 	// if pgerr != nil {
+// 	// 	return pgerr, "user_group_privacy"
+// 	// }
 
-	// Update tags
-	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
-	// if pgerr != nil {
-	// 	return pgerr, "tag"
-	// }
+// 	// Update tags
+// 	// tagIDs, pgerr := GetTagIDs(userGroup.Tags, tx)
+// 	// if pgerr != nil {
+// 	// 	return pgerr, "tag"
+// 	// }
 
-	// Update links
-	linkIDs, pgerr := getLinkIDs(userGroup.Links, tx)
-	if pgerr != nil {
-		return pgerr, "link"
-	}
-	// Delete links if needed
-	linkIDsToDelete := uuidpkg.Difference(userGroupToUpdate.Links, linkIDs)
-	if len(linkIDsToDelete) > 0 {
-		_, pgerr = tx.Model((*Link)(nil)).
-			Where("id in (?)", pg.In(linkIDsToDelete)).
-			Delete()
-		if pgerr != nil {
-			return pgerr, "link"
-		}
-	}
+// 	// Update links
+// 	linkIDs, pgerr := getLinkIDs(userGroup.Links, tx)
+// 	if pgerr != nil {
+// 		return pgerr, "link"
+// 	}
+// 	// Delete links if needed
+// 	linkIDsToDelete := uuidpkg.Difference(userGroupToUpdate.Links, linkIDs)
+// 	if len(linkIDsToDelete) > 0 {
+// 		_, pgerr = tx.Model((*Link)(nil)).
+// 			Where("id in (?)", pg.In(linkIDsToDelete)).
+// 			Delete()
+// 		if pgerr != nil {
+// 			return pgerr, "link"
+// 		}
+// 	}
 
-	// Update user group
-	// u.Tags = tagIDs
-	u.Links = linkIDs
-	// u.RecommendedArtists = recommendedArtistIDs
-	u.UpdatedAt = time.Now()
-	_, pgerr = tx.Model(u).
-		Column(columns...).
-		WherePK().
-		Returning("*").
-		Update()
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
+// 	// Update user group
+// 	// u.Tags = tagIDs
+// 	u.Links = linkIDs
+// 	// u.RecommendedArtists = recommendedArtistIDs
+// 	u.UpdatedAt = time.Now()
+// 	_, pgerr = tx.Model(u).
+// 		Column(columns...).
+// 		WherePK().
+// 		Returning("*").
+// 		Update()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
 
-	return tx.Commit(), table
-}
+// 	return tx.Commit(), table
+// }
 
 func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Error) {
 	var userGroups []UserGroup
@@ -312,118 +309,118 @@ func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Err
 	}, nil
 }
 
-func (u *UserGroup) Delete(tx *pg.Tx) (error, string) {
-	pgerr := tx.Model(u).
-		Column("user_group.links", "user_group.followers", "user_group.recommended_by", "user_group.recommended_artists", "Address", "Privacy",
-			"OwnerOfTrackGroups", "LabelOfTrackGroups", "user_group.artist_of_tracks").
-		WherePK().
-		Select()
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
+// func (u *UserGroup) Delete(tx *pg.Tx) (error, string) {
+// 	pgerr := tx.Model(u).
+// 		Column("user_group.links", "user_group.followers", "user_group.recommended_by", "user_group.recommended_artists", "Address", "Privacy",
+// 			"OwnerOfTrackGroups", "LabelOfTrackGroups", "user_group.artist_of_tracks").
+// 		WherePK().
+// 		Select()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
 
-	// These tracks contain the user group to delete as artist
-	// so we have to remove it from the tracks' artists list
-	// if len(u.ArtistOfTracks) > 0 {
-	// 	_, pgerr = tx.Exec(`
-	//     UPDATE tracks
-	//     SET artists = array_remove(artists, ?)
-	//     WHERE id IN (?)
-	//   `, u.ID, pg.In(u.ArtistOfTracks))
-	// 	if pgerr != nil {
-	// 		return pgerr, "track"
-	// 	}
-	// }
+// 	// These tracks contain the user group to delete as artist
+// 	// so we have to remove it from the tracks' artists list
+// 	// if len(u.ArtistOfTracks) > 0 {
+// 	// 	_, pgerr = tx.Exec(`
+// 	//     UPDATE tracks
+// 	//     SET artists = array_remove(artists, ?)
+// 	//     WHERE id IN (?)
+// 	//   `, u.ID, pg.In(u.ArtistOfTracks))
+// 	// 	if pgerr != nil {
+// 	// 		return pgerr, "track"
+// 	// 	}
+// 	// }
 
-	// These track groups contain the user group to delete as label
-	// so we have to set their label_id as null
-	// if len(u.LabelOfTrackGroups) > 0 {
-	// 	_, pgerr = tx.Model(&u.LabelOfTrackGroups).
-	// 		Set("label_id = uuid_nil()").
-	// 		Update()
-	// 	if pgerr != nil {
-	// 		return pgerr, "track"
-	// 	}
-	// }
+// 	// These track groups contain the user group to delete as label
+// 	// so we have to set their label_id as null
+// 	// if len(u.LabelOfTrackGroups) > 0 {
+// 	// 	_, pgerr = tx.Model(&u.LabelOfTrackGroups).
+// 	// 		Set("label_id = uuid_nil()").
+// 	// 		Update()
+// 	// 	if pgerr != nil {
+// 	// 		return pgerr, "track"
+// 	// 	}
+// 	// }
 
-	// Delete track groups owned by user group to delete
-	// if a track is a release (lp, ep, single), its tracks are owned by the same user group
-	// and they'll be deleted as well
-	// for _, trackGroup := range u.OwnerOfTrackGroups {
-	// 	pgerr, table := trackGroup.Delete(tx)
-	// 	if pgerr != nil {
-	// 		return pgerr, table
-	// 	}
-	// }
+// 	// Delete track groups owned by user group to delete
+// 	// if a track is a release (lp, ep, single), its tracks are owned by the same user group
+// 	// and they'll be deleted as well
+// 	// for _, trackGroup := range u.OwnerOfTrackGroups {
+// 	// 	pgerr, table := trackGroup.Delete(tx)
+// 	// 	if pgerr != nil {
+// 	// 		return pgerr, table
+// 	// 	}
+// 	// }
 
-	if len(u.Links) > 0 {
-		_, pgerr = tx.Model((*Link)(nil)).
-			Where("id in (?)", pg.In(u.Links)).
-			Delete()
-		if pgerr != nil {
-			return pgerr, "link"
-		}
-	}
+// 	if len(u.Links) > 0 {
+// 		_, pgerr = tx.Model((*Link)(nil)).
+// 			Where("id in (?)", pg.In(u.Links)).
+// 			Delete()
+// 		if pgerr != nil {
+// 			return pgerr, "link"
+// 		}
+// 	}
 
-	// if len(u.RecommendedBy) > 0 {
-	// 	_, pgerr = tx.Exec(`
-	//     UPDATE user_groups
-	//     SET recommended_artists = array_remove(recommended_artists, ?)
-	//     WHERE id IN (?)
-	//   `, u.ID, pg.In(u.RecommendedBy))
-	// 	if pgerr != nil {
-	// 		return pgerr, "user_group"
-	// 	}
-	// }
+// if len(u.RecommendedBy) > 0 {
+// 	_, pgerr = tx.Exec(`
+//     UPDATE user_groups
+//     SET recommended_artists = array_remove(recommended_artists, ?)
+//     WHERE id IN (?)
+//   `, u.ID, pg.In(u.RecommendedBy))
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
+// }
 
-	// if len(u.RecommendedArtists) > 0 {
-	// 	_, pgerr = tx.Exec(`
-	//     UPDATE user_groups
-	//     SET recommended_by = array_remove(recommended_by, ?)
-	//     WHERE id IN (?)
-	//   `, u.ID, pg.In(u.RecommendedArtists))
-	// 	if pgerr != nil {
-	// 		return pgerr, "user_group"
-	// 	}
-	// }
+// if len(u.RecommendedArtists) > 0 {
+// 	_, pgerr = tx.Exec(`
+//     UPDATE user_groups
+//     SET recommended_by = array_remove(recommended_by, ?)
+//     WHERE id IN (?)
+//   `, u.ID, pg.In(u.RecommendedArtists))
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
+// }
 
-	// if len(u.Followers) > 0 {
-	// 	_, pgerr = tx.Exec(`
-	//     UPDATE users
-	//     SET followed_groups = array_remove(followed_groups, ?)
-	//     WHERE id IN (?)
-	//   `, u.ID, pg.In(u.Followers))
-	// 	if pgerr != nil {
-	// 		return pgerr, "user"
-	// 	}
-	// }
+// if len(u.Followers) > 0 {
+// 	_, pgerr = tx.Exec(`
+//     UPDATE users
+//     SET followed_groups = array_remove(followed_groups, ?)
+//     WHERE id IN (?)
+//   `, u.ID, pg.In(u.Followers))
+// 	if pgerr != nil {
+// 		return pgerr, "user"
+// 	}
+// }
 
-	var userGroupMembers []UserGroupMember
-	_, pgerr = tx.Model(&userGroupMembers).
-		Where("user_group_id = ?", u.ID).
-		WhereOr("member_id = ?", u.ID).
-		Delete()
-	if pgerr != nil {
-		return pgerr, "user_group_member"
-	}
+// 	var userGroupMembers []UserGroupMember
+// 	_, pgerr = tx.Model(&userGroupMembers).
+// 		Where("user_group_id = ?", u.ID).
+// 		WhereOr("member_id = ?", u.ID).
+// 		Delete()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group_member"
+// 	}
 
-	_, pgerr = tx.Model(u).WherePK().Delete()
-	if pgerr != nil {
-		return pgerr, "user_group"
-	}
+// 	_, pgerr = tx.Model(u).WherePK().Delete()
+// 	if pgerr != nil {
+// 		return pgerr, "user_group"
+// 	}
 
-	_, pgerr = tx.Model(u.Address).WherePK().Delete()
-	if pgerr != nil {
-		return pgerr, "street_address"
-	}
+// 	_, pgerr = tx.Model(u.Address).WherePK().Delete()
+// 	if pgerr != nil {
+// 		return pgerr, "street_address"
+// 	}
 
-	// _, pgerr = tx.Model(u.Privacy).WherePK().Delete()
-	// if pgerr != nil {
-	// 	return pgerr, "user_group_privacy"
-	// }
+// 	// _, pgerr = tx.Model(u.Privacy).WherePK().Delete()
+// 	// if pgerr != nil {
+// 	// 	return pgerr, "user_group_privacy"
+// 	// }
 
-	return nil, ""
-}
+// 	return nil, ""
+// }
 
 func (u *UserGroup) AddRecommended(db *pg.DB, recommendedID uuid.UUID) (error, string) {
 	var table string

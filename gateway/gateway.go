@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/resonatecoop/user-api/insecure"
-	pbIAM "github.com/resonatecoop/user-api/proto/iam"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 
 	// Static files
@@ -62,10 +61,16 @@ func Run(dialAddr string) error {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
 
-	err = pbIAM.RegisterResonateIAMHandler(context.Background(), gwmux, conn)
-	if err != nil {
-		return fmt.Errorf("failed to register gateway: %w", err)
-	}
+	// gwmux := runtime.NewServeMux()
+	// err = pbUser.RegisterResonateUserGroupHandler(context.Background(), gwmux, conn)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to register gateway: %w", err)
+	// }
+
+	// err = pbIAM.RegisterResonateIAMHandler(context.Background(), gwmux, conn)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to register gateway: %w", err)
+	// }
 
 	oa := getOpenAPIHandler()
 

@@ -140,6 +140,7 @@ var runServerCommand = &cli.Command{
 		)
 
 		pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
+		//	pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db, secureSvc))
 
 		// iamserver.NewLoggingService(iamServer, zerolog)
 

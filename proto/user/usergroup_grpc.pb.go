@@ -13,405 +13,253 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion7
 
-// UserGroupServiceClient is the client API for UserGroupService service.
+// ResonateUserGroupClient is the client API for ResonateUserGroup service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UserGroupServiceClient interface {
-	CreateUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error)
+type ResonateUserGroupClient interface {
+	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error)
+	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+	UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
+	//GetUser provides a public level of information about a user
 	GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error)
-	GetUserGroupRestricted(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error)
-	UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error)
-	DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
-	GetChildUserGroups(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*GroupedUserGroups, error)
-	GetParentUserGroups(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*GroupedUserGroups, error)
-	AddMember(ctx context.Context, in *UserGroupMembershipRequest, opts ...grpc.CallOption) (*Empty, error)
-	DeleteMember(ctx context.Context, in *UserGroupMembershipRequest, opts ...grpc.CallOption) (*Empty, error)
-	SearchUserGroups(ctx context.Context, in *Query, opts ...grpc.CallOption) (*SearchResults, error)
+	//GetUserRestricted provides private level of information about a user
+	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
+	//   option (google.api.http) = {
+	//     // Route to this method from GET requests to /api/v1/restricted/user/{id}
+	//     get: "/api/v1/restricted/user/{id}"
+	//   };
+	//   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+	//     summary: "Get a user's restricted information"
+	//     description: "Get user profile from the server including private information."
+	//     tags: "Users"
+	//   };
+	// }
+	DeleteUsergroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
+	ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 }
 
-type userGroupServiceClient struct {
+type resonateUserGroupClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserGroupServiceClient(cc grpc.ClientConnInterface) UserGroupServiceClient {
-	return &userGroupServiceClient{cc}
+func NewResonateUserGroupClient(cc grpc.ClientConnInterface) ResonateUserGroupClient {
+	return &resonateUserGroupClient{cc}
 }
 
-func (c *userGroupServiceClient) CreateUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error) {
-	out := new(UserGroupPrivateResponse)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/CreateUserGroup", in, out, opts...)
+func (c *resonateUserGroupClient) AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/AddUserGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userGroupServiceClient) GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error) {
+func (c *resonateUserGroupClient) UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/UpdateUserGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserGroupClient) GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error) {
 	out := new(UserGroupPublicResponse)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/GetUserGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/GetUserGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userGroupServiceClient) GetUserGroupRestricted(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error) {
-	out := new(UserGroupPrivateResponse)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/GetUserGroupRestricted", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userGroupServiceClient) UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*UserGroupPrivateResponse, error) {
-	out := new(UserGroupPrivateResponse)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/UpdateUserGroup", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userGroupServiceClient) DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *resonateUserGroupClient) DeleteUsergroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/DeleteUserGroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/DeleteUsergroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userGroupServiceClient) GetChildUserGroups(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*GroupedUserGroups, error) {
-	out := new(GroupedUserGroups)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/GetChildUserGroups", in, out, opts...)
+func (c *resonateUserGroupClient) ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error) {
+	out := new(UserGroupListResponse)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/ListUsersGroups", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userGroupServiceClient) GetParentUserGroups(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*GroupedUserGroups, error) {
-	out := new(GroupedUserGroups)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/GetParentUserGroups", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userGroupServiceClient) AddMember(ctx context.Context, in *UserGroupMembershipRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/AddMember", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userGroupServiceClient) DeleteMember(ctx context.Context, in *UserGroupMembershipRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/DeleteMember", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userGroupServiceClient) SearchUserGroups(ctx context.Context, in *Query, opts ...grpc.CallOption) (*SearchResults, error) {
-	out := new(SearchResults)
-	err := c.cc.Invoke(ctx, "/user.UserGroupService/SearchUserGroups", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// UserGroupServiceServer is the server API for UserGroupService service.
-// All implementations should embed UnimplementedUserGroupServiceServer
+// ResonateUserGroupServer is the server API for ResonateUserGroup service.
+// All implementations should embed UnimplementedResonateUserGroupServer
 // for forward compatibility
-type UserGroupServiceServer interface {
-	CreateUserGroup(context.Context, *UserGroupCreateRequest) (*UserGroupPrivateResponse, error)
+type ResonateUserGroupServer interface {
+	AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error)
+	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+	UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error)
+	//GetUser provides a public level of information about a user
 	GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error)
-	GetUserGroupRestricted(context.Context, *UserGroupRequest) (*UserGroupPrivateResponse, error)
-	UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*UserGroupPrivateResponse, error)
-	DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error)
-	GetChildUserGroups(context.Context, *UserGroupRequest) (*GroupedUserGroups, error)
-	GetParentUserGroups(context.Context, *UserGroupRequest) (*GroupedUserGroups, error)
-	AddMember(context.Context, *UserGroupMembershipRequest) (*Empty, error)
-	DeleteMember(context.Context, *UserGroupMembershipRequest) (*Empty, error)
-	SearchUserGroups(context.Context, *Query) (*SearchResults, error)
+	//GetUserRestricted provides private level of information about a user
+	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
+	//   option (google.api.http) = {
+	//     // Route to this method from GET requests to /api/v1/restricted/user/{id}
+	//     get: "/api/v1/restricted/user/{id}"
+	//   };
+	//   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+	//     summary: "Get a user's restricted information"
+	//     description: "Get user profile from the server including private information."
+	//     tags: "Users"
+	//   };
+	// }
+	DeleteUsergroup(context.Context, *UserGroupRequest) (*Empty, error)
+	ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
 }
 
-// UnimplementedUserGroupServiceServer should be embedded to have forward compatible implementations.
-type UnimplementedUserGroupServiceServer struct {
+// UnimplementedResonateUserGroupServer should be embedded to have forward compatible implementations.
+type UnimplementedResonateUserGroupServer struct {
 }
 
-func (UnimplementedUserGroupServiceServer) CreateUserGroup(context.Context, *UserGroupCreateRequest) (*UserGroupPrivateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUserGroup not implemented")
+func (UnimplementedResonateUserGroupServer) AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUserGroup not implemented")
 }
-func (UnimplementedUserGroupServiceServer) GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserGroup not implemented")
-}
-func (UnimplementedUserGroupServiceServer) GetUserGroupRestricted(context.Context, *UserGroupRequest) (*UserGroupPrivateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserGroupRestricted not implemented")
-}
-func (UnimplementedUserGroupServiceServer) UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*UserGroupPrivateResponse, error) {
+func (UnimplementedResonateUserGroupServer) UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserGroup not implemented")
 }
-func (UnimplementedUserGroupServiceServer) DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserGroup not implemented")
+func (UnimplementedResonateUserGroupServer) GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserGroup not implemented")
 }
-func (UnimplementedUserGroupServiceServer) GetChildUserGroups(context.Context, *UserGroupRequest) (*GroupedUserGroups, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetChildUserGroups not implemented")
+func (UnimplementedResonateUserGroupServer) DeleteUsergroup(context.Context, *UserGroupRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUsergroup not implemented")
 }
-func (UnimplementedUserGroupServiceServer) GetParentUserGroups(context.Context, *UserGroupRequest) (*GroupedUserGroups, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetParentUserGroups not implemented")
-}
-func (UnimplementedUserGroupServiceServer) AddMember(context.Context, *UserGroupMembershipRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddMember not implemented")
-}
-func (UnimplementedUserGroupServiceServer) DeleteMember(context.Context, *UserGroupMembershipRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMember not implemented")
-}
-func (UnimplementedUserGroupServiceServer) SearchUserGroups(context.Context, *Query) (*SearchResults, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchUserGroups not implemented")
+func (UnimplementedResonateUserGroupServer) ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsersGroups not implemented")
 }
 
-// UnsafeUserGroupServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserGroupServiceServer will
+// UnsafeResonateUserGroupServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ResonateUserGroupServer will
 // result in compilation errors.
-type UnsafeUserGroupServiceServer interface {
-	mustEmbedUnimplementedUserGroupServiceServer()
+type UnsafeResonateUserGroupServer interface {
+	mustEmbedUnimplementedResonateUserGroupServer()
 }
 
-func RegisterUserGroupServiceServer(s grpc.ServiceRegistrar, srv UserGroupServiceServer) {
-	s.RegisterService(&_UserGroupService_serviceDesc, srv)
+func RegisterResonateUserGroupServer(s grpc.ServiceRegistrar, srv ResonateUserGroupServer) {
+	s.RegisterService(&_ResonateUserGroup_serviceDesc, srv)
 }
 
-func _UserGroupService_CreateUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUserGroup_AddUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupCreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserGroupServiceServer).CreateUserGroup(ctx, in)
+		return srv.(ResonateUserGroupServer).AddUserGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserGroupService/CreateUserGroup",
+		FullMethod: "/user.ResonateUserGroup/AddUserGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).CreateUserGroup(ctx, req.(*UserGroupCreateRequest))
+		return srv.(ResonateUserGroupServer).AddUserGroup(ctx, req.(*UserGroupCreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserGroupService_GetUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserGroupRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserGroupServiceServer).GetUserGroup(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserGroupService/GetUserGroup",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).GetUserGroup(ctx, req.(*UserGroupRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserGroupService_GetUserGroupRestricted_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserGroupRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserGroupServiceServer).GetUserGroupRestricted(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserGroupService/GetUserGroupRestricted",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).GetUserGroupRestricted(ctx, req.(*UserGroupRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserGroupService_UpdateUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUserGroup_UpdateUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupUpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserGroupServiceServer).UpdateUserGroup(ctx, in)
+		return srv.(ResonateUserGroupServer).UpdateUserGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserGroupService/UpdateUserGroup",
+		FullMethod: "/user.ResonateUserGroup/UpdateUserGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).UpdateUserGroup(ctx, req.(*UserGroupUpdateRequest))
+		return srv.(ResonateUserGroupServer).UpdateUserGroup(ctx, req.(*UserGroupUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserGroupService_DeleteUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUserGroup_GetUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserGroupServiceServer).DeleteUserGroup(ctx, in)
+		return srv.(ResonateUserGroupServer).GetUserGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserGroupService/DeleteUserGroup",
+		FullMethod: "/user.ResonateUserGroup/GetUserGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).DeleteUserGroup(ctx, req.(*UserGroupRequest))
+		return srv.(ResonateUserGroupServer).GetUserGroup(ctx, req.(*UserGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserGroupService_GetChildUserGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUserGroup_DeleteUsergroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserGroupServiceServer).GetChildUserGroups(ctx, in)
+		return srv.(ResonateUserGroupServer).DeleteUsergroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserGroupService/GetChildUserGroups",
+		FullMethod: "/user.ResonateUserGroup/DeleteUsergroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).GetChildUserGroups(ctx, req.(*UserGroupRequest))
+		return srv.(ResonateUserGroupServer).DeleteUsergroup(ctx, req.(*UserGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserGroupService_GetParentUserGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserGroupRequest)
+func _ResonateUserGroup_ListUsersGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserGroupServiceServer).GetParentUserGroups(ctx, in)
+		return srv.(ResonateUserGroupServer).ListUsersGroups(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.UserGroupService/GetParentUserGroups",
+		FullMethod: "/user.ResonateUserGroup/ListUsersGroups",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).GetParentUserGroups(ctx, req.(*UserGroupRequest))
+		return srv.(ResonateUserGroupServer).ListUsersGroups(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserGroupService_AddMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserGroupMembershipRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserGroupServiceServer).AddMember(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserGroupService/AddMember",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).AddMember(ctx, req.(*UserGroupMembershipRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserGroupService_DeleteMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserGroupMembershipRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserGroupServiceServer).DeleteMember(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserGroupService/DeleteMember",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).DeleteMember(ctx, req.(*UserGroupMembershipRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserGroupService_SearchUserGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Query)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserGroupServiceServer).SearchUserGroups(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.UserGroupService/SearchUserGroups",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserGroupServiceServer).SearchUserGroups(ctx, req.(*Query))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _UserGroupService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "user.UserGroupService",
-	HandlerType: (*UserGroupServiceServer)(nil),
+var _ResonateUserGroup_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "user.ResonateUserGroup",
+	HandlerType: (*ResonateUserGroupServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateUserGroup",
-			Handler:    _UserGroupService_CreateUserGroup_Handler,
-		},
-		{
-			MethodName: "GetUserGroup",
-			Handler:    _UserGroupService_GetUserGroup_Handler,
-		},
-		{
-			MethodName: "GetUserGroupRestricted",
-			Handler:    _UserGroupService_GetUserGroupRestricted_Handler,
+			MethodName: "AddUserGroup",
+			Handler:    _ResonateUserGroup_AddUserGroup_Handler,
 		},
 		{
 			MethodName: "UpdateUserGroup",
-			Handler:    _UserGroupService_UpdateUserGroup_Handler,
+			Handler:    _ResonateUserGroup_UpdateUserGroup_Handler,
 		},
 		{
-			MethodName: "DeleteUserGroup",
-			Handler:    _UserGroupService_DeleteUserGroup_Handler,
+			MethodName: "GetUserGroup",
+			Handler:    _ResonateUserGroup_GetUserGroup_Handler,
 		},
 		{
-			MethodName: "GetChildUserGroups",
-			Handler:    _UserGroupService_GetChildUserGroups_Handler,
+			MethodName: "DeleteUsergroup",
+			Handler:    _ResonateUserGroup_DeleteUsergroup_Handler,
 		},
 		{
-			MethodName: "GetParentUserGroups",
-			Handler:    _UserGroupService_GetParentUserGroups_Handler,
-		},
-		{
-			MethodName: "AddMember",
-			Handler:    _UserGroupService_AddMember_Handler,
-		},
-		{
-			MethodName: "DeleteMember",
-			Handler:    _UserGroupService_DeleteMember_Handler,
-		},
-		{
-			MethodName: "SearchUserGroups",
-			Handler:    _UserGroupService_SearchUserGroups_Handler,
+			MethodName: "ListUsersGroups",
+			Handler:    _ResonateUserGroup_ListUsersGroups_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,52 +3,211 @@ syntax = "proto3";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "user/common.proto";
+import "user/user.proto";
 //import "tag.proto";
 
 
 package user;
 option go_package = "github.com/resonatecoop/user-api/proto/user";
 
-service UserGroupService {
-  rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
-  rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
-  rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
-  rpc UpdateUserGroup(UserGroupUpdateRequest) returns (UserGroupPrivateResponse);
-  rpc DeleteUserGroup(UserGroupRequest) returns (Empty);
 
-  rpc GetChildUserGroups(UserGroupRequest) returns (GroupedUserGroups);
-  rpc GetParentUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "2.0.2";
+    title: "Resonate Service Documentation: User Group";
+  };
+  external_docs: {
+    url: "https://github.com/resonatecoop/user-api";
+    description: "gRPC-gateway resonate-user-api repository";
+  }
+  security_definitions: {
+    security: {
+      key: "bearer"
+      value: {
+        type: TYPE_API_KEY
+        in: IN_HEADER
+        name: "Authorization"
+        description: "Authentication token, prefixed by Bearer: Bearer <token>"
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "bearer"
+    }
+  }
+  schemes: HTTPS;
+};
 
-  //rpc GetLabelUserGroups(UserGroupRequest) returns (GroupedUserGroups);
-  //rpc GetUserGroupTypes(Empty) returns (GroupTaxonomies);
+service ResonateUserGroup {
+  rpc AddUserGroup(UserGroupCreateRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/users
+      post: "/api/v1/usergroups"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add a user group"
+      description: "Add a user group to the server."
+      tags: "Usergroups"
+    };
+  }
+  //rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+  rpc UpdateUserGroup(UserGroupUpdateRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from PUT requests to /api/v1/user
+      patch: "/api/v1/usergroup/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update a user group"
+      description: "Update an existing user group record on the server."
+      tags: "Usergroups"
+    };
+  }
+  //rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+  // rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+  //   option (google.api.http) = {
+  //     // Route to this method from PUT requests to /api/v1/user
+  //     patch: "/api/v1/restricted/user/{id}"
+  //     body: "*"
+  //   };
+  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+  //     summary: "Update a user record for admins"
+  //     description: "Update an existing user record on the server including restricted information."
+  //     tags: "Users"
+  //   };
+  // }
 
-  //rpc AddRecommended(UserGroupRecommended) returns (Empty);
-  //rpc RemoveRecommended(UserGroupRecommended) returns (Empty);
+  //rpc ResetUserPassword(AddUserRequest) returns (Empty) {
+  // rpc ResetUserPassword(ResetUserPasswordRequest) returns (Empty) {
+  //   option (google.api.http) = {
+  //     // Route to this method from PUT requests to /api/v1/account
+  //     put: "/api/v1/account/password"
+  //     body: "*"
+  //   };
+  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+  //     summary: "Update a user's password"
+  //     description: "Update an existing user's password on the server."
+  //     tags: "Users Password"
+  //   };
+  // }
 
-  rpc AddMember(UserGroupMembershipRequest) returns (Empty);
-  rpc DeleteMember(UserGroupMembershipRequest) returns (Empty);
+  //GetUser provides a public level of information about a user
+  rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/user/{id}
+      get: "/api/v1/usergroup/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a user"
+      description: "Get a usergroup from the server."
+      tags: "Usergroup"
+    };
+  }
+  //GetUserRestricted provides private level of information about a user
+  // rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
+  //   option (google.api.http) = {
+  //     // Route to this method from GET requests to /api/v1/restricted/user/{id}
+  //     get: "/api/v1/restricted/user/{id}"
+  //   };
+  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+  //     summary: "Get a user's restricted information"
+  //     description: "Get user profile from the server including private information."
+  //     tags: "Users"
+  //   };
+  // }
+  rpc DeleteUsergroup(UserGroupRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
+      delete: "/api/v1/usergroup/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete usergroup"
+      description: "Delete a usergroup from the server."
+      tags: "Usergroup"
+    };
+  }
 
-  rpc SearchUserGroups(Query) returns (SearchResults);
+  rpc ListUsersGroups(UserRequest) returns (UserGroupListResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/usergroups
+      get: "/api/v1/usergroups/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List users user groups"
+      description: "List all user groups for a specific user on the server."
+      tags: "Usergroups"
+    };
+  }
+
+
+  // rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
+  // rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
+  // // rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
+  // rpc UpdateUserGroup(UserGroupUpdateRequest) returns (UserGroupPrivateResponse);
+  // rpc DeleteUserGroup(UserGroupRequest) returns (Empty);
+
+  // rpc GetChildUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+  // rpc GetParentUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+
+  // rpc GetLabelUserGroups(UserGroupRequest) returns (GroupedUserGroups);
+  // rpc GetUserGroupTypes(Empty) returns (GroupTaxonomies);
+
+  // //rpc AddRecommended(UserGroupRecommended) returns (Empty);
+  // //rpc RemoveRecommended(UserGroupRecommended) returns (Empty);
+
+  // rpc AddMember(UserGroupMembershipRequest) returns (Empty);
+  // rpc DeleteMember(UserGroupMembershipRequest) returns (Empty);
+
+  // rpc SearchUserGroups(Query) returns (SearchResults);
 }
 
 message UserGroupRequest {
-  string ID = 1; // required
+  string id = 1; // required
 }
 
+// message UserUserGroupsRequest {
+//   string ID = 1; // required
+// }
+
 message UserGroupMembershipRequest {
-  string GroupID = 1; // required
-  string MemberID = 2; //required
+  string group_id = 1; // required
+  string member_id = 2; //required
 }
+
+// message UserGroupListResponse {
+//   string id = 1; // required
+//   string display_name = 2; // required
+//   string description = 3;
+//   string short_bio = 4;
+//   string avatar = 5; // required
+//   string banner = 6; // required
+//   string owner_id = 7; // required
+//   string type_id = 8; // UUID required
+//   string group_email = 19;
+//   // repeated User followers = 9;
+//   // repeated UserGroup members = 10;
+//   // repeated UserGroup memberOfGroups = 11;
+//   // repeated Link links = 12;
+//   // repeated Tag tags = 13;
+//   // StreetAddress address = 14;
+//   // Privacy privacy = 15;
+//   // repeated RelatedUserGroup recommended_artists = 16;
+//   // map<string, string> publisher = 17;
+//   // map<string, string> pro = 18;
+// }
 
 message UserGroup {
   string ID = 1; // required
   string display_name = 2; // required
   string description = 3;
   string short_bio = 4;
-  bytes avatar = 5; // required
-  bytes banner = 6;
+  string avatar = 5; // required
+  string banner = 6;
   string owner_id = 7; // required
-  GroupTaxonomy type = 8; // required
+  string type_id = 8; // UUID required
   repeated User followers = 9;
   repeated UserGroup members = 10;
   repeated UserGroup memberOfGroups = 11;
@@ -57,73 +216,82 @@ message UserGroup {
   StreetAddress address = 14;
   Privacy privacy = 15;
   repeated RelatedUserGroup recommended_artists = 16;
-  map<string, string> publisher = 17;
-  map<string, string> pro = 18;
-  string group_email_address = 19;
+  // map<string, string> publisher = 17;
+  // map<string, string> pro = 18;
+  string group_email = 17;
 }
 
 message UserGroupCreateRequest {
   string display_name = 2; // required
-  string description = 3;
-  string short_bio = 4;
-  bytes avatar = 5; // required
-  bytes banner = 6;
-  string owner_id = 7; // required
-  GroupTaxonomy type = 8; // required
-  repeated User followers = 9;
-  repeated UserGroup members = 10;
-  repeated UserGroup memberOfGroups = 11;
-  repeated Link links = 12;
-  repeated Tag tags = 13;
-  StreetAddress address = 14;
-  Privacy privacy = 15;
-  repeated RelatedUserGroup recommended_artists = 16;
-  map<string, string> publisher = 17;
-  map<string, string> pro = 18;
-  string group_email_address = 19;
+  string description = 3; // optional
+  string short_bio = 4; // optional 
+  string avatar = 5; // UUID
+  string banner = 6; // UUID
+  string owner_id = 7; // UUID required
+  string type_id = 8; // required UUID
+  repeated Tag tags = 9; // optional UUIDs
+  string group_email = 10; // optional
+  // repeated User followers = 9;
+  // repeated UserGroup members = 10;
+  // repeated UserGroup memberOfGroups = 11;
+  // repeated Link links = 12;
+  //StreetAddress address = 14;
+  //Privacy privacy = 15;
+  //repeated RelatedUserGroup recommended_artists = 16;
+  //map<string, string> publisher = 17;
+  //map<string, string> pro = 18;
 }
 
 message UserGroupUpdateRequest {
-  string ID = 1; // required
-  string display_name = 2; // required
-  string description = 3;
-  string short_bio = 4;
-  bytes avatar = 5; // required
-  bytes banner = 6;
-  string owner_id = 7; // required
-  GroupTaxonomy type = 8; // required
-  repeated User followers = 9;
-  repeated UserGroup members = 10;
-  repeated UserGroup memberOfGroups = 11;
-  repeated Link links = 12;
-  repeated Tag tags = 13;
-  StreetAddress address = 14;
-  Privacy privacy = 15;
-  repeated RelatedUserGroup recommended_artists = 16;
-  map<string, string> publisher = 17;
-  map<string, string> pro = 18;
-  string group_email_address = 19;
+  string id = 1; // required
+  optional string display_name = 2;
+  optional string description = 3;
+  optional string short_bio = 4;
+  optional string avatar = 5; 
+  optional string banner = 6;
+  optional string type_id = 7;
+  optional string group_email = 9;
+  optional string owner_id = 10;
+  //optional StreetAddress address = 8;
+  //optional string owner_id = 7; // required
+
+  // repeated User followers = 9;
+  // repeated UserGroup members = 10;
+  // repeated UserGroup memberOfGroups = 11;
+  // repeated Link links = 12;
+  // repeated Tag tags = 13;
+  
+  // Privacy privacy = 15;
+  // repeated RelatedUserGroup recommended_artists = 16;
+  // map<string, string> publisher = 17;
+  // map<string, string> pro = 18;
+  
 }
 
 message UserGroupPrivateResponse {
-  string display_name = 1; // required
-  string description = 2;
-  string short_bio = 3;
-  bytes avatar = 4; // required
-  bytes banner = 5;
-  string owner_id = 6; // required
-  GroupTaxonomy type = 7; // required
-  repeated User followers = 8;
-  repeated UserGroup members = 9;
-  repeated UserGroup memberOfGroups = 10;
-  repeated Link links = 11;
-  repeated Tag tags = 12;
-  StreetAddress address = 13;
-  Privacy privacy = 14;
-  repeated RelatedUserGroup recommended_artists = 15;
-  map<string, string> publisher = 16;
-  map<string, string> pro = 17;
-  string group_email_address = 18;
+  string id = 1;
+  string display_name = 2; // required
+  string description = 3;
+  string short_bio = 4;
+  string avatar = 5; // required
+  string banner = 6;
+  string owner_id = 7; // required
+  string type_id = 8; // required
+  // repeated string followers = 9;
+  // repeated string members = 10;
+  // repeated string memberOfGroups = 11;
+  // repeated string links = 12;
+  // repeated string tags = 13;
+//  StreetAddress address = 13;
+  // Privacy privacy = 14;
+  //repeated RelatedUserGroup recommended_artists = 15;
+  //map<string, string> publisher = 16;
+  //map<string, string> pro = 17;
+  string group_email = 18;
+}
+
+message UserGroupListResponse {
+  repeated UserGroupPrivateResponse usergroup = 1;
 }
 
 
@@ -131,40 +299,20 @@ message UserGroupPublicResponse {
   string display_name = 2; // required
   string description = 3;
   string short_bio = 4;
-  bytes avatar = 5; // required
-  bytes banner = 6;
-  GroupTaxonomy type = 8; // required
-  repeated User followers = 9;
-  repeated UserGroup members = 10;
-  repeated UserGroup memberOfGroups = 11;
-  repeated Link links = 12;
-  repeated Tag tags = 13;
-  repeated RelatedUserGroup recommended_artists = 17;
-  map<string, string> publisher = 21;
-  map<string, string> pro = 22;
-  string group_email_address = 23;
+  string avatar = 5; // required
+  string banner = 6;
+  int32 type_id = 8; // required
+  repeated string followers = 9;
+  repeated string members = 10;
+  repeated string memberOfGroups = 11;
+  repeated string links = 12;
+  repeated string tags = 13;
+  // repeated RelatedUserGroup recommended_artists = 17;
+  // map<string, string> publisher = 21;
+  // map<string, string> pro = 22;
+  string group_email = 23;
 }
 
-// message TrackAnalytics {
-//   string id = 1;
-//   string title = 2;
-//   int32 total_plays = 3;
-//   int32 paid_plays = 4;
-//   int32 free_plays = 5;
-//   float total_credits = 6;
-//   float user_group_credits = 7;
-//   float resonate_credits = 8;
-// }
-
-// message LabelTrackAnalytics {
-//   RelatedUserGroup user_group = 1;
-//   repeated TrackAnalytics tracks = 2;
-// }
-
-// message UserGroupTrackAnalytics {
-//   repeated TrackAnalytics artist_track_analytics = 1;
-//   repeated LabelTrackAnalytics label_track_analytics = 2;
-// }
 
 message UserGroupRecommended {
   string user_group_id = 1;
@@ -173,7 +321,7 @@ message UserGroupRecommended {
 
 message UserGroupMembers {
   string user_group_id = 1;
-  repeated UserGroup members = 2;
+  repeated string members = 2;
 }
 
 message GroupTaxonomy {

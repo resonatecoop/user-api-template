@@ -24,11 +24,6 @@ func (this *UserGroupMembershipRequest) Validate() error {
 	return nil
 }
 func (this *UserGroup) Validate() error {
-	if this.Type != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Type); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Type", err)
-		}
-	}
 	for _, item := range this.Followers {
 		if item != nil {
 			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
@@ -81,44 +76,9 @@ func (this *UserGroup) Validate() error {
 			}
 		}
 	}
-	// Validation of proto3 map<> fields is unsupported.
-	// Validation of proto3 map<> fields is unsupported.
 	return nil
 }
 func (this *UserGroupCreateRequest) Validate() error {
-	if this.Type != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Type); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Type", err)
-		}
-	}
-	for _, item := range this.Followers {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Followers", err)
-			}
-		}
-	}
-	for _, item := range this.Members {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Members", err)
-			}
-		}
-	}
-	for _, item := range this.MemberOfGroups {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("MemberOfGroups", err)
-			}
-		}
-	}
-	for _, item := range this.Links {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Links", err)
-			}
-		}
-	}
 	for _, item := range this.Tags {
 		if item != nil {
 			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
@@ -126,214 +86,31 @@ func (this *UserGroupCreateRequest) Validate() error {
 			}
 		}
 	}
-	if this.Address != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Address); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Address", err)
-		}
-	}
-	if this.Privacy != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Privacy); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Privacy", err)
-		}
-	}
-	for _, item := range this.RecommendedArtists {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("RecommendedArtists", err)
-			}
-		}
-	}
-	// Validation of proto3 map<> fields is unsupported.
-	// Validation of proto3 map<> fields is unsupported.
 	return nil
 }
 func (this *UserGroupUpdateRequest) Validate() error {
-	if this.Type != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Type); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Type", err)
-		}
-	}
-	for _, item := range this.Followers {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Followers", err)
-			}
-		}
-	}
-	for _, item := range this.Members {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Members", err)
-			}
-		}
-	}
-	for _, item := range this.MemberOfGroups {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("MemberOfGroups", err)
-			}
-		}
-	}
-	for _, item := range this.Links {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Links", err)
-			}
-		}
-	}
-	for _, item := range this.Tags {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Tags", err)
-			}
-		}
-	}
-	if this.Address != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Address); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Address", err)
-		}
-	}
-	if this.Privacy != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Privacy); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Privacy", err)
-		}
-	}
-	for _, item := range this.RecommendedArtists {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("RecommendedArtists", err)
-			}
-		}
-	}
-	// Validation of proto3 map<> fields is unsupported.
-	// Validation of proto3 map<> fields is unsupported.
 	return nil
 }
 func (this *UserGroupPrivateResponse) Validate() error {
-	if this.Type != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Type); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Type", err)
-		}
-	}
-	for _, item := range this.Followers {
+	return nil
+}
+func (this *UserGroupListResponse) Validate() error {
+	for _, item := range this.Usergroup {
 		if item != nil {
 			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Followers", err)
+				return github_com_mwitkow_go_proto_validators.FieldError("Usergroup", err)
 			}
 		}
 	}
-	for _, item := range this.Members {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Members", err)
-			}
-		}
-	}
-	for _, item := range this.MemberOfGroups {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("MemberOfGroups", err)
-			}
-		}
-	}
-	for _, item := range this.Links {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Links", err)
-			}
-		}
-	}
-	for _, item := range this.Tags {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Tags", err)
-			}
-		}
-	}
-	if this.Address != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Address); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Address", err)
-		}
-	}
-	if this.Privacy != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Privacy); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Privacy", err)
-		}
-	}
-	for _, item := range this.RecommendedArtists {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("RecommendedArtists", err)
-			}
-		}
-	}
-	// Validation of proto3 map<> fields is unsupported.
-	// Validation of proto3 map<> fields is unsupported.
 	return nil
 }
 func (this *UserGroupPublicResponse) Validate() error {
-	if this.Type != nil {
-		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Type); err != nil {
-			return github_com_mwitkow_go_proto_validators.FieldError("Type", err)
-		}
-	}
-	for _, item := range this.Followers {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Followers", err)
-			}
-		}
-	}
-	for _, item := range this.Members {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Members", err)
-			}
-		}
-	}
-	for _, item := range this.MemberOfGroups {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("MemberOfGroups", err)
-			}
-		}
-	}
-	for _, item := range this.Links {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Links", err)
-			}
-		}
-	}
-	for _, item := range this.Tags {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Tags", err)
-			}
-		}
-	}
-	for _, item := range this.RecommendedArtists {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("RecommendedArtists", err)
-			}
-		}
-	}
-	// Validation of proto3 map<> fields is unsupported.
-	// Validation of proto3 map<> fields is unsupported.
 	return nil
 }
 func (this *UserGroupRecommended) Validate() error {
 	return nil
 }
 func (this *UserGroupMembers) Validate() error {
-	for _, item := range this.Members {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Members", err)
-			}
-		}
-	}
 	return nil
 }
 func (this *GroupTaxonomy) Validate() error {

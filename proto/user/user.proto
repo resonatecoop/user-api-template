@@ -45,8 +45,8 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 service ResonateUser {
 
-  //rpc AddUser(AddUserRequest) returns (User) {
-  rpc AddUser(AddUserRequest) returns (Empty) {
+  //rpc AddUser(UserAddRequest) returns (User) {
+  rpc AddUser(UserAddRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
       post: "/api/v1/users"
@@ -58,8 +58,8 @@ service ResonateUser {
       tags: "Users"
     };
   }
-  //rpc UpdateUser(UpdateUserRequest) returns (Empty) {
-  rpc UpdateUser(UpdateUserRequest) returns (Empty) {
+  //rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+  rpc UpdateUser(UserUpdateRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from PUT requests to /api/v1/user
       patch: "/api/v1/user/{id}"
@@ -71,8 +71,8 @@ service ResonateUser {
       tags: "Users"
     };
   }
-  //rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
-  rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
+  //rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
+  rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from PUT requests to /api/v1/user
       patch: "/api/v1/restricted/user/{id}"
@@ -85,19 +85,19 @@ service ResonateUser {
     };
   }
 
-  //rpc ResetUserPassword(AddUserRequest) returns (Empty) {
-  rpc ResetUserPassword(ResetUserPasswordRequest) returns (Empty) {
-    option (google.api.http) = {
-      // Route to this method from PUT requests to /api/v1/account
-      put: "/api/v1/account/password"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Update a user's password"
-      description: "Update an existing user's password on the server."
-      tags: "Users Password"
-    };
-  }
+  // //rpc ResetUserPassword(AddUserRequest) returns (Empty) {
+  // rpc ResetUserPassword(ResetUserPasswordRequest) returns (Empty) {
+  //   option (google.api.http) = {
+  //     // Route to this method from PUT requests to /api/v1/account
+  //     put: "/api/v1/account/password"
+  //     body: "*"
+  //   };
+  //   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+  //     summary: "Update a user's password"
+  //     description: "Update an existing user's password on the server."
+  //     tags: "Users Password"
+  //   };
+  // }
 
   //GetUser provides a public level of information about a user
   rpc GetUser(UserRequest) returns (UserPublicResponse) {
@@ -151,12 +151,16 @@ message UserRequest {
   string id = 1;
 }
 
+message UserOptionalRequest {
+  optional string id = 1;
+}
+
 message ResetUserPasswordRequest {
   string username = 1;
   string password = 2;
 }
 
-message UpdateUserRequest {
+message UserUpdateRequest {
   string id = 1; // required
   optional string username = 2;
   optional string full_name = 3; 
@@ -173,7 +177,7 @@ message UpdateUserRequest {
   //StreetAddress residence_address = 14;
 }
 
-message UpdateUserRestrictedRequest {
+message UserUpdateRestrictedRequest {
   string id = 1; // required
   optional string username = 2; 
   optional string full_name = 3; 
@@ -199,11 +203,15 @@ message UserPrivateResponse {
   string full_name = 3; // required
   string first_name = 4;
   string last_name = 5;
-  bool member = 6;
-  int32 role_id = 7;
-  int32 tenant_id = 8;
-  bool newsletter_notification = 9;
-  repeated string followed_groups = 10;
+  string country = 6;
+  bool email_confirmed = 7;
+  bool member = 8;
+  int32 role_id = 9;
+  int32 tenant_id = 10;
+  bool newsletter_notification = 11;
+  repeated string personas = 12;
+  repeated string owned_groups = 13;
+  repeated string followed_groups = 14;
   //string email = 3; // required
   //bytes avatar = 9;
   //string display_name = 4; // required TODO remove
@@ -212,17 +220,20 @@ message UserPrivateResponse {
 }
 
 message UserPublicResponse {
-  //string username = 2; // required
-  string full_name = 1; // required
-  string first_name = 2;
-  string last_name = 3;
-  bool member = 4;
-  repeated string followed_groups = 5;
+  string username = 1; // required
+  string full_name = 2; // required
+  string first_name = 3;
+  string last_name = 4;
+  string country = 5;
+  bool member = 6;
+  repeated string personas = 7;
+  repeated string owned_groups = 8;
+  repeated string followed_groups = 9;
   //bytes avatar = 9;
   //string display_name = 4; // required TODO remove
 }
 
-message AddUserRequest {
+message UserAddRequest {
   string username = 1; // required
   string full_name = 2; // required
   string first_name = 3;

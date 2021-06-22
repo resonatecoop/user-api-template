@@ -10,8 +10,8 @@ import (
 	fmt "fmt"
 	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "google.golang.org/genproto/googleapis/api/annotations"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
 )
 
@@ -23,13 +23,16 @@ var _ = math.Inf
 func (this *UserRequest) Validate() error {
 	return nil
 }
+func (this *UserOptionalRequest) Validate() error {
+	return nil
+}
 func (this *ResetUserPasswordRequest) Validate() error {
 	return nil
 }
-func (this *UpdateUserRequest) Validate() error {
+func (this *UserUpdateRequest) Validate() error {
 	return nil
 }
-func (this *UpdateUserRestrictedRequest) Validate() error {
+func (this *UserUpdateRestrictedRequest) Validate() error {
 	return nil
 }
 func (this *UserPrivateResponse) Validate() error {
@@ -38,7 +41,7 @@ func (this *UserPrivateResponse) Validate() error {
 func (this *UserPublicResponse) Validate() error {
 	return nil
 }
-func (this *AddUserRequest) Validate() error {
+func (this *UserAddRequest) Validate() error {
 	return nil
 }
 func (this *UserListResponse) Validate() error {

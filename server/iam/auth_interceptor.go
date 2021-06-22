@@ -197,7 +197,7 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 			var id string
 			userReq, ok := req.(*pbUser.UserRequest)
 			if !ok {
-				userUpdateReq, ok := req.(*pbUser.UpdateUserRequest)
+				userUpdateReq, ok := req.(*pbUser.UserUpdateRequest)
 				if ok {
 					id = userUpdateReq.Id
 				} else {
