@@ -7,8 +7,8 @@ import (
 	fmt "fmt"
 	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
 )
 
@@ -113,10 +113,10 @@ func (this *UserGroupRecommended) Validate() error {
 func (this *UserGroupMembers) Validate() error {
 	return nil
 }
-func (this *GroupTaxonomy) Validate() error {
+func (this *Group) Validate() error {
 	return nil
 }
-func (this *GroupTaxonomies) Validate() error {
+func (this *GroupTypes) Validate() error {
 	for _, item := range this.Types {
 		if item != nil {
 			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {

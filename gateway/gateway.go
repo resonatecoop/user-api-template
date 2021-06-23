@@ -57,10 +57,15 @@ func Run(dialAddr string) error {
 
 	gwmux := runtime.NewServeMux()
 	err = pbUser.RegisterResonateUserHandler(context.Background(), gwmux, conn)
+
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
+	err = pbUser.RegisterResonateUserGroupHandler(context.Background(), gwmux, conn)
 
+	if err != nil {
+		return fmt.Errorf("failed to register gateway: %w", err)
+	}
 	// gwmux := runtime.NewServeMux()
 	// err = pbUser.RegisterResonateUserGroupHandler(context.Background(), gwmux, conn)
 	// if err != nil {

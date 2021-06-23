@@ -94,14 +94,14 @@ service ResonateUserGroup {
   //   };
   // }
 
-  //GetUser provides a public level of information about a user
+  //GetUserGroup provides a public level of information about a user group
   rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse) {
     option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/user/{id}
+      // Route to this method from GET requests to /api/v1/usergroup/{id}
       get: "/api/v1/usergroup/{id}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get a user"
+      summary: "Get a user group"
       description: "Get a usergroup from the server."
       tags: "Usergroup"
     };
@@ -118,7 +118,7 @@ service ResonateUserGroup {
   //     tags: "Users"
   //   };
   // }
-  rpc DeleteUsergroup(UserGroupRequest) returns (Empty) {
+  rpc DeleteUserGroup(UserGroupRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
       delete: "/api/v1/usergroup/{id}"
@@ -207,7 +207,7 @@ message UserGroup {
   string avatar = 5; // required
   string banner = 6;
   string owner_id = 7; // required
-  string type_id = 8; // UUID required
+  string group_type = 8; // UUID required
   repeated User followers = 9;
   repeated UserGroup members = 10;
   repeated UserGroup memberOfGroups = 11;
@@ -228,7 +228,7 @@ message UserGroupCreateRequest {
   string avatar = 5; // UUID
   string banner = 6; // UUID
   string owner_id = 7; // UUID required
-  string type_id = 8; // required UUID
+  string group_type = 8; // required UUID
   repeated Tag tags = 9; // optional UUIDs
   string group_email = 10; // optional
   // repeated User followers = 9;
@@ -249,7 +249,7 @@ message UserGroupUpdateRequest {
   optional string short_bio = 4;
   optional string avatar = 5; 
   optional string banner = 6;
-  optional string type_id = 7;
+  optional string group_type = 7;
   optional string group_email = 9;
   optional string owner_id = 10;
   //optional StreetAddress address = 8;
@@ -276,7 +276,7 @@ message UserGroupPrivateResponse {
   string avatar = 5; // required
   string banner = 6;
   string owner_id = 7; // required
-  string type_id = 8; // required
+  string group_type = 8; // required
   // repeated string followers = 9;
   // repeated string members = 10;
   // repeated string memberOfGroups = 11;
@@ -301,7 +301,7 @@ message UserGroupPublicResponse {
   string short_bio = 4;
   string avatar = 5; // required
   string banner = 6;
-  int32 type_id = 8; // required
+  string group_type = 8; // required
   repeated string followers = 9;
   repeated string members = 10;
   repeated string memberOfGroups = 11;
@@ -324,20 +324,20 @@ message UserGroupMembers {
   repeated string members = 2;
 }
 
-message GroupTaxonomy {
+message Group {
   string ID = 1;
-  string type = 2;
-  string name = 3;
+  string name = 2;
+  string description = 3;
 }
 
-message GroupTaxonomies {
-  repeated GroupTaxonomy types = 1;
+message GroupTypes {
+  repeated Group types = 1;
 }
 
 message Link {
   string ID = 1;
   string platform = 2;
-  string type = 3;
+  string group_type = 3;
   string uri = 4;
   bool personal_data = 5;
 }

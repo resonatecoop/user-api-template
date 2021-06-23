@@ -29,6 +29,7 @@ import (
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	iamserver "github.com/resonatecoop/user-api/server/iam"
 	"github.com/resonatecoop/user-api/server/iam/secure"
+	usergroupserver "github.com/resonatecoop/user-api/server/usergroups"
 	userserver "github.com/resonatecoop/user-api/server/users"
 
 	//userserver_test "github.com/resonatecoop/user-api/server/user/userserver_test"
@@ -140,7 +141,7 @@ var runServerCommand = &cli.Command{
 		)
 
 		pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
-		//	pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db, secureSvc))
+		pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db))
 
 		// iamserver.NewLoggingService(iamServer, zerolog)
 
@@ -282,6 +283,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							models := []interface{}{
 								(*model.Role)(nil),
 								(*model.Scope)(nil),
+								(*model.GroupType)(nil),
 							}
 
 							for _, this_model := range models {
@@ -320,9 +322,9 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 								(*model.Role)(nil),
 								(*model.User)(nil),
 								(*model.Link)(nil),
-								(*model.UserGroupPrivacy)(nil),
-								(*model.GroupTaxonomy)(nil),
-								(*model.UserGroupMember)(nil),
+								// (*model.UserGroupPrivacy)(nil),
+								(*model.GroupType)(nil),
+								// (*model.UserGroupMember)(nil),
 								(*model.EmailToken)(nil),
 								(*model.EmailTokenClaims)(nil),
 								(*model.Email)(nil),
@@ -462,6 +464,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							models := []interface{}{
 								(*model.Role)(nil),
 								(*model.Scope)(nil),
+								(*model.GroupType)(nil),
 							}
 
 							for _, this_model := range models {
@@ -500,9 +503,9 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 								(*model.Role)(nil),
 								(*model.User)(nil),
 								(*model.Link)(nil),
-								(*model.UserGroupPrivacy)(nil),
-								(*model.GroupTaxonomy)(nil),
-								(*model.UserGroupMember)(nil),
+								// (*model.UserGroupPrivacy)(nil),
+								(*model.GroupType)(nil),
+								// (*model.UserGroupMember)(nil),
 								(*model.EmailToken)(nil),
 								(*model.EmailTokenClaims)(nil),
 								(*model.Email)(nil),

@@ -125,9 +125,8 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 func (s *Server) DeleteUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser.Empty, error) {
 	u := new(model.User)
 
-	_, err := s.db.NewUpdate().
+	_, err := s.db.NewDelete().
 		Model(u).
-		Set("deleted_at = ?", time.Now().UTC()).
 		Where("id = ?", user.Id).
 		Exec(ctx)
 

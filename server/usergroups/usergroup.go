@@ -1,4 +1,4 @@
-package userserver
+package usergroupserver
 
 import (
 	"context"
@@ -8,10 +8,21 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
+	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 )
+
+// Server implements the UserService
+type Server struct {
+	db *bun.DB
+}
+
+// New creates an instance of our server
+func New(db *bun.DB) *Server {
+	return &Server{db: db}
+}
 
 // AddUser gets a user to the in-memory store.
 func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCreateRequest) (*pbUser.Empty, error) {
@@ -25,30 +36,36 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 	OwnerUUID, err := uuid.Parse(usergroup.OwnerId)
 
 	if err != nil {
-		return nil, fmt.Errorf("supplied user_id is not a valid UUID")
+		return nil, errors.New("supplied user_id is not a valid UUID")
 	}
 
-	TypeUUID, err := uuid.Parse(usergroup.TypeId)
+	group := new(model.GroupType)
+
+	err = s.db.NewSelect().
+		Model(group).
+		Where("name = ?", usergroup.GroupType).
+		Scan(ctx)
 
 	if err != nil {
-		return nil, fmt.Errorf("supplied type is not a valid UUID")
+		return nil, errors.New("supplied group type is not valid")
 	}
 
 	AvatarUUID, err := uuid.Parse(usergroup.Avatar)
 
 	if usergroup.Avatar != "" && err != nil {
-		return nil, fmt.Errorf("supplied avatar is not a valid UUID")
+		return nil, errors.New("supplied avatar is not a valid UUID")
 	}
 
 	BannerUUID, err := uuid.Parse(usergroup.Banner)
 
 	if usergroup.Banner != "" && err != nil {
-		return nil, fmt.Errorf("supplied banner is not a valid UUID")
+		return nil, errors.New("supplied banner is not a valid UUID")
 	}
 
 	newusergroup := &model.UserGroup{
 		OwnerID:     OwnerUUID,
-		TypeID:      TypeUUID,
+		TypeID:      group.ID,
+		Type:        group,
 		DisplayName: usergroup.DisplayName,
 		Description: usergroup.Description,
 		ShortBio:    usergroup.ShortBio,
@@ -89,8 +106,19 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	if UserGroupUpdateRequest.ShortBio != nil {
 		updatedUserGroupValues["short_bio"] = *UserGroupUpdateRequest.ShortBio
 	}
-	if UserGroupUpdateRequest.TypeId != nil {
-		updatedUserGroupValues["type_id"] = *UserGroupUpdateRequest.TypeId
+	if UserGroupUpdateRequest.GroupType != nil {
+		group := new(model.GroupType)
+
+		err := s.db.NewSelect().
+			Model(group).
+			Where("name = ?", UserGroupUpdateRequest.GroupType).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, errors.New("supplied group type is not valid")
+		}
+
+		updatedUserGroupValues["type_id"] = group.ID
 	}
 	if UserGroupUpdateRequest.OwnerId != nil {
 		updatedUserGroupValues["owner_id"] = *UserGroupUpdateRequest.OwnerId
@@ -104,7 +132,7 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 
 	updatedUserGroupValues["updated_at"] = time.Now().UTC()
 
-	rows, err := s.db.NewUpdate().Model(&updatedUserGroupValues).TableExpr("users").Where("id = ?", UserGroupUpdateRequest.Id).Exec(ctx)
+	rows, err := s.db.NewUpdate().Model(&updatedUserGroupValues).TableExpr("user_groups").Where("id = ?", UserGroupUpdateRequest.Id).Exec(ctx)
 
 	if err != nil {
 		return nil, err
@@ -123,9 +151,8 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 func (s *Server) DeleteUserGroup(ctx context.Context, usergroup *pbUser.UserGroupRequest) (*pbUser.Empty, error) {
 	u := new(model.UserGroup)
 
-	_, err := s.db.NewUpdate().
+	_, err := s.db.NewDelete().
 		Model(u).
-		Set("deleted_at = ?", time.Now().UTC()).
 		Where("id = ?", usergroup.Id).
 		Exec(ctx)
 
@@ -134,6 +161,42 @@ func (s *Server) DeleteUserGroup(ctx context.Context, usergroup *pbUser.UserGrou
 	}
 
 	return &pbUser.Empty{}, nil
+}
+
+// GetUserGroup returns details of single user group
+func (s *Server) GetUserGroup(ctx context.Context, usergrouprequest *pbUser.UserGroupRequest) (*pbUser.UserGroupPublicResponse, error) {
+
+	usergroup := new(model.UserGroup)
+
+	err := s.db.NewSelect().
+		Model(usergroup).
+		Where("id = ?", usergrouprequest.Id).
+		Scan(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	group := new(model.GroupType)
+
+	err = s.db.NewSelect().
+		Model(group).
+		Where("id = ?", usergroup.TypeID).
+		Scan(ctx)
+
+	if err != nil {
+		return nil, errors.New("supplied group type is not valid")
+	}
+
+	return &pbUser.UserGroupPublicResponse{
+		DisplayName: usergroup.DisplayName,
+		GroupType:   group.Name,
+		ShortBio:    usergroup.ShortBio,
+		Description: usergroup.Description,
+		Avatar:      uuid.UUID.String(usergroup.Avatar),
+		Banner:      uuid.UUID.String(usergroup.Banner),
+		GroupEmail:  usergroup.GroupEmail,
+	}, nil
 }
 
 // ListUsers lists all users in the store.
@@ -145,7 +208,6 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 	err := s.db.NewSelect().
 		Model(&usergroups).
 		Where("owner_id = ?", user.Id).
-		Where("deleted_at IS NOT NULL").
 		Scan(ctx)
 
 	if err != nil {
@@ -153,10 +215,22 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 	}
 
 	for _, usergroup := range usergroups {
+
+		group := new(model.GroupType)
+
+		err := s.db.NewSelect().
+			Model(group).
+			Where("id = ?", usergroup.TypeID).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, errors.New("supplied group type is not valid")
+		}
+
 		var result pbUser.UserGroupPrivateResponse
 		result.Id = uuid.UUID.String(usergroup.ID)
 		result.DisplayName = usergroup.DisplayName
-		result.TypeId = uuid.UUID.String(usergroup.TypeID)
+		result.GroupType = group.Name
 		result.ShortBio = usergroup.ShortBio
 		result.Description = usergroup.Description
 		result.Avatar = uuid.UUID.String(usergroup.Avatar)
@@ -171,15 +245,13 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 }
 
 func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergroup *pbUser.UserGroupCreateRequest) error {
-	if usergroup.OwnerId == "" || usergroup.OwnerId == uuid.Nil.String() || usergroup.TypeId == uuid.Nil.String() || usergroup.TypeId == "" || usergroup.DisplayName == "" {
+	if usergroup.OwnerId == "" || usergroup.OwnerId == uuid.Nil.String() || usergroup.DisplayName == "" {
 		var argument string
 		switch {
 		case usergroup.OwnerId == "":
 			argument = "owner_id"
 		case usergroup.OwnerId == uuid.Nil.String():
 			argument = "owner_id"
-		case usergroup.TypeId == "":
-			argument = "type"
 		case usergroup.DisplayName == "":
 			argument = "display_name"
 		}
@@ -203,8 +275,8 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 	}
 
 	err = s.db.NewSelect().
-		Model(new(model.GroupTaxonomy)).
-		Where("id = ?", usergroup.TypeId).
+		Model(new(model.GroupType)).
+		Where("name = ?", usergroup.GroupType).
 		Scan(ctx)
 
 	if err != nil {

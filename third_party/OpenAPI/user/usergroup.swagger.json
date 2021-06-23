@@ -50,7 +50,7 @@
     },
     "/api/v1/usergroup/{id}": {
       "get": {
-        "summary": "Get a user",
+        "summary": "Get a user group",
         "description": "Get a usergroup from the server.",
         "operationId": "ResonateUserGroup_GetUserGroup",
         "responses": {
@@ -82,7 +82,7 @@
       "delete": {
         "summary": "Delete usergroup",
         "description": "Delete a usergroup from the server.",
-        "operationId": "ResonateUserGroup_DeleteUsergroup",
+        "operationId": "ResonateUserGroup_DeleteUserGroup",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -250,7 +250,7 @@
         "ownerId": {
           "type": "string"
         },
-        "typeId": {
+        "groupType": {
           "type": "string"
         },
         "tags": {
@@ -299,7 +299,7 @@
         "ownerId": {
           "type": "string"
         },
-        "typeId": {
+        "groupType": {
           "type": "string"
         },
         "groupEmail": {
@@ -326,9 +326,8 @@
         "banner": {
           "type": "string"
         },
-        "typeId": {
-          "type": "integer",
-          "format": "int32"
+        "groupType": {
+          "type": "string"
         },
         "followers": {
           "type": "array",
@@ -387,7 +386,7 @@
         "banner": {
           "type": "string"
         },
-        "typeId": {
+        "groupType": {
           "type": "string"
         },
         "groupEmail": {

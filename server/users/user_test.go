@@ -58,7 +58,7 @@ func TestDeleteUser(T *testing.T) {
 	users := cases{
 		{Id: "243b4178-6f98-4bf1-bbb1-46b57a901816"},
 		{Id: "5253747c-2b8c-40e2-8a70-bab91348a9bd"},
-		{Id: "90b26113-37e0-456a-9f75-01db0eb550f8"},
+		{Id: "86a72db9-eb16-45ae-8003-ac37d8dc5cbb"},
 	}
 
 	var response *pbUser.UserListResponse

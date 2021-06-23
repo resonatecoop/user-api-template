@@ -20,7 +20,7 @@ type ResonateUserGroupClient interface {
 	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
-	//GetUser provides a public level of information about a user
+	//GetUserGroup provides a public level of information about a user group
 	GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
 	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
@@ -34,7 +34,7 @@ type ResonateUserGroupClient interface {
 	//     tags: "Users"
 	//   };
 	// }
-	DeleteUsergroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
+	DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
 	ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 }
 
@@ -73,9 +73,9 @@ func (c *resonateUserGroupClient) GetUserGroup(ctx context.Context, in *UserGrou
 	return out, nil
 }
 
-func (c *resonateUserGroupClient) DeleteUsergroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *resonateUserGroupClient) DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/DeleteUsergroup", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUserGroup/DeleteUserGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ type ResonateUserGroupServer interface {
 	AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error)
-	//GetUser provides a public level of information about a user
+	//GetUserGroup provides a public level of information about a user group
 	GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
 	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
@@ -112,7 +112,7 @@ type ResonateUserGroupServer interface {
 	//     tags: "Users"
 	//   };
 	// }
-	DeleteUsergroup(context.Context, *UserGroupRequest) (*Empty, error)
+	DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error)
 	ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
 }
 
@@ -129,8 +129,8 @@ func (UnimplementedResonateUserGroupServer) UpdateUserGroup(context.Context, *Us
 func (UnimplementedResonateUserGroupServer) GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserGroup not implemented")
 }
-func (UnimplementedResonateUserGroupServer) DeleteUsergroup(context.Context, *UserGroupRequest) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUsergroup not implemented")
+func (UnimplementedResonateUserGroupServer) DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserGroup not implemented")
 }
 func (UnimplementedResonateUserGroupServer) ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsersGroups not implemented")
@@ -201,20 +201,20 @@ func _ResonateUserGroup_GetUserGroup_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ResonateUserGroup_DeleteUsergroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUserGroup_DeleteUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResonateUserGroupServer).DeleteUsergroup(ctx, in)
+		return srv.(ResonateUserGroupServer).DeleteUserGroup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.ResonateUserGroup/DeleteUsergroup",
+		FullMethod: "/user.ResonateUserGroup/DeleteUserGroup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResonateUserGroupServer).DeleteUsergroup(ctx, req.(*UserGroupRequest))
+		return srv.(ResonateUserGroupServer).DeleteUserGroup(ctx, req.(*UserGroupRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -254,8 +254,8 @@ var _ResonateUserGroup_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ResonateUserGroup_GetUserGroup_Handler,
 		},
 		{
-			MethodName: "DeleteUsergroup",
-			Handler:    _ResonateUserGroup_DeleteUsergroup_Handler,
+			MethodName: "DeleteUserGroup",
+			Handler:    _ResonateUserGroup_DeleteUserGroup_Handler,
 		},
 		{
 			MethodName: "ListUsersGroups",

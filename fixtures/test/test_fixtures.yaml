@@ -18,8 +18,7 @@
       tenant_id: 0
       role_id: 5
       member: false
-    - id: 90b26113-37e0-456a-9f75-01db0eb550f8
-      created_at: '{{ now }}'
+    - created_at: '{{ now }}'
       username: john@coltrane.com
       full_name: John Coltrane
       first_name: John
@@ -60,7 +59,7 @@
       token: 'test_user_token'
     - created_at: '{{ now }}'
       client_id: 295be195-898c-4f0c-b6a0-8c62105f42de
-      user_id: 90b26113-37e0-456a-9f75-01db0eb550f8
+      user_id: 86a72db9-eb16-45ae-8003-ac37d8dc5cbb
       token: 'test_user_token_2'
 - model: Client
   rows:

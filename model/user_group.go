@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
-	"github.com/twitchtv/twirp"
 
 	// trackpb "user-api/rpc/track"
 	//tagpb "github.com/resonatecoop/user-api/proto/api"
@@ -14,8 +13,6 @@ import (
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 
 	uuid "github.com/google/uuid"
-
-	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
 
 // UserGroup represents a group of Users and maintains a set of metadata
@@ -27,8 +24,8 @@ type UserGroup struct {
 	GroupEmail     string
 	AddressID      uuid.UUID `bun:"type:uuid,notnull"` //for Country see User model
 	Address        *StreetAddress
-	TypeID         uuid.UUID `bun:"type:uuid,notnull"` //for Persona Type
-	Type           *GroupTaxonomy
+	TypeID         uuid.UUID `bun:"type:uuid,notnull"` //for e.g. Persona Type
+	Type           *GroupType
 	OwnerID        uuid.UUID   `bun:"type:uuid,notnull"`
 	Owner          *User       `bun:"rel:has-one"`
 	Links          []uuid.UUID `bun:",type:uuid[],array"`
@@ -272,42 +269,42 @@ type UserGroup struct {
 // 	return tx.Commit(), table
 // }
 
-func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Error) {
-	var userGroups []UserGroup
+// func SearchUserGroups(query string, db *pg.DB) (*pbUser.SearchResults, twirp.Error) {
+// 	var userGroups []UserGroup
 
-	pgerr := db.Model(&userGroups).
-		Column("user_group.id", "user_group.display_name", "user_group.avatar", "Privacy", "Type").
-		Where("to_tsvector('english'::regconfig, COALESCE(display_name, '') || ' ' || COALESCE(f_arr2str(tags), '')) @@ (plainto_tsquery('english'::regconfig, ?)) = true", query).
-		Where("privacy.private = false").
-		Select()
-	if pgerr != nil {
-		return nil, errorpkg.CheckError(pgerr, "user_group")
-	}
+// 	pgerr := db.Model(&userGroups).
+// 		Column("user_group.id", "user_group.display_name", "user_group.avatar", "Privacy", "Type").
+// 		Where("to_tsvector('english'::regconfig, COALESCE(display_name, '') || ' ' || COALESCE(f_arr2str(tags), '')) @@ (plainto_tsquery('english'::regconfig, ?)) = true", query).
+// 		Where("privacy.private = false").
+// 		Select()
+// 	if pgerr != nil {
+// 		return nil, errorpkg.CheckError(pgerr, "user_group")
+// 	}
 
-	var people []*pbUser.RelatedUserGroup
-	var artists []*pbUser.RelatedUserGroup
-	var labels []*pbUser.RelatedUserGroup
-	for _, userGroup := range userGroups {
-		searchUserGroup := &pbUser.RelatedUserGroup{
-			Id:          userGroup.ID.String(),
-			DisplayName: userGroup.DisplayName,
-			// Avatar:      userGroup.Avatar,
-		}
-		switch userGroup.Type.Type {
-		case "user":
-			people = append(people, searchUserGroup)
-		case "artist":
-			artists = append(artists, searchUserGroup)
-		case "label":
-			labels = append(labels, searchUserGroup)
-		}
-	}
-	return &pbUser.SearchResults{
-		People:  people,
-		Artists: artists,
-		Labels:  labels,
-	}, nil
-}
+// 	var people []*pbUser.RelatedUserGroup
+// 	var artists []*pbUser.RelatedUserGroup
+// 	var labels []*pbUser.RelatedUserGroup
+// 	for _, userGroup := range userGroups {
+// 		searchUserGroup := &pbUser.RelatedUserGroup{
+// 			Id:          userGroup.ID.String(),
+// 			DisplayName: userGroup.DisplayName,
+// 			// Avatar:      userGroup.Avatar,
+// 		}
+// 		switch userGroup.TypeID {
+// 		case "user":
+// 			people = append(people, searchUserGroup)
+// 		case "artist":
+// 			artists = append(artists, searchUserGroup)
+// 		case "label":
+// 			labels = append(labels, searchUserGroup)
+// 		}
+// 	}
+// 	return &pbUser.SearchResults{
+// 		People:  people,
+// 		Artists: artists,
+// 		Labels:  labels,
+// 	}, nil
+// }
 
 // func (u *UserGroup) Delete(tx *pg.Tx) (error, string) {
 // 	pgerr := tx.Model(u).
