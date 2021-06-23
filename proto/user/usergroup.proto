@@ -50,7 +50,7 @@ service ResonateUserGroup {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Add a user group"
       description: "Add a user group to the server."
-      tags: "Usergroups"
+      tags: "Usergroup"
     };
   }
   //rpc UpdateUser(UserUpdateRequest) returns (Empty) {
@@ -63,7 +63,7 @@ service ResonateUserGroup {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update a user group"
       description: "Update an existing user group record on the server."
-      tags: "Usergroups"
+      tags: "Usergroup"
     };
   }
   //rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
