@@ -44,7 +44,7 @@ service ResonateUserGroup {
   rpc AddUserGroup(UserGroupCreateRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
-      post: "/api/v1/usergroups"
+      post: "/api/v1/usergroup"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
