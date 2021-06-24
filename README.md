@@ -123,9 +123,13 @@ Now you can run the web server with `go run main.go runserver`.
 
 ## Docker!
 
-Build a container with `sudo docker build -t resonateuserapi .`
+Build a container with `docker build -t resonateuserapi .`
 
-Run container with `sudo docker run -p 11000:11000 -tid resonateuserapi`
+Run container with `docker run -p 11000:11000 -tid resonateuserapi`
+
+Check status with `docker container ls` and `docker logs <image>`
+
+(use sudo as required)
 
 ## Maintenance
 
