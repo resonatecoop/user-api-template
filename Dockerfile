@@ -1,11 +1,15 @@
 # Build stage
-FROM golang AS build-env
-ADD . /src/grpc-gateway-boilerplate
-ENV CGO_ENABLED=0
-RUN cd /src/grpc-gateway-boilerplate && go build -o /app
+FROM golang:latest
 
-# Production stage
-FROM scratch
-COPY --from=build-env /app /
+RUN mkdir /build
+WORKDIR /build
 
-ENTRYPOINT ["/app"]
+RUN export GO111MODULE=on
+RUN go get github.com/resonatecoop/user-api
+RUN cd /build && git clone https://github.com/resonatecoop/user-api
+
+RUN cd user-api && go build
+
+EXPOSE 11000
+
+ENTRYPOINT ["./docker-entrypoint.sh"]

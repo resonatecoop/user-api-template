@@ -8,13 +8,13 @@ import (
 )
 
 // AuthUser represents data stored in session/context for a user
-// type AuthUser struct {
-// 	ID       uuid.UUID
-// 	TenantID int32
-// 	Username string
-// 	Email    string
-// 	Role     AccessRole
-// }
+type AuthUser struct {
+	ID       uuid.UUID
+	TenantID int32
+	Username string
+	Email    string
+	Role     AccessRole
+}
 
 // User basic definition of a User and its meta
 type User struct {
