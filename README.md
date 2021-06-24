@@ -121,6 +121,12 @@ $  go test -timeout 30s -run ^TestDeleteUser$ github.com/resonatecoop/user-api/s
 
 Now you can run the web server with `go run main.go runserver`.
 
+## Docker!
+
+Build a container with `sudo docker build -t resonateuserapi .`
+
+Run container with `sudo docker run -p 11000:11000 -tid resonateuserapi`
+
 ## Maintenance
 
 Interfaces are designed in

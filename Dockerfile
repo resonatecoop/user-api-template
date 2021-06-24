@@ -2,6 +2,7 @@
 FROM golang:latest
 
 RUN mkdir /build
+
 WORKDIR /build
 
 RUN export GO111MODULE=on
@@ -12,4 +13,6 @@ RUN cd user-api && go build
 
 EXPOSE 11000
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+WORKDIR /build/user-api
+
+ENTRYPOINT ["sh", "docker-entrypoint.sh"]
