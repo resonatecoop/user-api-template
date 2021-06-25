@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/form3tech-oss/jwt-go"
+	jwt "github.com/form3tech-oss/jwt-go"
 	uuid "github.com/google/uuid"
 )
 
@@ -12,9 +12,9 @@ import (
 type EmailToken struct {
 	IDRecord
 	Reference   uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
-	EmailSent   bool      `bun:"index;not null"`
+	EmailSent   bool      `bun:",notnull,default:false"`
 	EmailSentAt *time.Time
-	ExpiresAt   time.Time `bun:"index;not null"`
+	ExpiresAt   time.Time `bun:",notnull"`
 }
 
 type EmailTokenClaims struct {
@@ -28,11 +28,6 @@ type Email struct {
 	Subject   string
 	Template  string
 }
-
-// // TableName specifies table name
-// func (ac *EmailToken) TableName() string {
-// 	return "oauth_email_tokens"
-// }
 
 // NewEmailToken creates new OauthEmailToken instance
 func NewOauthEmailToken(expiresIn *time.Duration) *EmailToken {

@@ -28,8 +28,6 @@ func init() {
 		(*model.GroupType)(nil),
 		//		(*model.UserGroupMember)(nil),
 		(*model.EmailToken)(nil),
-		(*model.EmailTokenClaims)(nil),
-		(*model.Email)(nil),
 		(*model.Client)(nil),
 		(*model.Scope)(nil),
 		(*model.RefreshToken)(nil),
