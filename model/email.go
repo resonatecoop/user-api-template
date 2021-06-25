@@ -11,7 +11,7 @@ import (
 // we derive redirect emails (email confirmation, password reset and such)
 type EmailToken struct {
 	IDRecord
-	Reference   uuid.UUID `bun:"type:uuid,default:uuid_generate_v4()"`
+	Reference   uuid.UUID `bun:"type:uuid,notnull,default:uuid_generate_v4()"`
 	EmailSent   bool      `bun:",notnull,default:false"`
 	EmailSentAt *time.Time
 	ExpiresAt   time.Time `bun:",notnull"`
