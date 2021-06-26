@@ -3,8 +3,9 @@ generate:
 	buf generate --path ./proto/user/tag.proto
 	buf generate --path ./proto/user/address.proto
 	buf generate --path ./proto/user/streetaddress.proto
+	buf generate --path ./proto/user/user_messages.proto
+	buf generate --path ./proto/user/usergroup_messages.proto
 	buf generate --path ./proto/user/user.proto
-	buf generate --path ./proto/user/usergroup.proto
 	# Generate static assets for OpenAPI UI
 	statik -m -f -src third_party/OpenAPI/
 
