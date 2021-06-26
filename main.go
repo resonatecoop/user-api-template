@@ -28,7 +28,6 @@ import (
 	"github.com/resonatecoop/user-api/insecure"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	iamserver "github.com/resonatecoop/user-api/server/iam"
-	"github.com/resonatecoop/user-api/server/iam/secure"
 	usergroupserver "github.com/resonatecoop/user-api/server/usergroups"
 	userserver "github.com/resonatecoop/user-api/server/users"
 
@@ -53,13 +52,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name: "userapi",
-		// Flags: []cli.Flag{
-		// 	&cli.StringFlag{
-		// 		Name:  "env",
-		// 		Value: "dev",
-		// 		Usage: "environment",
-		// 	},
-		//},
+
 		Commands: []*cli.Command{
 			runServerCommand,
 			newDBCommand(migrations.Migrations),
@@ -73,21 +66,9 @@ func main() {
 var runServerCommand = &cli.Command{
 	Name:  "runserver",
 	Usage: "start User API server",
-	// Flags: []cli.Flag{
-	// 	&cli.StringFlag{
-	// 		Name:  "addr",
-	// 		Value: "localhost:8000",
-	// 		Usage: "serve address",
-	// 	},
-	// },
 
 	Action: func(c *cli.Context) error {
 		_, apiapp, err := app.Start(c.Context, "api", c.String("env"))
-
-		// cfgPath := flag.String("p", "./conf.local.yaml", "Path to config file")
-		// flag.Parse()
-
-		// cfg, err := config.Load(*cfgPath)
 
 		//Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 		log := grpclog.NewLoggerV2(os.Stdout, ioutil.Discard, ioutil.Discard)
@@ -98,9 +79,10 @@ var runServerCommand = &cli.Command{
 		cfg := apiapp.Cfg
 
 		sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
-		// if err != nil {
-		// 	panic(err)
-		// }
+
+		if err != nil {
+			panic(err)
+		}
 
 		checkErr(log, err)
 
@@ -108,15 +90,9 @@ var runServerCommand = &cli.Command{
 
 		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
 
-		//	db, err := pgsql.New(cfg.DB.Dev.PSN, cfg.DB.Dev.LogQueries, cfg.DB.Dev.TimeoutSeconds)
-
-		//	zerolog := zerolog.New()
-
-		secureSvc := secure.New(cfg.App.MinPasswordStrength)
+		//	secureSvc := secure.New(cfg.App.MinPasswordStrength)
 
 		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicMethods, cfg.Access.WriteMethods)
-
-		//iamServer := iamserver.New(db, jwtService, iamdb.NewUser(), secureSvc)
 
 		interceptorAuth := iamserver.NewAuthInterceptor(db, cfg.RefreshToken.Lifetime, accService)
 
@@ -140,12 +116,8 @@ var runServerCommand = &cli.Command{
 			opts...,
 		)
 
-		pbUser.RegisterResonateUserServer(s, userserver.New(db, secureSvc))
+		pbUser.RegisterResonateUserServer(s, userserver.New(db))
 		pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db))
-
-		// iamserver.NewLoggingService(iamServer, zerolog)
-
-		//pbIAM.RegisterResonateIAMServer(s, iamServer)
 
 		// Serve gRPC Server
 		log.Info("Serving gRPC on https://", addr)

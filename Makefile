@@ -1,5 +1,4 @@
 generate: 
-	buf generate --path ./proto/iam/iam.proto
 	buf generate --path ./proto/user/common.proto
 	buf generate --path ./proto/user/tag.proto
 	buf generate --path ./proto/user/address.proto
