@@ -2,15 +2,12 @@ package model
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/twitchtv/twirp"
 
 	//uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
 
 	uuid "github.com/google/uuid"
 
 	pbUser "github.com/resonatecoop/user-api/proto/user"
-
-	errorpkg "github.com/resonatecoop/user-api/pkg/error"
 )
 
 // Tag provides basic tag structure
@@ -21,30 +18,30 @@ type Tag struct {
 }
 
 // SearchTags find a tag by query string on Name
-func SearchTags(query string, tagType string, db *pg.DB) ([]*Tag, twirp.Error) {
+func SearchTags(query string, tagType string, db *pg.DB) ([]*Tag, error) {
 	var tags []*Tag
 
-	pgerr := db.Model(&tags).
+	err := db.Model(&tags).
 		ColumnExpr("tag.id").
 		Where("to_tsvector('english'::regconfig, COALESCE(name, '')) @@ (plainto_tsquery('english'::regconfig, ?)) = true", query).
 		Where("type = ?", tagType).
 		Select()
-	if pgerr != nil {
-		return nil, errorpkg.CheckError(pgerr, "tag")
+	if err != nil {
+		return nil, err
 	}
 	return tags, nil
 }
 
 // GetTags given tag UUID returns a Tag
-func GetTags(tagIds []uuid.UUID, db *pg.DB) ([]*pbUser.Tag, twirp.Error) {
+func GetTags(tagIds []uuid.UUID, db *pg.DB) ([]*pbUser.Tag, error) {
 	tags := make([]*pbUser.Tag, len(tagIds))
 	if len(tags) > 0 {
 		var t []Tag
-		pgerr := db.Model(&t).
+		err := db.Model(&t).
 			Where("id in (?)", pg.In(tagIds)).
 			Select()
-		if pgerr != nil {
-			return nil, errorpkg.CheckError(pgerr, "tag")
+		if err != nil {
+			return nil, err
 		}
 		for i, tag := range t {
 			tags[i] = &pbUser.Tag{Id: tag.ID.String(), Type: tag.Type, Name: tag.Name}
@@ -71,9 +68,9 @@ func GetTagIDs(t []*pbUser.Tag, db *pg.Tx) ([]uuid.UUID, error) {
 			tagIDs[i] = tags[i].ID
 			tag.Id = tags[i].ID.String()
 		} else {
-			tagID, twerr := uuid.Parse(tag.Id)
-			if twerr != nil {
-				return nil, twerr.(error)
+			tagID, err := uuid.Parse(tag.Id)
+			if err != nil {
+				return nil, err
 			}
 			tagIDs[i] = tagID
 		}

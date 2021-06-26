@@ -18,19 +18,12 @@ import (
 
 // Server implements the UserService
 type Server struct {
-	db  *bun.DB
-	sec Securer
+	db *bun.DB
 }
 
 // New creates an instance of our server
-func New(db *bun.DB, sec Securer) *Server {
-	return &Server{db: db, sec: sec}
-}
-
-// Securer represents password securing service
-type Securer interface {
-	Hash(string) string
-	Password(string, ...string) bool
+func New(db *bun.DB) *Server {
+	return &Server{db: db}
 }
 
 // AddUser gets a user to the in-memory store.
@@ -82,16 +75,6 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
 	}, nil
 }
-
-// string username = 1; // required
-// string full_name = 2; // required
-// string first_name = 3;
-// string last_name = 4;
-// string country = 5;
-// bool member = 6;
-// repeated string personas = 7;
-// repeated string owned_groups = 8;
-// repeated string followed_groups = 9;
 
 // GetUserRestricted intended for privileged roles only supplies more detailed, private info about user.
 func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserPrivateResponse, error) {
@@ -230,32 +213,6 @@ func (s *Server) UpdateUserRestricted(ctx context.Context, UserUpdateRestrictedR
 	return &pbUser.Empty{}, nil
 }
 
-// ResetUserPassword reset's a user's password
-func (s *Server) ResetUserPassword(ctx context.Context, ResetUserPasswordRequest *pbUser.ResetUserPasswordRequest) (*pbUser.Empty, error) {
-	err := checkRequiredResetPasswordAttributes(ResetUserPasswordRequest, s)
-
-	if err != nil {
-		return nil, err
-	}
-
-	hashedPassword := s.sec.Hash(ResetUserPasswordRequest.Password)
-
-	u := new(model.User)
-
-	_, err = s.db.NewUpdate().
-		Model(u).
-		Set("updated_at = ?", time.Now().UTC()).
-		Set("password = ?", hashedPassword).
-		Where("username = ?", ResetUserPasswordRequest.Username).
-		Exec(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &pbUser.Empty{}, nil
-}
-
 // ListUsers lists all users in the store.
 func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.UserListResponse, error) {
 
@@ -301,64 +258,6 @@ func checkRequiredAddAttributes(user *pbUser.UserAddRequest) error {
 	if !re.MatchString(user.Username) {
 		return errors.New("username must be a valid email")
 	}
-	return nil
-}
-
-// func checkRequiredUpdateAttributes(user *pbUser.UpdateUserRequest) error {
-// 	if user.Username == "" || user.FullName == "" {
-// 		var argument string
-// 		switch {
-// 		case user.Username == "":
-// 			argument = "username"
-// 		case user.FullName == "":
-// 			argument = "full_name"
-// 		}
-// 		return fmt.Errorf("argument %v is required", argument)
-// 	}
-// 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-// 	if !re.MatchString(user.Username) {
-// 		return errors.New("username must be a valid email")
-// 	}
-// 	return nil
-// }
-
-// func checkRequiredRestrictedUpdateAttributes(user *pbUser.UpdateUserRestrictedRequest) error {
-// 	if user.Username == "" || user.FullName == "" {
-// 		var argument string
-// 		switch {
-// 		case user.Username == "":
-// 			argument = "username"
-// 		case user.FullName == "":
-// 			argument = "full_name"
-// 		}
-// 		return fmt.Errorf("argument %v is required", argument)
-// 	}
-// 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-// 	if !re.MatchString(user.Username) {
-// 		return errors.New("username must be a valid email")
-// 	}
-// 	return nil
-// }
-
-func checkRequiredResetPasswordAttributes(user *pbUser.ResetUserPasswordRequest, s *Server) error {
-	if user.Username == "" || user.Password == "" {
-		var argument string
-		switch {
-		case user.Username == "":
-			argument = "email"
-		case user.Password == "":
-			argument = "Password"
-		}
-		return fmt.Errorf("argument %v is required", argument)
-	}
-	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-	if !re.MatchString(user.Username) {
-		return errors.New("username must be a valid email")
-	}
-	if !s.sec.Password(user.Password) {
-		return errors.New("password is not strong enough")
-	}
-
 	return nil
 }
 
