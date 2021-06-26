@@ -1,0 +1,192 @@
+syntax="proto3";
+
+//package example;
+//package resonate.api.user;
+package user;
+option go_package = "github.com/resonatecoop/user-api/proto/user";
+
+message UserRequest {
+  string id = 1;
+}
+
+message UserOptionalRequest {
+  optional string id = 1;
+}
+
+message ResetUserPasswordRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message UserUpdateRequest {
+  string id = 1; // required
+  optional string username = 2;
+  optional string full_name = 3; 
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional bool newsletter_notification = 7;
+  //repeated string followed_groups = 8;
+  //string email = 3; // required
+  //repeated string favorite_tracks = 11;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //string display_name = 4; // required TODO remove
+  //bytes avatar = 9;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
+}
+
+message UserUpdateRestrictedRequest {
+  string id = 1; // required
+  optional string username = 2; 
+  optional string full_name = 3; 
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional bool member = 6;
+  optional int32 role_id = 7;
+  optional int32 tenant_id = 8;
+  optional bool newsletter_notification = 9;
+  //repeated string followed_groups = 10; TODO implement elsewhere!
+  //string email = 3; // required
+  //repeated string favorite_tracks = 11;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //string display_name = 4; // required TODO remove
+  //bytes avatar = 9;
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
+}
+
+message UserPrivateResponse {
+  string id = 1; // required
+  string username = 2; // required
+  string full_name = 3; // required
+  string first_name = 4;
+  string last_name = 5;
+  string country = 6;
+  bool email_confirmed = 7;
+  bool member = 8;
+  int32 role_id = 9;
+  int32 tenant_id = 10;
+  bool newsletter_notification = 11;
+  repeated string personas = 12;
+  repeated string owned_groups = 13;
+  repeated string followed_groups = 14;
+  //string email = 3; // required
+  //bytes avatar = 9;
+  //string display_name = 4; // required TODO remove
+  //repeated RelatedUserGroup owner_of_groups = 13;
+  //StreetAddress residence_address = 14;
+}
+
+message UserPublicResponse {
+  string username = 1; // required
+  string full_name = 2; // required
+  string first_name = 3;
+  string last_name = 4;
+  string country = 5;
+  bool member = 6;
+  repeated string personas = 7;
+  repeated string owned_groups = 8;
+  repeated string followed_groups = 9;
+  //bytes avatar = 9;
+  //string display_name = 4; // required TODO remove
+}
+
+message UserAddRequest {
+  string username = 1; // required
+  string full_name = 2; // required
+  string first_name = 3;
+  string last_name = 4;
+  bool member = 5;
+  bool newsletter_notification = 6;
+  repeated string followed_groups = 7;
+  //string email = 2; // required
+  //repeated string favorite_tracks = 10;
+  //bytes avatar = 8;
+  //string display_name = 3; // required TODO remove
+  //repeated RelatedUserGroup owner_of_groups = 12;
+  //StreetAddress residence_address = 13;
+}
+
+message UserListResponse {
+  repeated UserPrivateResponse user = 1;
+}
+
+// message User {
+//   string id = 1;
+// }
+
+// syntax = "proto3";
+
+
+// option go_package = "user";
+
+// import "user-api/rpc/track/service.proto";
+
+
+// service UserService {
+//   rpc AddUser(User) returns (User);
+//   rpc GetUser(User) returns (User);
+//   rpc UpdateUser(User) returns (Empty);
+//   rpc DeleteUser(User) returns (Empty);
+//   rpc FollowGroup(UserToUserGroup) returns (Empty);
+//   rpc UnfollowGroup(UserToUserGroup) returns (Empty);
+//   // rpc AddFavoriteTrack(UserToTrack) returns (Empty);
+//   // rpc RemoveFavoriteTrack(UserToTrack) returns (Empty);
+
+//   // User Library
+//   // rpc GetPlaylists(User) returns (Playlists);
+//   // rpc GetFavoriteTracks(User) returns (Tracks);
+//   // rpc GetOwnedTracks(User) returns (Tracks);
+//   // rpc GetTrackHistory(User) returns (Tracks);
+
+//   // rpc GetSupportedArtists(User) returns (Artists);
+//   // rpc CreatePlay(CreatePlayRequest) returns (CreatePlayResponse); Payment API
+// }
+
+
+// message Playlists {
+//   repeated RelatedTrackGroup playlists = 1;
+// }
+
+// message Tracks {
+//   repeated Track tracks = 1;
+// }
+
+
+
+// message Artists {
+//   repeated RelatedUserGroup artists = 1;
+// }
+
+// Used for:
+// - following/unfollowing group
+// message UserToUserGroup {
+//   string user_id = 1; // required
+//   string user_group_id = 2; // required
+// }
+
+// Used for:
+// - adding/removing favorite tracks
+// message UserToTrack {
+//   string user_id = 1; // required
+//   string track_id = 2; // required
+// }
+
+// Used for:
+// - adding a track play (i.e. track has been streamed >=45s)
+// message Play {
+//   string user_id = 1; // required
+//   string track_id = 2; // required
+//   string type = 3; // required
+//   float credits = 4; // credits spent by user
+// }
+
+// message CreatePlayRequest {
+//   Play play = 1; // required
+//   float updated_credits = 2; // required
+// }
+
+// message CreatePlayResponse {
+//   int32 updated_play_count = 1; // required
+//   float updated_credits = 2; // required
+// }

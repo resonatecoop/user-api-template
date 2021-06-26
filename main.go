@@ -27,9 +27,9 @@ import (
 	"github.com/resonatecoop/user-api/gateway"
 	"github.com/resonatecoop/user-api/insecure"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
-	iamserver "github.com/resonatecoop/user-api/server/iam"
-	usergroupserver "github.com/resonatecoop/user-api/server/usergroups"
-	userserver "github.com/resonatecoop/user-api/server/users"
+
+	authorization "github.com/resonatecoop/user-api/authorization"
+	userserver "github.com/resonatecoop/user-api/server"
 
 	//userserver_test "github.com/resonatecoop/user-api/server/user/userserver_test"
 
@@ -94,7 +94,7 @@ var runServerCommand = &cli.Command{
 
 		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicMethods, cfg.Access.WriteMethods)
 
-		interceptorAuth := iamserver.NewAuthInterceptor(db, cfg.RefreshToken.Lifetime, accService)
+		interceptorAuth := authorization.NewAuthInterceptor(db, cfg.RefreshToken.Lifetime, accService)
 
 		addr := "0.0.0.0:10000"
 		lis, err := net.Listen("tcp", addr)
@@ -117,7 +117,7 @@ var runServerCommand = &cli.Command{
 		)
 
 		pbUser.RegisterResonateUserServer(s, userserver.New(db))
-		pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db))
+		// pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db))
 
 		// Serve gRPC Server
 		log.Info("Serving gRPC on https://", addr)

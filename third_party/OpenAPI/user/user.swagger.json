@@ -184,6 +184,172 @@
         ]
       }
     },
+    "/api/v1/usergroup": {
+      "post": {
+        "summary": "Add a user group",
+        "description": "Add a user group to the server.",
+        "operationId": "ResonateUser_AddUserGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUserGroupCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Usergroup"
+        ]
+      }
+    },
+    "/api/v1/usergroup/{id}": {
+      "get": {
+        "summary": "Get a user group",
+        "description": "Get a usergroup from the server.",
+        "operationId": "ResonateUser_GetUserGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserGroupPublicResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Usergroup"
+        ]
+      },
+      "delete": {
+        "summary": "Delete usergroup",
+        "description": "Delete a usergroup from the server.",
+        "operationId": "ResonateUser_DeleteUserGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Usergroup"
+        ]
+      },
+      "patch": {
+        "summary": "Update a user group",
+        "description": "Update an existing user group record on the server.",
+        "operationId": "ResonateUser_UpdateUserGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUserGroupUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Usergroup"
+        ]
+      }
+    },
+    "/api/v1/usergroups/{id}": {
+      "get": {
+        "summary": "List users user groups",
+        "description": "List all user groups for a specific user on the server.",
+        "operationId": "ResonateUser_ListUsersGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserGroupListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Usergroups"
+        ]
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "List users",
@@ -275,6 +441,20 @@
     "userEmpty": {
       "type": "object"
     },
+    "userTag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "userUserAddRequest": {
       "type": "object",
       "properties": {
@@ -301,6 +481,174 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "userUserGroupCreateRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "groupType": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userTag"
+          }
+        },
+        "groupEmail": {
+          "type": "string"
+        }
+      }
+    },
+    "userUserGroupListResponse": {
+      "type": "object",
+      "properties": {
+        "usergroup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userUserGroupPrivateResponse"
+          }
+        }
+      }
+    },
+    "userUserGroupPrivateResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "groupType": {
+          "type": "string"
+        },
+        "groupEmail": {
+          "type": "string",
+          "title": "repeated string followers = 9;\nrepeated string members = 10;\nrepeated string memberOfGroups = 11;\nrepeated string links = 12;\nrepeated string tags = 13;\n StreetAddress address = 13;\nPrivacy privacy = 14;\nrepeated RelatedUserGroup recommended_artists = 15;\nmap\u003cstring, string\u003e publisher = 16;\nmap\u003cstring, string\u003e pro = 17;"
+        }
+      }
+    },
+    "userUserGroupPublicResponse": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "string"
+        },
+        "groupType": {
+          "type": "string"
+        },
+        "followers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memberOfGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "groupEmail": {
+          "type": "string",
+          "title": "repeated RelatedUserGroup recommended_artists = 17;\nmap\u003cstring, string\u003e publisher = 21;\nmap\u003cstring, string\u003e pro = 22;"
+        }
+      }
+    },
+    "userUserGroupUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "shortBio": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "string"
+        },
+        "groupType": {
+          "type": "string"
+        },
+        "groupEmail": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
         }
       }
     },
