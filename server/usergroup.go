@@ -8,6 +8,7 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
+	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
@@ -36,6 +37,26 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 
 	if err != nil {
 		return nil, errors.New("supplied user_id is not a valid UUID")
+	}
+
+	existingGroupCount, _ := s.db.NewSelect().
+		Model((*model.UserGroup)(nil)).
+		Where("owner_id = ?", OwnerUUID).
+		Count(ctx)
+
+	thisuser := new(model.User)
+
+	err = s.db.NewSelect().
+		Model(thisuser).
+		Where("? = ?", bun.Ident("id"), OwnerUUID).
+		Scan(ctx)
+
+	if err != nil {
+		return nil, errors.New("supplied owner_id could not be found in Users")
+	}
+
+	if thisuser.RoleID == int32(model.UserRole) && existingGroupCount > 0 {
+		return nil, errors.New("supplied owner_id is a user and already has a user group profile")
 	}
 
 	group := new(model.GroupType)

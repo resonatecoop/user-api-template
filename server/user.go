@@ -223,6 +223,8 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 		result.FirstName = user.FirstName
 		result.LastName = user.LastName
 		result.Member = user.Member
+		result.RoleId = user.RoleID
+		result.TenantId = user.TenantID
 		result.NewsletterNotification = user.NewsletterNotification
 		result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
 		results.User = append(results.User, &result)
