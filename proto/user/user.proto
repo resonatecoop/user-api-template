@@ -47,6 +47,21 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 service ResonateUser {
 
+  // Users
+
+  //GetUser provides a public level of information about a user
+  rpc GetUser(UserRequest) returns (UserPublicResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/user/{id}
+      get: "/api/v1/user/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a user"
+      description: "Get a user's public information from the server."
+      tags: "Users"
+    };
+  }
+
   //rpc AddUser(UserAddRequest) returns (User) {
   rpc AddUser(UserAddRequest) returns (Empty) {
     option (google.api.http) = {
@@ -60,6 +75,7 @@ service ResonateUser {
       tags: "Users"
     };
   }
+
   //rpc UpdateUser(UserUpdateRequest) returns (Empty) {
   rpc UpdateUser(UserUpdateRequest) returns (Empty) {
     option (google.api.http) = {
@@ -73,6 +89,7 @@ service ResonateUser {
       tags: "Users"
     };
   }
+
   //rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
   rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
     option (google.api.http) = {
@@ -101,18 +118,6 @@ service ResonateUser {
   //   };
   // }
 
-  //GetUser provides a public level of information about a user
-  rpc GetUser(UserRequest) returns (UserPublicResponse) {
-    option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/user/{id}
-      get: "/api/v1/user/{id}"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get a user"
-      description: "Get a user's public information from the server."
-      tags: "Users"
-    };
-  }
   //GetUserRestricted provides private level of information about a user
   rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
     option (google.api.http) = {
@@ -125,6 +130,7 @@ service ResonateUser {
       tags: "Users"
     };
   }
+  
   rpc DeleteUser(UserRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
@@ -136,6 +142,8 @@ service ResonateUser {
       tags: "Users"
     };
   }
+
+  //ListUsers returns a list of all Users
   rpc ListUsers(Empty) returns (UserListResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/users
@@ -148,6 +156,9 @@ service ResonateUser {
     };
   }
 
+  // UserGroups
+
+  //AddUserGroup adds a UserGroup based on provided attributes
   rpc AddUserGroup(UserGroupCreateRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
@@ -157,10 +168,11 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Add a user group"
       description: "Add a user group to the server."
-      tags: "Usergroup"
+      tags: "Usergroups"
     };
   }
-  //rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+
+  //UpdateUserGroup updates an existing UserGroup
   rpc UpdateUserGroup(UserGroupUpdateRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from PUT requests to /api/v1/user
@@ -170,9 +182,10 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Update a user group"
       description: "Update an existing user group record on the server."
-      tags: "Usergroup"
+      tags: "Usergroups"
     };
   }
+
   //rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
   // rpc UpdateUserRestricted(UpdateUserRestrictedRequest) returns (Empty) {
   //   option (google.api.http) = {
@@ -210,9 +223,10 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get a user group"
       description: "Get a usergroup from the server."
-      tags: "Usergroup"
+      tags: "Usergroups"
     };
   }
+
   //GetUserRestricted provides private level of information about a user
   // rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
   //   option (google.api.http) = {
@@ -225,6 +239,8 @@ service ResonateUser {
   //     tags: "Users"
   //   };
   // }
+
+  //DeleteUserGroup deletes a UserGroup
   rpc DeleteUserGroup(UserGroupRequest) returns (Empty) {
     option (google.api.http) = {
       // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
@@ -233,10 +249,11 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Delete usergroup"
       description: "Delete a usergroup from the server."
-      tags: "Usergroup"
+      tags: "Usergroups"
     };
   }
 
+  //ListUsersGroups lists UserGroups for a specific User
   rpc ListUsersGroups(UserRequest) returns (UserGroupListResponse) {
     option (google.api.http) = {
       // Route to this method from GET requests to /api/v1/usergroups
