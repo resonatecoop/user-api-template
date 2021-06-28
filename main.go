@@ -7,7 +7,8 @@ import (
 	"net"
 	"os"
 
-	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jackc/pgx/v4"
+	stdlib "github.com/jackc/pgx/v4/stdlib"
 	bun "github.com/uptrace/bun"
 	"github.com/uptrace/bun/dbfixture"
 	"github.com/uptrace/bun/dialect/pgdialect"
@@ -78,11 +79,14 @@ var runServerCommand = &cli.Command{
 
 		cfg := apiapp.Cfg
 
-		sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
-
+		dbconfig, err := pgx.ParseConfig(cfg.DB.Dev.PSN)
 		if err != nil {
 			panic(err)
 		}
+
+		dbconfig.PreferSimpleProtocol = true
+
+		sqldb := stdlib.OpenDB(*dbconfig)
 
 		checkErr(log, err)
 
