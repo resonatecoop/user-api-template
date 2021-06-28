@@ -53,14 +53,17 @@
       client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 243b4178-6f98-4bf1-bbb1-46b57a901816
       token: 'test_superuser_token'
+      expires_at: '{{ now }}'
     - created_at: '{{ now }}'
       client_id: 3392e754-ba3e-424f-a687-add9a8ab39c9
       user_id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
       token: 'test_user_token'
+      expires_at: '{{ now }}'
     - created_at: '{{ now }}'
       client_id: 295be195-898c-4f0c-b6a0-8c62105f42de
       user_id: 86a72db9-eb16-45ae-8003-ac37d8dc5cbb
       token: 'test_user_token_2'
+      expires_at: '{{ now }}'
 - model: Client
   rows:
     - id: 3392e754-ba3e-424f-a687-add9a8ab39c9
