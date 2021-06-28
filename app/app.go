@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"database/sql"
 	"flag"
 	"math/rand"
 	"os"
@@ -12,11 +11,14 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/jackc/pgx/v4"
+	stdlib "github.com/jackc/pgx/v4/stdlib"
+	bun "github.com/uptrace/bun"
+
 	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/extra/bundebug"
 
 	"github.com/resonatecoop/user-api/pkg/config"
-	"github.com/uptrace/bun"
 
 	//"github.com/uptrace/bun/extra/bundebug"
 	"github.com/urfave/cli/v2"
@@ -142,31 +144,28 @@ func (app *App) Stopping() bool {
 func (app *App) DB(env string) *bun.DB {
 	app.dbOnce.Do(func() {
 
-		var sqldb *sql.DB
 		var err error
 
+		debug := true
+
+		var db *bun.DB
+
 		if env == "test" {
-			sqldb, err = sql.Open("pgx", app.Cfg.DB.Test.PSN)
+			db = connectDB(app.Cfg.DB.Test.PSN, debug)
 		} else {
-			sqldb, err = sql.Open("pgx", app.Cfg.DB.Dev.PSN)
+			db = connectDB(app.Cfg.DB.Dev.PSN, debug)
 		}
 
 		if err != nil {
 			panic(err)
 		}
 
-		//checkErr(log, err)
-
-		db := bun.NewDB(sqldb, pgdialect.New())
-		// if app.IsDebug() {
-		// 	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
-		// }
-
 		app.OnStop("db.Close", func(ctx context.Context, _ *App) error {
 			return db.Close()
 		})
 
 		app.db = db
+
 	})
 	return app.db
 }
@@ -188,4 +187,24 @@ func checkErr(log grpclog.LoggerV2, err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func connectDB(PSN string, isDebug bool) *bun.DB {
+
+	dbconfig, err := pgx.ParseConfig(PSN)
+
+	if err != nil {
+		panic(err)
+	}
+
+	dbconfig.PreferSimpleProtocol = true
+
+	sqldb := stdlib.OpenDB(*dbconfig)
+
+	db := bun.NewDB(sqldb, pgdialect.New())
+	if isDebug {
+		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
+	}
+
+	return db
 }

@@ -1,18 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"io/ioutil"
 	"log"
 	"net"
 	"os"
 
-	"github.com/jackc/pgx/v4"
-	stdlib "github.com/jackc/pgx/v4/stdlib"
-	bun "github.com/uptrace/bun"
 	"github.com/uptrace/bun/dbfixture"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	bundebug "github.com/uptrace/bun/extra/bundebug"
 	"github.com/uptrace/bun/migrate"
 
 	grpc "google.golang.org/grpc"
@@ -32,23 +26,11 @@ import (
 	authorization "github.com/resonatecoop/user-api/authorization"
 	userserver "github.com/resonatecoop/user-api/server"
 
-	//userserver_test "github.com/resonatecoop/user-api/server/user/userserver_test"
-
 	// Static files
 	_ "github.com/resonatecoop/user-api/statik"
 
 	cli "github.com/urfave/cli/v2"
 )
-
-// type OauthTestSuite struct {
-// 	suite.Suite
-// 	cnf *config.Config
-
-// 	service *oauth.Service
-// 	clients []*model.Client
-// 	users   []*model.User
-// 	router  *mux.Router
-// }
 
 func main() {
 	app := &cli.App{
@@ -79,22 +61,7 @@ var runServerCommand = &cli.Command{
 
 		cfg := apiapp.Cfg
 
-		dbconfig, err := pgx.ParseConfig(cfg.DB.Dev.PSN)
-		if err != nil {
-			panic(err)
-		}
-
-		dbconfig.PreferSimpleProtocol = true
-
-		sqldb := stdlib.OpenDB(*dbconfig)
-
-		checkErr(log, err)
-
-		db := bun.NewDB(sqldb, pgdialect.New())
-
-		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
-
-		//	secureSvc := secure.New(cfg.App.MinPasswordStrength)
+		db := apiapp.DB("dev")
 
 		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicMethods, cfg.Access.WriteMethods)
 
@@ -246,14 +213,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							}
 							defer app.Stop()
 
-							cfg := app.Cfg
-
-							sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
-							if err != nil {
-								return err
-							}
-
-							db := bun.NewDB(sqldb, pgdialect.New())
+							db := app.DB("dev")
 
 							// Let the db know about the models.
 							models := []interface{}{
@@ -281,14 +241,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							}
 							defer app.Stop()
 
-							cfg := app.Cfg
-
-							sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
-							if err != nil {
-								return err
-							}
-
-							db := bun.NewDB(sqldb, pgdialect.New())
+							db := app.DB("dev")
 
 							// Let the db know about the models.
 							models := []interface{}{
@@ -425,14 +378,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							}
 							defer app.Stop()
 
-							cfg := app.Cfg
-
-							sqldb, err := sql.Open("pgx", cfg.DB.Test.PSN)
-							if err != nil {
-								return err
-							}
-
-							db := bun.NewDB(sqldb, pgdialect.New())
+							db := app.DB("test")
 
 							// Let the db know about the models.
 							models := []interface{}{
@@ -460,14 +406,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 							}
 							defer app.Stop()
 
-							cfg := app.Cfg
-
-							sqldb, err := sql.Open("pgx", cfg.DB.Test.PSN)
-							if err != nil {
-								return err
-							}
-
-							db := bun.NewDB(sqldb, pgdialect.New())
+							db := app.DB("test")
 
 							// Let the db know about the models.
 							models := []interface{}{
