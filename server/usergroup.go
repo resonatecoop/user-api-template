@@ -218,8 +218,8 @@ func (s *Server) GetUserGroup(ctx context.Context, usergrouprequest *pbUser.User
 	}, nil
 }
 
-// ListUsers lists all users in the store.
-func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserGroupListResponse, error) {
+// ListUsersUserGroups lists all the User Groups owned by the supplied User Id
+func (s *Server) ListUsersUserGroups(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserGroupListResponse, error) {
 
 	var usergroups []model.UserGroup
 	var results pbUser.UserGroupListResponse
@@ -237,14 +237,10 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 
 		group := new(model.GroupType)
 
-		err := s.db.NewSelect().
+		err = s.db.NewSelect().
 			Model(group).
 			Where("id = ?", usergroup.TypeID).
 			Scan(ctx)
-
-		if err != nil {
-			return nil, errors.New("supplied group type is not valid")
-		}
 
 		var result pbUser.UserGroupPrivateResponse
 		result.Id = uuid.UUID.String(usergroup.ID)
@@ -256,7 +252,6 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 		result.Banner = uuid.UUID.String(usergroup.Banner)
 		result.GroupEmail = usergroup.GroupEmail
 
-		//result.FollowedGroups = uuidpkg.ConvertUUIDToStrArray(user.FollowedGroups)
 		results.Usergroup = append(results.Usergroup, &result)
 	}
 

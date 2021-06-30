@@ -38,8 +38,7 @@ type ResonateUserClient interface {
 	GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error)
 	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
-	//ListUsersGroups lists UserGroups for a specific User
-	ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
+	ListUsersUserGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 }
 
 type resonateUserClient struct {
@@ -149,9 +148,9 @@ func (c *resonateUserClient) DeleteUserGroup(ctx context.Context, in *UserGroupR
 	return out, nil
 }
 
-func (c *resonateUserClient) ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error) {
+func (c *resonateUserClient) ListUsersUserGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error) {
 	out := new(UserGroupListResponse)
-	err := c.cc.Invoke(ctx, "/user.ResonateUser/ListUsersGroups", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/ListUsersUserGroups", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -183,8 +182,7 @@ type ResonateUserServer interface {
 	GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error)
 	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error)
-	//ListUsersGroups lists UserGroups for a specific User
-	ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
+	ListUsersUserGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
 }
 
 // UnimplementedResonateUserServer should be embedded to have forward compatible implementations.
@@ -224,8 +222,8 @@ func (UnimplementedResonateUserServer) GetUserGroup(context.Context, *UserGroupR
 func (UnimplementedResonateUserServer) DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserGroup not implemented")
 }
-func (UnimplementedResonateUserServer) ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListUsersGroups not implemented")
+func (UnimplementedResonateUserServer) ListUsersUserGroups(context.Context, *UserRequest) (*UserGroupListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUsersUserGroups not implemented")
 }
 
 // UnsafeResonateUserServer may be embedded to opt out of forward compatibility for this service.
@@ -437,20 +435,20 @@ func _ResonateUser_DeleteUserGroup_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ResonateUser_ListUsersGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ResonateUser_ListUsersUserGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResonateUserServer).ListUsersGroups(ctx, in)
+		return srv.(ResonateUserServer).ListUsersUserGroups(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.ResonateUser/ListUsersGroups",
+		FullMethod: "/user.ResonateUser/ListUsersUserGroups",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResonateUserServer).ListUsersGroups(ctx, req.(*UserRequest))
+		return srv.(ResonateUserServer).ListUsersUserGroups(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -504,8 +502,8 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ResonateUser_DeleteUserGroup_Handler,
 		},
 		{
-			MethodName: "ListUsersGroups",
-			Handler:    _ResonateUser_ListUsersGroups_Handler,
+			MethodName: "ListUsersUserGroups",
+			Handler:    _ResonateUser_ListUsersUserGroups_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

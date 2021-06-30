@@ -253,19 +253,17 @@ service ResonateUser {
     };
   }
 
-  //ListUsersGroups lists UserGroups for a specific User
-  rpc ListUsersGroups(UserRequest) returns (UserGroupListResponse) {
+  rpc ListUsersUserGroups(UserRequest) returns (UserGroupListResponse) {
     option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/usergroups
-      get: "/api/v1/usergroups/{id}"
+      // Route to this method from GET requests to /api/v1/users/{id}/usergroups
+      get: "/api/v1/users/{id}/usergroups"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "List users user groups"
-      description: "List all user groups for a specific user on the server."
+      summary: "Get a list of users groups"
+      description: "Get a list of users groups owned by user from server"
       tags: "Usergroups"
     };
   }
-
 
   // rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
   // rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
