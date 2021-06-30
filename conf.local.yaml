@@ -18,8 +18,8 @@ refreshtoken:
 
 access:
   no_token_methods: "/iam.ResonateIAM/Auth,/user.ResonateUser/ResetUserPassword" # Usually only Auth method
-  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser"
-  write_methods: "/user.ResonateUser/DeleteUser, /user.ResonateUser/UpdateUser"
+  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser,user.ResonateUser/AddUserGroup"
+  write_methods: "/user.ResonateUser/DeleteUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup"
 
 application:
   min_password_strength: 0 # Minimum password zxcvbn strength

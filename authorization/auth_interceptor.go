@@ -196,10 +196,15 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 			userReq, ok := req.(*pbUser.UserRequest)
 			if !ok {
 				userUpdateReq, ok := req.(*pbUser.UserUpdateRequest)
-				if ok {
-					id = userUpdateReq.Id
+				if !ok {
+					userGroupCreateReq, ok := req.(*pbUser.UserGroupCreateRequest)
+					if ok {
+						id = userGroupCreateReq.Id
+					} else {
+						return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+					}
 				} else {
-					return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+					id = userUpdateReq.Id
 				}
 			} else {
 				id = userReq.Id

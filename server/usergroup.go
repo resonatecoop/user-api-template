@@ -32,7 +32,7 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		return nil, requiredErr
 	}
 
-	OwnerUUID, err := uuid.Parse(usergroup.OwnerId)
+	OwnerUUID, err := uuid.Parse(usergroup.Id)
 
 	if err != nil {
 		return nil, errors.New("supplied user_id is not a valid UUID")
@@ -43,10 +43,10 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		Where("owner_id = ?", OwnerUUID).
 		Count(ctx)
 
-	thisuser := new(model.User)
+	owningUser := new(model.User)
 
 	err = s.db.NewSelect().
-		Model(thisuser).
+		Model(owningUser).
 		Where("id = ?", OwnerUUID).
 		Scan(ctx)
 
@@ -54,7 +54,7 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		return nil, errors.New("supplied owner_id could not be found in Users")
 	}
 
-	if thisuser.RoleID == int32(model.UserRole) && existingGroupCount > 0 {
+	if owningUser.RoleID == int32(model.UserRole) && existingGroupCount > 0 {
 		return nil, errors.New("supplied owner_id is a user and already has a user group profile")
 	}
 
@@ -264,12 +264,12 @@ func (s *Server) ListUsersGroups(ctx context.Context, user *pbUser.UserRequest) 
 }
 
 func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergroup *pbUser.UserGroupCreateRequest) error {
-	if usergroup.OwnerId == "" || usergroup.OwnerId == uuid.Nil.String() || usergroup.DisplayName == "" {
+	if usergroup.Id == "" || usergroup.Id == uuid.Nil.String() || usergroup.DisplayName == "" {
 		var argument string
 		switch {
-		case usergroup.OwnerId == "":
+		case usergroup.Id == "":
 			argument = "owner_id"
-		case usergroup.OwnerId == uuid.Nil.String():
+		case usergroup.Id == uuid.Nil.String():
 			argument = "owner_id"
 		case usergroup.DisplayName == "":
 			argument = "display_name"
@@ -286,7 +286,7 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 
 	err := s.db.NewSelect().
 		Model(new(model.User)).
-		Where("id = ?", usergroup.OwnerId).
+		Where("id = ?", usergroup.Id).
 		Scan(ctx)
 
 	if err != nil {

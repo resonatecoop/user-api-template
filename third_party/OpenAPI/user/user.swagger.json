@@ -184,40 +184,6 @@
         ]
       }
     },
-    "/api/v1/usergroup": {
-      "post": {
-        "summary": "Add a user group",
-        "description": "Add a user group to the server.",
-        "operationId": "ResonateUser_AddUserGroup",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/userEmpty"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/userUserGroupCreateRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Usergroups"
-        ]
-      }
-    },
     "/api/v1/usergroup/{id}": {
       "get": {
         "summary": "Get a user group",
@@ -405,6 +371,46 @@
           "Users"
         ]
       }
+    },
+    "/api/v1/users/{id}/usergroup": {
+      "post": {
+        "summary": "Add a user group",
+        "description": "Add a user group to the server to user resource with id: id.",
+        "operationId": "ResonateUser_AddUserGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUserGroupCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Usergroups"
+        ]
+      }
     }
   },
   "definitions": {
@@ -487,6 +493,9 @@
     "userUserGroupCreateRequest": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "displayName": {
           "type": "string"
         },
@@ -500,9 +509,6 @@
           "type": "string"
         },
         "banner": {
-          "type": "string"
-        },
-        "ownerId": {
           "type": "string"
         },
         "groupType": {

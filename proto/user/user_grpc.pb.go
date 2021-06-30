@@ -17,36 +17,28 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResonateUserClient interface {
+	//GetUser provides a public level of information about a user
+	GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error)
 	//rpc AddUser(UserAddRequest) returns (User) {
 	AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUser(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
 	UpdateUserRestricted(ctx context.Context, in *UserUpdateRestrictedRequest, opts ...grpc.CallOption) (*Empty, error)
-	//GetUser provides a public level of information about a user
-	GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
 	GetUserRestricted(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPrivateResponse, error)
 	DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error)
+	//ListUsers returns a list of all Users
 	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
+	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error)
-	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+	//UpdateUserGroup updates an existing UserGroup
 	UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
 	//GetUserGroup provides a public level of information about a user group
 	GetUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*UserGroupPublicResponse, error)
-	//GetUserRestricted provides private level of information about a user
-	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
-	//   option (google.api.http) = {
-	//     // Route to this method from GET requests to /api/v1/restricted/user/{id}
-	//     get: "/api/v1/restricted/user/{id}"
-	//   };
-	//   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-	//     summary: "Get a user's restricted information"
-	//     description: "Get user profile from the server including private information."
-	//     tags: "Users"
-	//   };
-	// }
+	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
+	//ListUsersGroups lists UserGroups for a specific User
 	ListUsersGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
 }
 
@@ -56,6 +48,15 @@ type resonateUserClient struct {
 
 func NewResonateUserClient(cc grpc.ClientConnInterface) ResonateUserClient {
 	return &resonateUserClient{cc}
+}
+
+func (c *resonateUserClient) GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error) {
+	out := new(UserPublicResponse)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *resonateUserClient) AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*Empty, error) {
@@ -79,15 +80,6 @@ func (c *resonateUserClient) UpdateUser(ctx context.Context, in *UserUpdateReque
 func (c *resonateUserClient) UpdateUserRestricted(ctx context.Context, in *UserUpdateRestrictedRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUserRestricted", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *resonateUserClient) GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error) {
-	out := new(UserPublicResponse)
-	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -170,36 +162,28 @@ func (c *resonateUserClient) ListUsersGroups(ctx context.Context, in *UserReques
 // All implementations should embed UnimplementedResonateUserServer
 // for forward compatibility
 type ResonateUserServer interface {
+	//GetUser provides a public level of information about a user
+	GetUser(context.Context, *UserRequest) (*UserPublicResponse, error)
 	//rpc AddUser(UserAddRequest) returns (User) {
 	AddUser(context.Context, *UserAddRequest) (*Empty, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUser(context.Context, *UserUpdateRequest) (*Empty, error)
 	//rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
 	UpdateUserRestricted(context.Context, *UserUpdateRestrictedRequest) (*Empty, error)
-	//GetUser provides a public level of information about a user
-	GetUser(context.Context, *UserRequest) (*UserPublicResponse, error)
 	//GetUserRestricted provides private level of information about a user
 	GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error)
 	DeleteUser(context.Context, *UserRequest) (*Empty, error)
+	//ListUsers returns a list of all Users
 	ListUsers(context.Context, *Empty) (*UserListResponse, error)
+	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error)
-	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
+	//UpdateUserGroup updates an existing UserGroup
 	UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error)
 	//GetUserGroup provides a public level of information about a user group
 	GetUserGroup(context.Context, *UserGroupRequest) (*UserGroupPublicResponse, error)
-	//GetUserRestricted provides private level of information about a user
-	// rpc GetUserRestricted(UserRequest) returns (UserPrivateResponse) {
-	//   option (google.api.http) = {
-	//     // Route to this method from GET requests to /api/v1/restricted/user/{id}
-	//     get: "/api/v1/restricted/user/{id}"
-	//   };
-	//   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-	//     summary: "Get a user's restricted information"
-	//     description: "Get user profile from the server including private information."
-	//     tags: "Users"
-	//   };
-	// }
+	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error)
+	//ListUsersGroups lists UserGroups for a specific User
 	ListUsersGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
 }
 
@@ -207,6 +191,9 @@ type ResonateUserServer interface {
 type UnimplementedResonateUserServer struct {
 }
 
+func (UnimplementedResonateUserServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
 func (UnimplementedResonateUserServer) AddUser(context.Context, *UserAddRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
@@ -215,9 +202,6 @@ func (UnimplementedResonateUserServer) UpdateUser(context.Context, *UserUpdateRe
 }
 func (UnimplementedResonateUserServer) UpdateUserRestricted(context.Context, *UserUpdateRestrictedRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserRestricted not implemented")
-}
-func (UnimplementedResonateUserServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedResonateUserServer) GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserRestricted not implemented")
@@ -253,6 +237,24 @@ type UnsafeResonateUserServer interface {
 
 func RegisterResonateUserServer(s grpc.ServiceRegistrar, srv ResonateUserServer) {
 	s.RegisterService(&_ResonateUser_serviceDesc, srv)
+}
+
+func _ResonateUser_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/GetUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).GetUser(ctx, req.(*UserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ResonateUser_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -305,24 +307,6 @@ func _ResonateUser_UpdateUserRestricted_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResonateUserServer).UpdateUserRestricted(ctx, req.(*UserUpdateRestrictedRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ResonateUser_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ResonateUserServer).GetUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.ResonateUser/GetUser",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResonateUserServer).GetUser(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -476,6 +460,10 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*ResonateUserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "GetUser",
+			Handler:    _ResonateUser_GetUser_Handler,
+		},
+		{
 			MethodName: "AddUser",
 			Handler:    _ResonateUser_AddUser_Handler,
 		},
@@ -486,10 +474,6 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserRestricted",
 			Handler:    _ResonateUser_UpdateUserRestricted_Handler,
-		},
-		{
-			MethodName: "GetUser",
-			Handler:    _ResonateUser_GetUser_Handler,
 		},
 		{
 			MethodName: "GetUserRestricted",
