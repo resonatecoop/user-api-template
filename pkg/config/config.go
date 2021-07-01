@@ -49,7 +49,7 @@ type Database struct {
 
 // Server holds data necessery for server configuration
 type Server struct {
-	Port                string `yaml:"port,omitempty"`
+	CertName            string `yaml:"cert_name,omitempty"`
 	ReadTimeoutSeconds  int    `yaml:"read_timeout_seconds,omitempty"`
 	WriteTimeoutSeconds int    `yaml:"write_timeout_seconds,omitempty"`
 }

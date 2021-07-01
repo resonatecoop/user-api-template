@@ -3,7 +3,12 @@ package insecure
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"flag"
+	"io/ioutil"
 	"log"
+	"os"
+
+	"github.com/resonatecoop/user-api/pkg/config"
 )
 
 const certPEM = `-----BEGIN CERTIFICATE-----
@@ -65,6 +70,34 @@ var (
 
 func init() {
 	var err error
+
+	cfgPath := flag.String("q", "./conf.local.yaml", "Path to config file")
+	flag.Parse()
+
+	cfg, err := config.Load(*cfgPath)
+
+	if err != nil {
+		log.Fatalln("Unable to read config file for cert initialisation")
+	}
+
+	userAPICertDirectory := os.Getenv("UACERT_DIR")
+
+	if userAPICertDirectory == "" {
+		log.Fatalln("No env variable set for certificate directory")
+	}
+
+	certPEM, err := ioutil.ReadFile(userAPICertDirectory + "/" + cfg.Server.CertName + ".pem")
+	if err != nil {
+		log.Fatalf("unable to read file: %v", err)
+	}
+
+	keyPEM, err := ioutil.ReadFile(userAPICertDirectory + "/" + cfg.Server.CertName + ".key")
+	if err != nil {
+		log.Fatalf("unable to read file: %v", err)
+	}
+
+	//Cert, err = tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
+
 	Cert, err = tls.X509KeyPair([]byte(certPEM), []byte(keyPEM))
 	if err != nil {
 		log.Fatalln("Failed to parse key pair:", err)

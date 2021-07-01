@@ -61,21 +61,6 @@ func Run(dialAddr string) error {
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
-	// err = pbUser.RegisterResonateUserGroupHandler(context.Background(), gwmux, conn)
-
-	// if err != nil {
-	// 	return fmt.Errorf("failed to register gateway: %w", err)
-	// }
-	// gwmux := runtime.NewServeMux()
-	// err = pbUser.RegisterResonateUserGroupHandler(context.Background(), gwmux, conn)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to register gateway: %w", err)
-	// }
-
-	// err = pbIAM.RegisterResonateIAMHandler(context.Background(), gwmux, conn)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to register gateway: %w", err)
-	// }
 
 	oa := getOpenAPIHandler()
 

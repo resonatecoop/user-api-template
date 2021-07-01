@@ -133,6 +133,17 @@ Check status with `docker container ls` and `docker logs <image>`
 
 (use sudo as required)
 
+## Working with a reverse-proxy (like nginx)
+
+You need to register a certificate in a pair of files.
+
+This prefix of this file is held in the config file as `cert_name`, default value `uaclient`
+
+The server will then look for two files, suffix's ".pem" and ".key" in the directory provided by 
+the environment variable `UACERT_DIR`
+
+In your reverse proxy you will need to refer to these too in order to be able to proxy the service securely.
+
 ## Maintenance
 
 Interfaces are designed in

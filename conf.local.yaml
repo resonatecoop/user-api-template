@@ -1,15 +1,19 @@
 server:
-  port: :8080
+  cert_name: "uaclient"
   read_timeout_seconds: 31
   write_timeout_seconds: 30
 
 database:
   dev:
     psn: postgres://resonate_dev_user:password@127.0.0.1:5432/resonate_dev?sslmode=disable
-    log_queries: false
+    log_queries: true
     timeout_seconds: 10
   test:
     psn: postgres://resonate_test_user:password@127.0.0.1:5432/resonate_test?sslmode=disable
+    log_queries: true
+    timeout_seconds: 10
+  prod:
+    psn: postgres://resonate_prod_user:password@127.0.0.1:5432/resonate_prod?sslmode=enable
     log_queries: false
     timeout_seconds: 10
 

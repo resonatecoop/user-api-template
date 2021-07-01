@@ -75,7 +75,6 @@ var runServerCommand = &cli.Command{
 
 		opts := make([]grpc.ServerOption, 0)
 
-		// TODO: Replace with your own certificate!
 		opts = append(opts, grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)))
 
 		opts = append(opts, grpc.UnaryInterceptor(
