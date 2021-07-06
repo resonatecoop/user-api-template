@@ -1,1 +1,1 @@
-go run main.go runserver
+go run main.go runserver -env prod -dbdebug true
