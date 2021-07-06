@@ -141,20 +141,58 @@ func (app *App) Stopping() bool {
 // 	return app.apiRouter
 // }
 
-func (app *App) DB(env string) *bun.DB {
+func (app *App) DB(env string, debug bool) *bun.DB {
 	app.dbOnce.Do(func() {
 
 		var err error
 
-		debug := true
-
 		var db *bun.DB
 
-		if env == "test" {
-			db = connectDB(app.Cfg.DB.Test.PSN, debug)
+		var dbPSN string
+
+		databaseName := os.Getenv("POSTGRES_NAME")
+
+		databaseUser := os.Getenv("POSTGRES_USER")
+
+		if databaseName == "" || databaseUser == "" {
+			env = "dev"
 		} else {
-			db = connectDB(app.Cfg.DB.Dev.PSN, debug)
+			databaseHost := os.Getenv("POSTGRES_HOST")
+
+			if databaseHost == "" {
+				databaseHost = "127.0.0.1"
+			}
+
+			databasePort := os.Getenv("POSTGRES_PORT")
+
+			if databasePort == "" {
+				databasePort = "5432"
+			}
+
+			databaseSslMode := os.Getenv("POSTGRES_SSL")
+
+			if databaseSslMode != "enable" {
+				databaseSslMode = "disable"
+			}
+
+			databasePass := os.Getenv("POSTGRES_PASS")
+
+			dbPSN = "postgres://" + databaseUser + ":" + databasePass + "@" + databaseHost + ":" + databasePort + "/" + databaseName + "?sslmode=" + databaseSslMode
 		}
+
+		switch env {
+		case "test":
+			dbPSN = app.Cfg.DB.Test.PSN
+		case "dev":
+			dbPSN = app.Cfg.DB.Dev.PSN
+		case "prod":
+			//do nothing, should be set up above
+			break
+		default:
+			dbPSN = app.Cfg.DB.Dev.PSN
+		}
+
+		db = connectDB(dbPSN, debug)
 
 		if err != nil {
 			panic(err)

@@ -49,6 +49,18 @@ func main() {
 var runServerCommand = &cli.Command{
 	Name:  "runserver",
 	Usage: "start User API server",
+	Flags: []cli.Flag{
+		&cli.StringFlag{
+			Name:  "env",
+			Value: "dev",
+			Usage: "runtime environment (prod uses env variables for connections)",
+		},
+		&cli.StringFlag{
+			Name:  "dbdebug",
+			Value: "false",
+			Usage: "show database queries true/false",
+		},
+	},
 
 	Action: func(c *cli.Context) error {
 		_, apiapp, err := app.Start(c.Context, "api", c.String("env"))
@@ -61,7 +73,13 @@ var runServerCommand = &cli.Command{
 
 		cfg := apiapp.Cfg
 
-		db := apiapp.DB("dev")
+		dbdebug := false
+
+		if c.String("dbdebug") == "true" {
+			dbdebug = true
+		}
+
+		db := apiapp.DB(c.String("env"), dbdebug)
 
 		accService := acc.New(cfg.Access.NoTokenMethods, cfg.Access.PublicMethods, cfg.Access.WriteMethods)
 
@@ -106,335 +124,230 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 	return &cli.Command{
 		Name:  "db",
 		Usage: "manage database migrations",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "env",
+				Value: "dev",
+				Usage: "runtime environment (dev, test, prod) (defaults to dev, prod uses env variables for connections)",
+			},
+			&cli.StringFlag{
+				Name:  "dbdebug",
+				Value: "false",
+				Usage: "show database queries true/false",
+			},
+		},
 		Subcommands: []*cli.Command{
 			{
-				Name:  "dev",
-				Usage: "address dev database",
-				Subcommands: []*cli.Command{
-					{
-						Name:  "init",
-						Usage: "create migration tables",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+				Name:  "init",
+				Usage: "create migration tables",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							return migrations.Init(ctx, app.DB("dev"))
-						},
-					},
-					{
-						Name:  "migrate",
-						Usage: "migrate database",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					dbdebug := false
 
-							return migrations.Migrate(ctx, app.DB("dev"))
-						},
-					},
-					{
-						Name:  "rollback",
-						Usage: "rollback the last migration group",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							return migrations.Rollback(ctx, app.DB("dev"))
-						},
-					},
-					{
-						Name:  "lock",
-						Usage: "lock migrations",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							return migrations.Lock(ctx, app.DB("dev"))
-						},
-					},
-					{
-						Name:  "unlock",
-						Usage: "unlock migrations",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							return migrations.Unlock(ctx, app.DB("dev"))
-						},
-					},
-					{
-						Name:  "create_go",
-						Usage: "create Go migration",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							return migrations.CreateGo(ctx, app.DB("dev"), c.Args().Get(0))
-						},
-					},
-					{
-						Name:  "create_sql",
-						Usage: "create SQL migration",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							return migrations.CreateSQL(ctx, app.DB("dev"), c.Args().Get(0))
-						},
-					},
-					{
-						Name:  "load_default_fixtures",
-						Usage: "load default data",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							db := app.DB("dev")
-
-							// Let the db know about the models.
-							models := []interface{}{
-								(*model.Role)(nil),
-								(*model.Scope)(nil),
-								(*model.GroupType)(nil),
-							}
-
-							for _, this_model := range models {
-								db.RegisterModel(this_model)
-							}
-
-							fixture := dbfixture.New(db)
-
-							return fixture.Load(ctx, os.DirFS("fixtures/default"), "default_fixtures.yaml")
-						},
-					},
-					{
-						Name:  "load_test_fixtures",
-						Usage: "load test data",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
-
-							db := app.DB("dev")
-
-							// Let the db know about the models.
-							models := []interface{}{
-								(*model.UserGroup)(nil),
-								(*model.StreetAddress)(nil),
-								(*model.Tag)(nil),
-								(*model.Role)(nil),
-								(*model.User)(nil),
-								(*model.Link)(nil),
-								// (*model.UserGroupPrivacy)(nil),
-								(*model.GroupType)(nil),
-								// (*model.UserGroupMember)(nil),
-								(*model.EmailToken)(nil),
-								(*model.Client)(nil),
-								(*model.Scope)(nil),
-								(*model.RefreshToken)(nil),
-								(*model.AuthorizationCode)(nil),
-								(*model.AccessToken)(nil),
-							}
-
-							for _, this_model := range models {
-								db.RegisterModel(this_model)
-							}
-
-							fixture := dbfixture.New(db)
-
-							return fixture.Load(ctx, os.DirFS("fixtures/test"), "test_fixtures.yaml")
-						},
-					},
+					return migrations.Init(ctx, app.DB(c.String("env"), dbdebug))
 				},
 			},
 			{
-				Name:  "test",
-				Usage: "address test database",
-				Subcommands: []*cli.Command{
-					{
-						Name:  "init",
-						Usage: "create migration tables",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+				Name:  "migrate",
+				Usage: "migrate database",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							return migrations.Init(ctx, app.DB("test"))
-						},
-					},
-					{
-						Name:  "migrate",
-						Usage: "migrate test database",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					dbdebug := false
 
-							return migrations.Migrate(ctx, app.DB("test"))
-						},
-					},
-					{
-						Name:  "rollback",
-						Usage: "rollback the last migration group on test db",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							return migrations.Rollback(ctx, app.DB("test"))
-						},
-					},
-					{
-						Name:  "lock",
-						Usage: "lock migrations",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					return migrations.Migrate(ctx, app.DB(c.String("env"), dbdebug))
+				},
+			},
+			{
+				Name:  "rollback",
+				Usage: "rollback the last migration group",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							return migrations.Lock(ctx, app.DB("test"))
-						},
-					},
-					{
-						Name:  "unlock",
-						Usage: "unlock migrations",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					dbdebug := false
 
-							return migrations.Unlock(ctx, app.DB("test"))
-						},
-					},
-					{
-						Name:  "create_go",
-						Usage: "create Go migration",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							return migrations.CreateGo(ctx, app.DB("test"), c.Args().Get(0))
-						},
-					},
-					{
-						Name:  "create_sql",
-						Usage: "create SQL migration",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					return migrations.Rollback(ctx, app.DB(c.String("env"), dbdebug))
+				},
+			},
+			{
+				Name:  "lock",
+				Usage: "lock migrations",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							return migrations.CreateSQL(ctx, app.DB("test"), c.Args().Get(0))
-						},
-					},
-					{
-						Name:  "load_default_fixtures",
-						Usage: "load default data",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					dbdebug := false
 
-							db := app.DB("test")
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							// Let the db know about the models.
-							models := []interface{}{
-								(*model.Role)(nil),
-								(*model.Scope)(nil),
-								(*model.GroupType)(nil),
-							}
+					return migrations.Lock(ctx, app.DB(c.String("env"), dbdebug))
+				},
+			},
+			{
+				Name:  "unlock",
+				Usage: "unlock migrations",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							for _, this_model := range models {
-								db.RegisterModel(this_model)
-							}
+					dbdebug := false
 
-							fixture := dbfixture.New(db, dbfixture.WithTruncateTables())
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							return fixture.Load(ctx, os.DirFS("fixtures/default"), "default_fixtures.yaml")
-						},
-					},
-					{
-						Name:  "load_test_fixtures",
-						Usage: "load test data",
-						Action: func(c *cli.Context) error {
-							ctx, app, err := app.StartCLI(c)
-							if err != nil {
-								return err
-							}
-							defer app.Stop()
+					return migrations.Unlock(ctx, app.DB(c.String("env"), dbdebug))
+				},
+			},
+			{
+				Name:  "create_go",
+				Usage: "create Go migration",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							db := app.DB("test")
+					dbdebug := false
 
-							// Let the db know about the models.
-							models := []interface{}{
-								(*model.UserGroup)(nil),
-								(*model.StreetAddress)(nil),
-								(*model.Tag)(nil),
-								(*model.Role)(nil),
-								(*model.User)(nil),
-								(*model.Link)(nil),
-								// (*model.UserGroupPrivacy)(nil),
-								(*model.GroupType)(nil),
-								// (*model.UserGroupMember)(nil),
-								(*model.EmailToken)(nil),
-								(*model.Client)(nil),
-								(*model.Scope)(nil),
-								(*model.RefreshToken)(nil),
-								(*model.AuthorizationCode)(nil),
-								(*model.AccessToken)(nil),
-							}
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
 
-							for _, this_model := range models {
-								db.RegisterModel(this_model)
-							}
+					return migrations.CreateGo(ctx, app.DB(c.String("env"), dbdebug), c.Args().Get(0))
+				},
+			},
+			{
+				Name:  "create_sql",
+				Usage: "create SQL migration",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
 
-							fixture := dbfixture.New(db, dbfixture.WithTruncateTables())
+					dbdebug := false
 
-							return fixture.Load(ctx, os.DirFS("fixtures/test"), "test_fixtures.yaml")
-						},
-					},
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
+
+					return migrations.CreateSQL(ctx, app.DB(c.String("env"), dbdebug), c.Args().Get(0))
+				},
+			},
+			{
+				Name:  "load_default_fixtures",
+				Usage: "load default data",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
+
+					dbdebug := false
+
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
+
+					db := app.DB(c.String("env"), dbdebug)
+
+					// Let the db know about the models.
+					models := []interface{}{
+						(*model.Role)(nil),
+						(*model.Scope)(nil),
+						(*model.GroupType)(nil),
+					}
+
+					for _, this_model := range models {
+						db.RegisterModel(this_model)
+					}
+
+					fixture := dbfixture.New(db)
+
+					return fixture.Load(ctx, os.DirFS("fixtures/default"), "default_fixtures.yaml")
+				},
+			},
+			{
+				Name:  "load_test_fixtures",
+				Usage: "load test data",
+				Action: func(c *cli.Context) error {
+					ctx, app, err := app.StartCLI(c)
+					if err != nil {
+						return err
+					}
+					defer app.Stop()
+
+					dbdebug := false
+
+					if c.String("dbdebug") == "true" {
+						dbdebug = true
+					}
+
+					db := app.DB(c.String("env"), dbdebug)
+
+					// Let the db know about the models.
+					models := []interface{}{
+						(*model.UserGroup)(nil),
+						(*model.StreetAddress)(nil),
+						(*model.Tag)(nil),
+						(*model.Role)(nil),
+						(*model.User)(nil),
+						(*model.Link)(nil),
+						// (*model.UserGroupPrivacy)(nil),
+						(*model.GroupType)(nil),
+						// (*model.UserGroupMember)(nil),
+						(*model.EmailToken)(nil),
+						(*model.Client)(nil),
+						(*model.Scope)(nil),
+						(*model.RefreshToken)(nil),
+						(*model.AuthorizationCode)(nil),
+						(*model.AccessToken)(nil),
+					}
+
+					for _, this_model := range models {
+						db.RegisterModel(this_model)
+					}
+
+					fixture := dbfixture.New(db)
+
+					return fixture.Load(ctx, os.DirFS("fixtures/test"), "test_fixtures.yaml")
 				},
 			},
 		},

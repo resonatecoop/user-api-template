@@ -12,10 +12,6 @@ database:
     psn: postgres://resonate_test_user:password@127.0.0.1:5432/resonate_test?sslmode=disable
     log_queries: true
     timeout_seconds: 10
-  prod:
-    psn: postgres://resonate_prod_user:password@127.0.0.1:5432/resonate_prod?sslmode=enable
-    log_queries: false
-    timeout_seconds: 10
 
 refreshtoken:
   lifetime_seconds: 1209600

@@ -78,35 +78,35 @@ From the root of the user-api:
 * Init migrations
 
 ```sh
-$  go run main.go db dev init
+$  go run main.go db -env dev init
 ```
 
 * Run migrations
 
 ```sh
-$ go run main.go db dev migrate
+$ go run main.go db -env dev migrate
 ```
 
 rolling back:
 
 ```sh
-$ go run main.go db dev rollback
+$ go run main.go db -env dev rollback
 ```
 
 * Loading default fixtures
 ```sh
-$ go run main.go db dev load_default_fixtures
+$ go run main.go db -env dev load_default_fixtures
 ```
 
 * Loading test data (fixtures)
 ```sh
-$ go run main.go db dev load_test_fixtures
+$ go run main.go db -env dev load_test_fixtures
 ```
 
 The same can be repeated for the test database (`resonate_test`) substituting `dev` for `test`, e.g:
 
 ```sh
-$  go run main.go db test init
+$  go run main.go db -env test init
 ```
 
 ## Tests
@@ -120,6 +120,24 @@ $  go test -timeout 30s -run ^TestDeleteUser$ github.com/resonatecoop/user-api/s
 ## Running!
 
 Now you can run the web server with `go run main.go runserver`.
+
+This will default to running in dev and without debug output from queries.
+
+However, there are two flags:
+
+- `env` (`dev`, `test` or `prod`, defaults to `dev`)
+- `dbdebug` (`true` or `false`, defaults to `false`)
+
+So e.g. `go run main.go runserver -env test -dbdebug true` will run the server on the test DB (defined in the config) with db query debug output on.
+
+The PSN connection strings for dev and test are in conf.local.yaml, but for prod this is built from environement variables:
+
+-	`POSTGRES_NAME` (DB name)
+- `POSTGRES_USER` (DB username)
+- `POSTGRES_PASS` (DB password)
+- `POSTGRES_HOST` (DB host, defaulted `127.0.0.1`)
+- `POSTGRES_PORT` (DB port, defaulted `5432`)
+- `POSTGRES_SSL` (`enable` or defaulted `disable`)
 
 ## Docker!
 
