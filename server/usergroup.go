@@ -24,7 +24,7 @@ import (
 // }
 
 // AddUser gets a user to the in-memory store.
-func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCreateRequest) (*pbUser.Empty, error) {
+func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCreateRequest) (*pbUser.UserRequest, error) {
 
 	requiredErr := s.checkRequiredAddUserGroupAttributes(ctx, usergroup)
 
@@ -81,7 +81,7 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		return nil, errors.New("supplied banner is not a valid UUID")
 	}
 
-	newusergroup := &model.UserGroup{
+	newUserGroup := &model.UserGroup{
 		OwnerID:     OwnerUUID,
 		TypeID:      group.ID,
 		Type:        group,
@@ -93,15 +93,15 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		GroupEmail:  usergroup.GroupEmail,
 	}
 
-	newusergroup.CreatedAt = time.Now().UTC()
+	newUserGroup.CreatedAt = time.Now().UTC()
 
-	_, err = s.db.NewInsert().Model(newusergroup).Exec(ctx)
+	_, err = s.db.NewInsert().Model(newUserGroup).Exec(ctx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &pbUser.Empty{}, nil
+	return &pbUser.UserRequest{Id: newUserGroup.ID.String()}, nil
 }
 
 // UpdateUser updates a users basic attributes

@@ -349,7 +349,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userEmpty"
+              "$ref": "#/definitions/userUserRequest"
             }
           },
           "default": {
@@ -765,6 +765,14 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "userUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         }
       }
     },

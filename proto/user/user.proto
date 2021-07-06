@@ -159,7 +159,7 @@ service ResonateUser {
   // UserGroups
 
   //AddUserGroup adds a UserGroup based on provided attributes
-  rpc AddUserGroup(UserGroupCreateRequest) returns (Empty) {
+  rpc AddUserGroup(UserGroupCreateRequest) returns (UserRequest) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users/{id}/usergroup
       post: "/api/v1/users/{id}/usergroup"

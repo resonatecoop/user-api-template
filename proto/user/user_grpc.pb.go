@@ -31,7 +31,7 @@ type ResonateUserClient interface {
 	//ListUsers returns a list of all Users
 	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
-	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error)
+	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
 	UpdateUserGroup(ctx context.Context, in *UserGroupUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
 	//GetUserGroup provides a public level of information about a user group
@@ -112,8 +112,8 @@ func (c *resonateUserClient) ListUsers(ctx context.Context, in *Empty, opts ...g
 	return out, nil
 }
 
-func (c *resonateUserClient) AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *resonateUserClient) AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserRequest, error) {
+	out := new(UserRequest)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUserGroup", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -175,7 +175,7 @@ type ResonateUserServer interface {
 	//ListUsers returns a list of all Users
 	ListUsers(context.Context, *Empty) (*UserListResponse, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
-	AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error)
+	AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
 	UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error)
 	//GetUserGroup provides a public level of information about a user group
@@ -210,7 +210,7 @@ func (UnimplementedResonateUserServer) DeleteUser(context.Context, *UserRequest)
 func (UnimplementedResonateUserServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
-func (UnimplementedResonateUserServer) AddUserGroup(context.Context, *UserGroupCreateRequest) (*Empty, error) {
+func (UnimplementedResonateUserServer) AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUserGroup not implemented")
 }
 func (UnimplementedResonateUserServer) UpdateUserGroup(context.Context, *UserGroupUpdateRequest) (*Empty, error) {
