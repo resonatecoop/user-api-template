@@ -63,7 +63,7 @@ service ResonateUser {
   }
 
   //rpc AddUser(UserAddRequest) returns (User) {
-  rpc AddUser(UserAddRequest) returns (Empty) {
+  rpc AddUser(UserAddRequest) returns (UserRequest) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users
       post: "/api/v1/users"

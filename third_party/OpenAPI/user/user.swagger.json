@@ -315,7 +315,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userEmpty"
+              "$ref": "#/definitions/userUserRequest"
             }
           },
           "default": {
@@ -481,6 +481,9 @@
         },
         "newsletterNotification": {
           "type": "boolean"
+        },
+        "country": {
+          "type": "string"
         },
         "followedGroups": {
           "type": "array",
@@ -792,6 +795,9 @@
           "type": "string"
         },
         "lastName": {
+          "type": "string"
+        },
+        "country": {
           "type": "string"
         },
         "newsletterNotification": {

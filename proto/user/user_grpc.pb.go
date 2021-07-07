@@ -20,7 +20,7 @@ type ResonateUserClient interface {
 	//GetUser provides a public level of information about a user
 	GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPublicResponse, error)
 	//rpc AddUser(UserAddRequest) returns (User) {
-	AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*Empty, error)
+	AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*UserRequest, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUser(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
 	//rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
@@ -58,8 +58,8 @@ func (c *resonateUserClient) GetUser(ctx context.Context, in *UserRequest, opts 
 	return out, nil
 }
 
-func (c *resonateUserClient) AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
+func (c *resonateUserClient) AddUser(ctx context.Context, in *UserAddRequest, opts ...grpc.CallOption) (*UserRequest, error) {
+	out := new(UserRequest)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ type ResonateUserServer interface {
 	//GetUser provides a public level of information about a user
 	GetUser(context.Context, *UserRequest) (*UserPublicResponse, error)
 	//rpc AddUser(UserAddRequest) returns (User) {
-	AddUser(context.Context, *UserAddRequest) (*Empty, error)
+	AddUser(context.Context, *UserAddRequest) (*UserRequest, error)
 	//rpc UpdateUser(UserUpdateRequest) returns (Empty) {
 	UpdateUser(context.Context, *UserUpdateRequest) (*Empty, error)
 	//rpc UpdateUserRestricted(UserUpdateRestrictedRequest) returns (Empty) {
@@ -192,7 +192,7 @@ type UnimplementedResonateUserServer struct {
 func (UnimplementedResonateUserServer) GetUser(context.Context, *UserRequest) (*UserPublicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedResonateUserServer) AddUser(context.Context, *UserAddRequest) (*Empty, error) {
+func (UnimplementedResonateUserServer) AddUser(context.Context, *UserAddRequest) (*UserRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
 }
 func (UnimplementedResonateUserServer) UpdateUser(context.Context, *UserUpdateRequest) (*Empty, error) {

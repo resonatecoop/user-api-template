@@ -15,7 +15,7 @@ import (
 )
 
 // AddUser gets a user to the in-memory store.
-func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.Empty, error) {
+func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.UserRequest, error) {
 
 	requiredErr := checkRequiredAddAttributes(user)
 	if requiredErr != nil {
@@ -28,6 +28,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		FirstName:              user.FirstName,
 		LastName:               user.LastName,
 		Member:                 user.Member,
+		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
 	_, err := s.db.NewInsert().Model(newUser).Exec(ctx)
@@ -36,7 +37,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		return nil, err
 	}
 
-	return &pbUser.Empty{}, nil
+	return &pbUser.UserRequest{Id: newUser.ID.String()}, nil
 }
 
 // GetUser Gets a user from the DB
