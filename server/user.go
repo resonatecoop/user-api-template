@@ -14,7 +14,7 @@ import (
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 )
 
-// AddUser gets a user to the in-memory store.
+// AddUser adds a user to the DB
 func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.UserRequest, error) {
 
 	requiredErr := checkRequiredAddAttributes(user)

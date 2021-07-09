@@ -1,21 +1,13 @@
 package server_test
 
 import (
-	"context"
-	"database/sql"
-	"flag"
 	"fmt"
-	"testing"
 
 	"github.com/resonatecoop/user-api/model"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
-	"github.com/resonatecoop/user-api/pkg/config"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
 	"github.com/stretchr/testify/assert"
-	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	bundebug "github.com/uptrace/bun/extra/bundebug"
 )
 
 // type UserApiTestSuite struct {
@@ -28,28 +20,28 @@ import (
 // 	//TODO
 // }
 
-func TestDeleteUser(T *testing.T) {
+func (suite *UserApiTestSuite) TestDeleteUser() {
 
-	ctx := context.Background()
+	ctx := suite.ctx
 
-	cfgPath := flag.String("p", "./../../conf.local.yaml", "Path to config file")
-	flag.Parse()
+	// cfgPath := flag.String("p", "./../../conf.local.yaml", "Path to config file")
+	// flag.Parse()
 
-	cfg, err := config.Load(*cfgPath)
-	if err != nil {
-		panic(err)
-	}
+	// cfg, err := config.Load(*cfgPath)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	sqldb, err := sql.Open("pgx", cfg.DB.Test.PSN)
-	if err != nil {
-		panic(err)
-	}
+	// sqldb, err := sql.Open("pgx", cfg.suite.db.Test.PSN)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	db := bun.NewDB(sqldb, pgdialect.New())
+	// db := bun.NewDB(sqldb, pgdialect.New())
 
-	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
+	// suite.db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
 
-	server := userserver.New(db, nil)
+	// server := usersuite.server.New(db, nil)
 
 	type cases []pbUser.UserRequest
 
@@ -62,43 +54,43 @@ func TestDeleteUser(T *testing.T) {
 	var response *pbUser.UserListResponse
 	var empty *pbUser.Empty
 
-	response, err = server.ListUsers(ctx, empty)
+	response, err := suite.server.ListUsers(ctx, empty)
 	if err != nil {
 		panic(err)
 	}
 
-	assert.Equal(T, len(response.User), 3)
+	assert.Equal(suite.T(), 5, len(response.User))
 
-	_, err = server.DeleteUser(ctx, &users[0])
+	_, err = suite.server.DeleteUser(ctx, &users[0])
 	if err != nil {
 		panic(err)
 	}
 
-	response, err = server.ListUsers(ctx, empty)
+	response, err = suite.server.ListUsers(ctx, empty)
 	if err != nil {
 		panic(err)
 	}
-	assert.Equal(T, len(response.User), 2)
+	assert.Equal(suite.T(), 4, len(response.User))
 
-	newuser := pbUser.AddUserRequest{
+	newuser := pbUser.UserAddRequest{
 		Username: "joe@bloggs.com",
 		FullName: "Joe Bloggs",
 	}
 
-	_, err = server.AddUser(ctx, &newuser)
+	_, err = suite.server.AddUser(ctx, &newuser)
 	if err != nil {
 		panic(err)
 	}
 
-	response, err = server.ListUsers(ctx, empty)
+	response, err = suite.server.ListUsers(ctx, empty)
 	if err != nil {
 		panic(err)
 	}
-	assert.Equal(T, len(response.User), 3)
+	assert.Equal(suite.T(), 5, len(response.User))
 
 	user := new(model.User)
 
-	if err = db.NewSelect().
+	if err = suite.db.NewSelect().
 		Model(user).
 		Where("id = ?", "80b26113-37e0-456a-9f75-01db0eb550f8").
 		Limit(1).
@@ -293,7 +285,7 @@ func TestDeleteUser(T *testing.T) {
 // 		Username: "test@user_nopass",
 // 		Password: util.StringOrNull(""),
 // 	}
-// 	err = suite.db.Create(user).Error
+// 	err = suite.suite.db.Create(user).Error
 // 	assert.NoError(suite.T(), err, "Inserting test data failed")
 
 // 	// Try to set an empty password
@@ -322,7 +314,7 @@ func TestDeleteUser(T *testing.T) {
 // 	)
 
 // 	// Insert a test user without a password
-// 	err = suite.db.Create(&model.User{
+// 	err = suite.suite.db.Create(&model.User{
 // 		MyGormModel: model.MyGormModel{
 // 			ID:        uuid.New(),
 // 			CreatedAt: time.Now().UTC(),

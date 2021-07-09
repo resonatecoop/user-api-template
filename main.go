@@ -105,7 +105,6 @@ var runServerCommand = &cli.Command{
 		)
 
 		pbUser.RegisterResonateUserServer(s, userserver.New(db))
-		// pbUser.RegisterResonateUserGroupServer(s, usergroupserver.New(db))
 
 		// Serve gRPC Server
 		log.Info("Serving gRPC on https://", addr)

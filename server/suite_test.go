@@ -12,6 +12,7 @@ import (
 	// "github.com/resonatecoop/id/log"
 	"github.com/resonatecoop/user-api/model"
 	"github.com/resonatecoop/user-api/pkg/config"
+	"github.com/resonatecoop/user-api/server"
 	"github.com/stretchr/testify/suite"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
@@ -40,12 +41,13 @@ func init() {
 	}
 }
 
-// OauthTestSuite needs to be exported so the tests run
+// UserApiTestSuite needs to be exported so the tests run
 type UserApiTestSuite struct {
 	suite.Suite
-	cfg *config.Configuration
-	db  *bun.DB
-	ctx context.Context
+	cfg    *config.Configuration
+	db     *bun.DB
+	ctx    context.Context
+	server *server.Server
 	// service *oauth.Service
 	// clients []*model.Client
 	// users   []*model.User
@@ -62,7 +64,7 @@ func (suite *UserApiTestSuite) SetupSuite() {
 	cfg, err := config.Load(*cfgPath)
 
 	if err != nil {
-		return nil, nil, err
+		panic(err)
 	}
 
 	sqldb, err := sql.Open("pgx", cfg.DB.Dev.PSN)
@@ -79,9 +81,11 @@ func (suite *UserApiTestSuite) SetupSuite() {
 	suite.ctx = context.Background()
 	suite.db = db
 
-	if err != nil {
-		panic(err)
-	}
+	suite.server = server.New(db)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// ASSUME THAT TEST DATABASE HAS ALREADY BEEN CREATED
 	// Create the test database
@@ -133,6 +137,8 @@ func (suite *UserApiTestSuite) SetupSuite() {
 	// // Register routes
 	// suite.router = mux.NewRouter()
 	// suite.service.RegisterRoutes(suite.router, "/v1/oauth")
+
+	// return nil
 }
 
 // The TearDownSuite method will be run by testify once, at the very
@@ -177,6 +183,12 @@ func (suite *UserApiTestSuite) TearDownTest() {
 		ForceDelete().
 		Exec(suite.ctx)
 
+	suite.db.NewUpdate().
+		Model(new(model.User)).
+		Set("deleted_at = NULL").
+		WhereAllWithDeleted().
+		Exec(suite.ctx)
+
 	ids = []string{"3392e754-ba3e-424f-a687-add9a8ab39c9", "295be195-898c-4f0c-b6a0-8c62105f42de"}
 
 	suite.db.NewDelete().
@@ -186,7 +198,7 @@ func (suite *UserApiTestSuite) TearDownTest() {
 		Exec(suite.ctx)
 }
 
-// TestOauthTestSuite ...
+// TestUserApiTestSuite ...
 // In order for 'go test' to run this suite, we need to create
 // a normal test function and pass our suite to suite.Run
 func TestUserApiTestSuite(t *testing.T) {
