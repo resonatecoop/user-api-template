@@ -18,13 +18,14 @@ require (
 	github.com/mwitkow/go-proto-validators v0.3.2
 	github.com/rakyll/statik v0.1.7
 	github.com/stretchr/testify v1.7.0
-	github.com/uptrace/bun v0.2.10
+	github.com/uptrace/bun v0.3.0
 	github.com/uptrace/bun/dbfixture v0.2.10
-	github.com/uptrace/bun/dialect/pgdialect v0.2.10
+	github.com/uptrace/bun/dialect/pgdialect v0.3.0
 	github.com/uptrace/bun/dialect/sqlitedialect v0.2.4
-	github.com/uptrace/bun/extra/bundebug v0.2.10
+	github.com/uptrace/bun/extra/bundebug v0.3.0
 	github.com/urfave/cli/v2 v2.3.0
 	go4.org v0.0.0-20201209231011-d4a079459e60
+	golang.org/x/mod v0.4.2 // indirect
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4
 	google.golang.org/grpc v1.33.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1

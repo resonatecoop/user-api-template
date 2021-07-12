@@ -152,7 +152,9 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.Init(ctx, app.DB(c.String("env"), dbdebug))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					return migrator.Init(ctx)
 				},
 			},
 			{
@@ -171,7 +173,11 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.Migrate(ctx, app.DB(c.String("env"), dbdebug))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					_, err = migrator.Migrate(ctx)
+
+					return err
 				},
 			},
 			{
@@ -190,7 +196,11 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.Rollback(ctx, app.DB(c.String("env"), dbdebug))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					_, err = migrator.Rollback(ctx)
+
+					return err
 				},
 			},
 			{
@@ -209,7 +219,9 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.Lock(ctx, app.DB(c.String("env"), dbdebug))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					return migrator.Lock(ctx)
 				},
 			},
 			{
@@ -228,7 +240,9 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.Unlock(ctx, app.DB(c.String("env"), dbdebug))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					return migrator.Unlock(ctx)
 				},
 			},
 			{
@@ -247,7 +261,11 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 						dbdebug = true
 					}
 
-					return migrations.CreateGo(ctx, app.DB(c.String("env"), dbdebug), c.Args().Get(0))
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
+
+					_, err = migrator.CreateGo(ctx, c.Args().Get(0))
+
+					return err
 				},
 			},
 			{
@@ -265,8 +283,11 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 					if c.String("dbdebug") == "true" {
 						dbdebug = true
 					}
+					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
 
-					return migrations.CreateSQL(ctx, app.DB(c.String("env"), dbdebug), c.Args().Get(0))
+					_, err = migrator.CreateSQL(ctx, c.Args().Get(0))
+
+					return err
 				},
 			},
 			{

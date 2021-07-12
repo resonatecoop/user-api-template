@@ -154,9 +154,7 @@ func (app *App) DB(env string, debug bool) *bun.DB {
 
 		databaseUser := os.Getenv("POSTGRES_USER")
 
-		if databaseName == "" || databaseUser == "" {
-			env = "dev"
-		} else {
+		if databaseName != "" && databaseUser != "" {
 			databaseHost := os.Getenv("POSTGRES_HOST")
 
 			if databaseHost == "" {
