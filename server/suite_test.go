@@ -187,6 +187,7 @@ func (suite *UserApiTestSuite) TearDownTest() {
 		Model(new(model.User)).
 		Set("deleted_at = NULL").
 		WhereAllWithDeleted().
+		Where("deleted_at IS NOT NULL").
 		Exec(suite.ctx)
 
 	ids = []string{"3392e754-ba3e-424f-a687-add9a8ab39c9", "295be195-898c-4f0c-b6a0-8c62105f42de"}
