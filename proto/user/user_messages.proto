@@ -58,19 +58,20 @@ message UserUpdateRestrictedRequest {
 
 message UserPrivateResponse {
   string id = 1; // required
-  string username = 2; // required
-  string full_name = 3; // required
-  string first_name = 4;
-  string last_name = 5;
-  string country = 6;
-  bool email_confirmed = 7;
-  bool member = 8;
-  int32 role_id = 9;
-  int32 tenant_id = 10;
-  bool newsletter_notification = 11;
-  repeated string personas = 12;
-  repeated string owned_groups = 13;
-  repeated string followed_groups = 14;
+  int32 legacy_id = 2;
+  string username = 3; // required
+  string full_name = 4; // required
+  string first_name = 5;
+  string last_name = 6;
+  string country = 7;
+  bool email_confirmed = 8;
+  bool member = 9;
+  int32 role_id = 10;
+  int32 tenant_id = 11;
+  bool newsletter_notification = 12;
+  repeated string personas = 13;
+  repeated string owned_groups = 14;
+  repeated string followed_groups = 15;
   //string email = 3; // required
   //bytes avatar = 9;
   //string display_name = 4; // required TODO remove
@@ -79,15 +80,17 @@ message UserPrivateResponse {
 }
 
 message UserPublicResponse {
-  string username = 1; // required
-  string full_name = 2; // required
-  string first_name = 3;
-  string last_name = 4;
-  string country = 5;
-  bool member = 6;
-  repeated string personas = 7;
-  repeated string owned_groups = 8;
-  repeated string followed_groups = 9;
+  string id = 1;
+  int32 legacy_id = 2;
+  string username = 3; // required
+  string full_name = 4; // required
+  string first_name = 5;
+  string last_name = 6;
+  string country = 7;
+  bool member = 8;
+  repeated string personas = 9;
+  repeated string owned_groups = 10;
+  repeated string followed_groups = 11;
   //bytes avatar = 9;
   //string display_name = 4; // required TODO remove
 }

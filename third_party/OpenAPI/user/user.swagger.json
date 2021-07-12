@@ -678,6 +678,10 @@
         "id": {
           "type": "string"
         },
+        "legacyId": {
+          "type": "integer",
+          "format": "int32"
+        },
         "username": {
           "type": "string"
         },
@@ -733,6 +737,13 @@
     "userUserPublicResponse": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
+        "legacyId": {
+          "type": "integer",
+          "format": "int32"
+        },
         "username": {
           "type": "string"
         },
