@@ -54,7 +54,11 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
+<<<<<<< HEAD
 	_, err = s.db.NewInsert().Column("id", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
+=======
+	_, err := s.db.NewInsert().Column("id", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
+>>>>>>> 5b8d59003eb7a6b52203922cfb327d9647d411b9
 
 	if err != nil {
 		return nil, err
