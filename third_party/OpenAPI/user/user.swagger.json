@@ -490,6 +490,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

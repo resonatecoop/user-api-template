@@ -104,6 +104,7 @@ message UserAddRequest {
   bool newsletter_notification = 6;
   string country = 7;
   repeated string followed_groups = 8;
+  optional int32 role_id = 9;
   //string email = 2; // required
   //repeated string favorite_tracks = 10;
   //bytes avatar = 8;
