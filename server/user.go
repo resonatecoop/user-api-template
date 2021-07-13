@@ -31,7 +31,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
-	_, err := s.db.NewInsert().Model(newUser).Exec(ctx)
+	_, err := s.db.NewInsert().Column("username", "full_name", "first_name", "last_name", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
 
 	if err != nil {
 		return nil, err
