@@ -17,13 +17,24 @@ import (
 // AddUser adds a user to the DB
 func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.UserRequest, error) {
 
+	var thisRole int32
+
 	requiredErr := checkRequiredAddAttributes(user)
 	if requiredErr != nil {
 		return nil, requiredErr
 	}
 
+	// if requested role is not admin, grant it
+	if user.RoleId != nil && *user.RoleId >= int32(model.ArtistRole) {
+		thisRole = *user.RoleId
+	} else {
+		thisRole = int32(model.UserRole)
+	}
+
+	// defaults to User Role, must update with greater privileges to change role
 	newUser := &model.User{
 		Username:               user.Username,
+		RoleID:                 thisRole,
 		FullName:               user.FullName,
 		FirstName:              user.FirstName,
 		LastName:               user.LastName,
@@ -31,7 +42,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
-	_, err := s.db.NewInsert().Column("id", "username", "full_name", "first_name", "last_name", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
+	_, err := s.db.NewInsert().Column("id", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
 
 	if err != nil {
 		return nil, err
