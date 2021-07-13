@@ -20,28 +20,44 @@ import (
 // 	//TODO
 // }
 
+func getIntPointer(value int32) *int32 {
+	return &value
+}
+
+func (suite *UserApiTestSuite) TestAddUser() {
+	ctx := suite.ctx
+
+	// When attempting to add a user with admin access,
+	// the user is created but limited to default user role
+	newuser := pbUser.UserAddRequest{
+		Username: "joe@bloggs.com",
+		FullName: "Joe Bloggs",
+		RoleId:   getIntPointer(1),
+	}
+
+	_, err := suite.server.AddUser(ctx, &newuser)
+	if err != nil {
+		panic(err)
+	}
+
+	user := new(model.User)
+
+	err = suite.db.NewSelect().
+		Model(user).
+		Where("username = ?", "joe@bloggs.com").
+		Limit(1).
+		Scan(ctx)
+
+	// the record exists
+	assert.Nil(suite.T(), err)
+
+	// but the role has been limited to default
+	assert.Equal(suite.T(), int32(model.UserRole), user.RoleID)
+}
+
 func (suite *UserApiTestSuite) TestDeleteUser() {
 
 	ctx := suite.ctx
-
-	// cfgPath := flag.String("p", "./../../conf.local.yaml", "Path to config file")
-	// flag.Parse()
-
-	// cfg, err := config.Load(*cfgPath)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// sqldb, err := sql.Open("pgx", cfg.suite.db.Test.PSN)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// db := bun.NewDB(sqldb, pgdialect.New())
-
-	// suite.db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
-
-	// server := usersuite.server.New(db, nil)
 
 	type cases []pbUser.UserRequest
 
