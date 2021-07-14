@@ -261,14 +261,8 @@ func (s *Server) ListUsers(ctx context.Context, Empty *pbUser.Empty) (*pbUser.Us
 }
 
 func checkRequiredAddAttributes(user *pbUser.UserAddRequest) error {
-	if user.Username == "" || user.FullName == "" {
-		var argument string
-		switch {
-		case user.Username == "":
-			argument = "username"
-		case user.FullName == "":
-			argument = "full_name"
-		}
+	if user.Username == "" {
+		argument := "username"
 		return fmt.Errorf("argument %v is required", argument)
 	}
 	re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
