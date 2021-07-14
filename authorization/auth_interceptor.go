@@ -128,7 +128,13 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 
 	isPublicAccessMethod := stringInSlice(method, PublicMethods)
 
-	accessToken := values[0]
+	accessTokenSource := strings.Split(values[0], " ")
+
+	if len(accessTokenSource) != 2 {
+		return status.Errorf(codes.PermissionDenied, "incorrect authorization header format")
+	}
+
+	accessToken := accessTokenSource[1]
 
 	accessTokenRecord, err := interceptor.Authenticate(accessToken)
 	if err != nil {
