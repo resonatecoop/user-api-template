@@ -17,7 +17,7 @@ refreshtoken:
   lifetime_seconds: 1209600
 
 access:
-  no_token_methods: "/iam.ResonateIAM/Auth,/user.ResonateUser/ResetUserPassword" # Usually only Auth method
+  no_token_methods: "/user.ResonateUser/AddUser"
   public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/ListUsersUserGroups"
   write_methods: "/user.ResonateUser/DeleteUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup"
 
