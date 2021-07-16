@@ -10,20 +10,20 @@ import (
 // WpUser ...
 type WpUser struct {
 	bun.BaseModel `bun:"rsnrt_users,alias:u"`
-	ID            uint64         `gorm:"column:ID;primary_key;auto_increment;not_null"`
-	Email         string         `gorm:"column:user_email" sql:"type:varchar(100);unique;not null"`
-	Login         string         `gorm:"column:user_login" sql:"type:varchar(60)"`
-	Registered    time.Time      `gorm:"column:user_registered" sql:"type:datetime"`
-	Nicename      string         `gorm:"column:user_nicename" sql:"type:varchar(50)"`
-	DisplayName   string         `gorm:"column:display_name" sql:"type:varchar(250)"`
-	Password      sql.NullString `gorm:"column:user_pass" sql:"type:varchar(255)"`
+	ID            uint64         `bun:"ID,pk,auto_increment,notnull"`
+	Email         string         `bun:"user_email,type:varchar(100);unique;notnull"`
+	Login         string         `bun:"user_login,type:varchar(60)"`
+	Registered    time.Time      `bun:"user_registered,type:datetime"`
+	Nicename      string         `bun:"user_nicename,type:varchar(50)"`
+	DisplayName   string         `bun:"display_name,type:varchar(250)"`
+	Password      sql.NullString `bun:"user_pass,type:varchar(255)"`
 }
 
 // UserMeta ...
 type WpUserMeta struct {
-	bun.BaseModel `bun:"rsntr_usermeta,alias:u"`
-	ID            uint64 `gorm:"column:umeta_id;primary_key;auto_increment;not_null"`
-	UserId        uint64 `gorm:"column:user_id" sql:"not null"`
-	MetaKey       string `gorm:"column:meta_key" sql:"type:varchar(255)"`
-	MetaValue     string `gorm:"column:meta_value" sql:"type:longtext"`
+	bun.BaseModel `bun:"rsntr_usermeta,alias:um"`
+	ID            uint64 `bun:"umeta_id,pk,auto_increment,notnull"`
+	UserId        uint64 `bun:"user_id,notnull"`
+	MetaKey       string `bun:"meta_key,type:varchar(255)"`
+	MetaValue     string `bun:"meta_value,type:longtext"`
 }
