@@ -9,7 +9,7 @@ import (
 
 // WpUser ...
 type WpUser struct {
-	bun.BaseModel `bun:"rsnrt_users,alias:u"`
+	bun.BaseModel `bun:"rsntr_users,alias:u"`
 	ID            uint64         `bun:"ID,pk,auto_increment,notnull"`
 	Email         string         `bun:"user_email,type:varchar(100);unique;notnull"`
 	Login         string         `bun:"user_login,type:varchar(60)"`
