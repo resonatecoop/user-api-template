@@ -145,7 +145,7 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	if UserGroupUpdateRequest.Avatar != nil {
 		updatedUserGroupValues["avatar"] = *UserGroupUpdateRequest.Avatar
 	}
-	if UserGroupUpdateRequest.Avatar != nil {
+	if UserGroupUpdateRequest.Banner != nil {
 		updatedUserGroupValues["banner"] = *UserGroupUpdateRequest.Banner
 	}
 
