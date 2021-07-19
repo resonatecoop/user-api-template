@@ -204,10 +204,28 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 				userUpdateReq, ok := req.(*pbUser.UserUpdateRequest)
 				if !ok {
 					userGroupCreateReq, ok := req.(*pbUser.UserGroupCreateRequest)
-					if ok {
-						id = userGroupCreateReq.Id
+					if !ok {
+						userGroupUpdateReq, ok := req.(*pbUser.UserGroupUpdateRequest)
+						if !ok {
+							return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+						} else {
+
+							newUserGroup := new(model.UserGroup)
+
+							err = interceptor.db.NewSelect().
+								Model(newUserGroup).
+								Where("owner_id = ?", accessTokenRecord.UserID).
+								Where("id = ?", userGroupUpdateReq.Id).
+								Scan(ctx)
+
+							if err != nil {
+								return status.Errorf(codes.PermissionDenied, "Supplied UUID for User Group is not valid or logged in User doesn't own Group")
+							}
+
+							id = accessTokenRecord.UserID.String()
+						}
 					} else {
-						return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+						id = userGroupCreateReq.Id
 					}
 				} else {
 					id = userUpdateReq.Id
