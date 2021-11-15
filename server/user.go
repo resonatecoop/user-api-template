@@ -25,7 +25,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	}
 
 	// if requested role is not admin, grant it
-	if user.RoleId != nil && *user.RoleId >= int32(model.ArtistRole) {
+	if user.RoleId != nil && *user.RoleId >= int32(model.LabelRole) {
 		thisRole = *user.RoleId
 	} else {
 
