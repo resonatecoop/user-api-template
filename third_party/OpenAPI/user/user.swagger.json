@@ -783,6 +783,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -817,6 +821,10 @@
         },
         "newsletterNotification": {
           "type": "boolean"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

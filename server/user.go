@@ -25,7 +25,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	}
 
 	// if requested role is not admin, grant it
-	if user.RoleId != nil && *user.RoleId >= int32(model.ArtistRole) {
+	if user.RoleId != nil && *user.RoleId >= int32(model.LabelRole) {
 		thisRole = *user.RoleId
 	} else {
 
@@ -146,6 +146,10 @@ func (s *Server) UpdateUser(ctx context.Context, UserUpdateRequest *pbUser.UserU
 		if !re.MatchString(*UserUpdateRequest.Username) {
 			return nil, errors.New("username must be a valid email")
 		}
+	}
+
+	if UserUpdateRequest.RoleId != nil && *UserUpdateRequest.RoleId >= int32(model.LabelRole) {
+		updatedUserValues["role_id"] = *UserUpdateRequest.RoleId
 	}
 	if UserUpdateRequest.FirstName != nil {
 		updatedUserValues["first_name"] = *UserUpdateRequest.FirstName
