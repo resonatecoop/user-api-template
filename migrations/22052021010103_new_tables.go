@@ -14,9 +14,10 @@ func init() {
 	// Drop and create tables.
 	models := []interface{}{
 		(*model.Credit)(nil),
-		(*model.Membership)(nil),
+		(*model.UserMembership)(nil),
 		(*model.StripeUser)(nil),
-		(*model.Share)(nil),
+		(*model.ShareTransaction)(nil),
+		(*model.MembershipClass)(nil),
 	}
 
 	Migrations.MustRegister(func(ctx context.Context, db *bun.DB) error {
