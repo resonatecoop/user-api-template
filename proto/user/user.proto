@@ -130,6 +130,17 @@ service ResonateUser {
       tags: "Users"
     };
   }
+
+  rpc GetUserCredits(UserRequest) returns (UserCreditResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/user/{id}/credits"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user credits"
+      description: "Get user credits."
+      tags: "Users"
+    };
+  }
   
   rpc DeleteUser(UserRequest) returns (Empty) {
     option (google.api.http) = {

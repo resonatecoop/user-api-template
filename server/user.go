@@ -54,7 +54,34 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
-	_, err = s.db.NewInsert().Column("id", "username", "full_name", "first_name", "last_name", "role_id", "tenant_id", "member", "country", "newsletter_notification").Model(newUser).Exec(ctx)
+	_, err = s.db.NewInsert().
+		Column(
+			"id",
+			"username",
+			"full_name",
+			"first_name",
+			"last_name",
+			"role_id",
+			"tenant_id",
+			"member",
+			"country",
+			"newsletter_notification",
+		).
+		Model(newUser).Exec(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	newWallet := &model.Credit{
+		Total:  int64(128), // init user wallet with some free credits
+		UserID: newUser.ID,
+	}
+
+	_, err = s.db.NewInsert().
+		Column("id", "total").
+		Model(newWallet).
+		Exec(ctx)
 
 	if err != nil {
 		return nil, err
@@ -87,6 +114,38 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 		Member:         u.Member,
 		Country:        u.Country,
 		FollowedGroups: uuidpkg.ConvertUUIDToStrArray(u.FollowedGroups),
+	}, nil
+}
+
+// GetUserCredits
+func (s *Server) GetUserCredits(ctx context.Context, user *pbUser.UserRequest) (*pbUser.UserCreditResponse, error) {
+	w := new(model.Credit)
+
+	err := s.db.NewSelect().Model(w).
+		Column("total").
+		Where("user_id = ?", user.Id).
+		Scan(ctx)
+
+	if err != nil {
+		userID, _ := uuid.Parse(user.Id)
+		w = &model.Credit{
+			Total:  int64(128), // init user wallet with some free credits
+			UserID: userID,
+		}
+
+		_, err = s.db.NewInsert().
+			Column("id", "user_id", "total").
+			Model(w).
+			Returning("id", "total").
+			Exec(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &pbUser.UserCreditResponse{
+		Total: w.Total,
 	}, nil
 }
 
