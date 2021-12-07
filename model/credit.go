@@ -8,6 +8,7 @@ import (
 type Credit struct {
 	IDRecord
 	UserID uuid.UUID `bun:"type:uuid,notnull"`
+	User   *User     `bun:"rel:has-one"`
 	Total  int64     `bun:",notnull,default:128"`
 }
 
