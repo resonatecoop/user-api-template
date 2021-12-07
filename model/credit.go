@@ -12,12 +12,9 @@ type Credit struct {
 	Total  int64     `bun:",notnull,default:128"`
 }
 
-const euro = float64(1.25)
-const credit = int64(1022)
-
 // ConvertCreditToEuro converts credit value to euro
 func ConvertCreditToEuro(total int64) float64 {
-	return float64(total) / float64(credit) * euro
+	return float64(total) / 1022 * 1.25
 }
 
 // CalculateCost
