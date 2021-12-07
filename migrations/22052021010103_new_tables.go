@@ -16,6 +16,7 @@ func init() {
 		(*model.Credit)(nil),
 		(*model.Membership)(nil),
 		(*model.StripeUser)(nil),
+		(*model.Share)(nil),
 	}
 
 	Migrations.MustRegister(func(ctx context.Context, db *bun.DB) error {
