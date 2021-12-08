@@ -184,6 +184,38 @@
         ]
       }
     },
+    "/api/v1/user/{id}/credits": {
+      "get": {
+        "summary": "Get user credits",
+        "description": "Get user credits.",
+        "operationId": "ResonateUser_GetUserCredits",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserCreditResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
     "/api/v1/usergroup/{id}": {
       "get": {
         "summary": "Get a user group",
@@ -494,6 +526,15 @@
         "roleId": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "userUserCreditResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

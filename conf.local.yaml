@@ -18,7 +18,7 @@ refreshtoken:
 
 access:
   no_token_methods: "/user.ResonateUser/AddUser"
-  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup,/user.ResonateUser/ListUsersUserGroups"
+  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/GetUserCredits,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup,/user.ResonateUser/ListUsersUserGroups"
   write_methods: "/user.ResonateUser/DeleteUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup"
 
 application:

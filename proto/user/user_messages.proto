@@ -57,6 +57,10 @@ message UserUpdateRestrictedRequest {
   //StreetAddress residence_address = 14;
 }
 
+message UserCreditResponse {
+  int64 total = 1; // required
+}
+
 message UserPrivateResponse {
   string id = 1; // required
   int32 legacy_id = 2;

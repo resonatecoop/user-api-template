@@ -33,6 +33,9 @@ func (this *UserUpdateRequest) Validate() error {
 func (this *UserUpdateRestrictedRequest) Validate() error {
 	return nil
 }
+func (this *UserCreditResponse) Validate() error {
+	return nil
+}
 func (this *UserPrivateResponse) Validate() error {
 	return nil
 }
