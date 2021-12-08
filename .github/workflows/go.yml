@@ -19,7 +19,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
     - name: Install tools
-      run: make install && go mod tidy
+      run: make install
     - name: Regenerate files
       run: make generate
     - name: Check for a diff
