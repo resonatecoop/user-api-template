@@ -252,6 +252,8 @@ func (s *Server) ListUsersUserGroups(ctx context.Context, user *pbUser.UserReque
 		result.Avatar = uuid.UUID.String(usergroup.Avatar)
 		result.Banner = uuid.UUID.String(usergroup.Banner)
 		result.GroupEmail = usergroup.GroupEmail
+		result.CreatedAt = usergroup.CreatedAt.UTC().String()
+		result.UpdatedAt = usergroup.UpdatedAt.UTC().String()
 
 		results.Usergroup = append(results.Usergroup, &result)
 	}

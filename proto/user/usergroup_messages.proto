@@ -107,7 +107,9 @@ message UserGroupPrivateResponse {
   //repeated RelatedUserGroup recommended_artists = 15;
   //map<string, string> publisher = 16;
   //map<string, string> pro = 17;
-  string group_email = 18;
+  string group_email = 9;
+  string created_at = 10;
+  string updated_at = 11;
 }
 
 message UserGroupListResponse {

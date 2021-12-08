@@ -614,6 +614,12 @@
         "groupEmail": {
           "type": "string",
           "title": "repeated string followers = 9;\nrepeated string members = 10;\nrepeated string memberOfGroups = 11;\nrepeated string links = 12;\nrepeated string tags = 13;\n StreetAddress address = 13;\nPrivacy privacy = 14;\nrepeated RelatedUserGroup recommended_artists = 15;\nmap\u003cstring, string\u003e publisher = 16;\nmap\u003cstring, string\u003e pro = 17;"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
         }
       }
     },
