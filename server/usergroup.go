@@ -227,6 +227,7 @@ func (s *Server) ListUsersUserGroups(ctx context.Context, user *pbUser.UserReque
 	err := s.db.NewSelect().
 		Model(&usergroups).
 		Where("owner_id = ?", user.Id).
+		Order("created_at ASC").
 		Scan(ctx)
 
 	if err != nil {
