@@ -17,9 +17,17 @@ import (
 // AddUser adds a user to the DB
 func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.UserRequest, error) {
 
+	err := s.db.NewSelect().Model(&model.User{}).
+		Where("username = ?", user.Username).
+		Scan(ctx)
+
+	if err == nil {
+		return nil, errors.New("Email is taken")
+	}
+
 	var thisRole int32
 
-	err := checkRequiredAddAttributes(user)
+	err = checkRequiredAddAttributes(user)
 	if err != nil {
 		return nil, err
 	}
@@ -67,11 +75,14 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 			"country",
 			"newsletter_notification",
 		).
-		Model(newUser).Exec(ctx)
+		Model(newUser).
+		Exec(ctx)
 
 	if err != nil {
 		return nil, err
 	}
+
+	res := &pbUser.UserRequest{Id: newUser.ID.String()}
 
 	newWallet := &model.Credit{
 		Total:  int64(128), // init user wallet with some free credits
@@ -79,7 +90,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	}
 
 	_, err = s.db.NewInsert().
-		Column("id", "total").
+		Column("id", "user_id", "total").
 		Model(newWallet).
 		Exec(ctx)
 
@@ -87,7 +98,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		return nil, err
 	}
 
-	return &pbUser.UserRequest{Id: newUser.ID.String()}, nil
+	return res, nil
 }
 
 // GetUser Gets a user from the DB
