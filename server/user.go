@@ -16,8 +16,12 @@ import (
 
 // AddUser adds a user to the DB
 func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbUser.UserRequest, error) {
+	err := checkRequiredAddAttributes(user)
+	if err != nil {
+		return nil, err
+	}
 
-	err := s.db.NewSelect().Model(&model.User{}).
+	err = s.db.NewSelect().Model(&model.User{}).
 		Where("username = ?", user.Username).
 		Scan(ctx)
 
@@ -26,11 +30,6 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	}
 
 	var thisRole int32
-
-	err = checkRequiredAddAttributes(user)
-	if err != nil {
-		return nil, err
-	}
 
 	// if requested role is not admin, grant it
 	if user.RoleId != nil && *user.RoleId >= int32(model.LabelRole) {
