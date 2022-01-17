@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	uuid "github.com/google/uuid"
@@ -22,7 +23,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	}
 
 	err = s.db.NewSelect().Model(&model.User{}).
-		Where("username = ?", user.Username).
+		Where("username = ?", strings.ToLower(user.Username)).
 		Scan(ctx)
 
 	if err == nil {
