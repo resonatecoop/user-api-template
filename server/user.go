@@ -65,6 +65,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 	_, err = s.db.NewInsert().
 		Column(
 			"id",
+			"legacy_id",
 			"username",
 			"full_name",
 			"first_name",
