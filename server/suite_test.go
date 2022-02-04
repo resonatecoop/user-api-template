@@ -75,7 +75,7 @@ func (suite *UserApiTestSuite) SetupSuite() {
 
 	db := bun.NewDB(sqldb, pgdialect.New())
 
-	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
+	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 
 	suite.cfg = cfg
 	suite.ctx = context.Background()

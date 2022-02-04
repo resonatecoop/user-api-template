@@ -263,7 +263,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 
 					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
 
-					_, err = migrator.CreateGo(ctx, c.Args().Get(0))
+					_, err = migrator.CreateGoMigration(ctx, c.Args().Get(0))
 
 					return err
 				},
@@ -285,7 +285,7 @@ func newDBCommand(migrations *migrate.Migrations) *cli.Command {
 					}
 					migrator := migrate.NewMigrator(app.DB(c.String("env"), dbdebug), migrations)
 
-					_, err = migrator.CreateSQL(ctx, c.Args().Get(0))
+					_, err = migrator.CreateSQLMigrations(ctx, c.Args().Get(0))
 
 					return err
 				},
