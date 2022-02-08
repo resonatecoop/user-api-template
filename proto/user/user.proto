@@ -173,7 +173,7 @@ service ResonateUser {
   rpc AddUserUploadSubmission(UserAddUploadSubmissionRequest) returns (UserUploadSubmissionRequest) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users/{id}/upload_submission
-      post: "/api/v1/users/{id}/upload_submission"
+      post: "/api/v1/users/{id}/upload-submission"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {

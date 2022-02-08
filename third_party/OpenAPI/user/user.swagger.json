@@ -372,7 +372,7 @@
         ]
       }
     },
-    "/api/v1/users/{id}/upload_submission": {
+    "/api/v1/users/{id}/upload-submission": {
       "post": {
         "summary": "Add an upload submission",
         "description": "Add an upload submission to the server to user resource with id: id.",
