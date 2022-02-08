@@ -45,6 +45,12 @@ func (this *UserPublicResponse) Validate() error {
 func (this *UserAddRequest) Validate() error {
 	return nil
 }
+func (this *UserUploadSubmissionRequest) Validate() error {
+	return nil
+}
+func (this *UserAddUploadSubmissionRequest) Validate() error {
+	return nil
+}
 func (this *UserListResponse) Validate() error {
 	for _, item := range this.User {
 		if item != nil {

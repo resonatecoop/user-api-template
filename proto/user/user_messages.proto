@@ -119,6 +119,15 @@ message UserAddRequest {
   //StreetAddress residence_address = 13;
 }
 
+message UserUploadSubmissionRequest {
+  string id = 1;
+}
+
+message UserAddUploadSubmissionRequest {
+  string id = 1; // UUID required
+  string name = 2; // required
+}
+
 message UserListResponse {
   repeated UserPrivateResponse user = 1;
 }

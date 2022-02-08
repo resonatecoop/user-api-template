@@ -838,6 +838,108 @@ func (x *UserAddRequest) GetRoleId() int32 {
 	return 0
 }
 
+type UserUploadSubmissionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *UserUploadSubmissionRequest) Reset() {
+	*x = UserUploadSubmissionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_user_messages_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserUploadSubmissionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserUploadSubmissionRequest) ProtoMessage() {}
+
+func (x *UserUploadSubmissionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_user_messages_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserUploadSubmissionRequest.ProtoReflect.Descriptor instead.
+func (*UserUploadSubmissionRequest) Descriptor() ([]byte, []int) {
+	return file_user_user_messages_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UserUploadSubmissionRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type UserAddUploadSubmissionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`     // UUID required
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"` // required
+}
+
+func (x *UserAddUploadSubmissionRequest) Reset() {
+	*x = UserAddUploadSubmissionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_user_user_messages_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UserAddUploadSubmissionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserAddUploadSubmissionRequest) ProtoMessage() {}
+
+func (x *UserAddUploadSubmissionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_user_messages_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserAddUploadSubmissionRequest.ProtoReflect.Descriptor instead.
+func (*UserAddUploadSubmissionRequest) Descriptor() ([]byte, []int) {
+	return file_user_user_messages_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UserAddUploadSubmissionRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UserAddUploadSubmissionRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
 type UserListResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -849,7 +951,7 @@ type UserListResponse struct {
 func (x *UserListResponse) Reset() {
 	*x = UserListResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_user_messages_proto_msgTypes[9]
+		mi := &file_user_user_messages_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -862,7 +964,7 @@ func (x *UserListResponse) String() string {
 func (*UserListResponse) ProtoMessage() {}
 
 func (x *UserListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_user_messages_proto_msgTypes[9]
+	mi := &file_user_user_messages_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -875,7 +977,7 @@ func (x *UserListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserListResponse.ProtoReflect.Descriptor instead.
 func (*UserListResponse) Descriptor() ([]byte, []int) {
-	return file_user_user_messages_proto_rawDescGZIP(), []int{9}
+	return file_user_user_messages_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UserListResponse) GetUser() []*UserPrivateResponse {
@@ -1031,14 +1133,22 @@ var file_user_user_messages_proto_rawDesc = []byte{
 	0x77, 0x65, 0x64, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x12, 0x1c, 0x0a, 0x07, 0x72, 0x6f, 0x6c,
 	0x65, 0x5f, 0x69, 0x64, 0x18, 0x09, 0x20, 0x01, 0x28, 0x05, 0x48, 0x00, 0x52, 0x06, 0x72, 0x6f,
 	0x6c, 0x65, 0x49, 0x64, 0x88, 0x01, 0x01, 0x42, 0x0a, 0x0a, 0x08, 0x5f, 0x72, 0x6f, 0x6c, 0x65,
-	0x5f, 0x69, 0x64, 0x22, 0x41, 0x0a, 0x10, 0x55, 0x73, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x04, 0x75, 0x73, 0x65, 0x72, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65,
-	0x72, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x42, 0x2d, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x6e, 0x61, 0x74, 0x65, 0x63, 0x6f, 0x6f,
-	0x70, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2f, 0x75, 0x73, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x5f, 0x69, 0x64, 0x22, 0x2d, 0x0a, 0x1b, 0x55, 0x73, 0x65, 0x72, 0x55, 0x70, 0x6c, 0x6f, 0x61,
+	0x64, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
+	0x69, 0x64, 0x22, 0x44, 0x0a, 0x1e, 0x55, 0x73, 0x65, 0x72, 0x41, 0x64, 0x64, 0x55, 0x70, 0x6c,
+	0x6f, 0x61, 0x64, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x41, 0x0a, 0x10, 0x55, 0x73, 0x65, 0x72,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x04,
+	0x75, 0x73, 0x65, 0x72, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x50, 0x72, 0x69, 0x76, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x04, 0x75, 0x73, 0x65, 0x72, 0x42, 0x2d, 0x5a, 0x2b, 0x67,
+	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x6e, 0x61,
+	0x74, 0x65, 0x63, 0x6f, 0x6f, 0x70, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x61, 0x70, 0x69, 0x2f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -1053,18 +1163,20 @@ func file_user_user_messages_proto_rawDescGZIP() []byte {
 	return file_user_user_messages_proto_rawDescData
 }
 
-var file_user_user_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_user_user_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_user_messages_proto_goTypes = []interface{}{
-	(*UserRequest)(nil),                 // 0: user.UserRequest
-	(*UserOptionalRequest)(nil),         // 1: user.UserOptionalRequest
-	(*ResetUserPasswordRequest)(nil),    // 2: user.ResetUserPasswordRequest
-	(*UserUpdateRequest)(nil),           // 3: user.UserUpdateRequest
-	(*UserUpdateRestrictedRequest)(nil), // 4: user.UserUpdateRestrictedRequest
-	(*UserCreditResponse)(nil),          // 5: user.UserCreditResponse
-	(*UserPrivateResponse)(nil),         // 6: user.UserPrivateResponse
-	(*UserPublicResponse)(nil),          // 7: user.UserPublicResponse
-	(*UserAddRequest)(nil),              // 8: user.UserAddRequest
-	(*UserListResponse)(nil),            // 9: user.UserListResponse
+	(*UserRequest)(nil),                    // 0: user.UserRequest
+	(*UserOptionalRequest)(nil),            // 1: user.UserOptionalRequest
+	(*ResetUserPasswordRequest)(nil),       // 2: user.ResetUserPasswordRequest
+	(*UserUpdateRequest)(nil),              // 3: user.UserUpdateRequest
+	(*UserUpdateRestrictedRequest)(nil),    // 4: user.UserUpdateRestrictedRequest
+	(*UserCreditResponse)(nil),             // 5: user.UserCreditResponse
+	(*UserPrivateResponse)(nil),            // 6: user.UserPrivateResponse
+	(*UserPublicResponse)(nil),             // 7: user.UserPublicResponse
+	(*UserAddRequest)(nil),                 // 8: user.UserAddRequest
+	(*UserUploadSubmissionRequest)(nil),    // 9: user.UserUploadSubmissionRequest
+	(*UserAddUploadSubmissionRequest)(nil), // 10: user.UserAddUploadSubmissionRequest
+	(*UserListResponse)(nil),               // 11: user.UserListResponse
 }
 var file_user_user_messages_proto_depIdxs = []int32{
 	6, // 0: user.UserListResponse.user:type_name -> user.UserPrivateResponse
@@ -1190,6 +1302,30 @@ func file_user_user_messages_proto_init() {
 			}
 		}
 		file_user_user_messages_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserUploadSubmissionRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_user_messages_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UserAddUploadSubmissionRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_user_user_messages_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UserListResponse); i {
 			case 0:
 				return &v.state
@@ -1212,7 +1348,7 @@ func file_user_user_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_user_user_messages_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

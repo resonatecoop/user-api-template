@@ -31,6 +31,8 @@ type ResonateUserClient interface {
 	DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error)
 	//ListUsers returns a list of all Users
 	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
+	//AddUserUploadSubmission adds a UserUploadSubmission
+	AddUserUploadSubmission(ctx context.Context, in *UserAddUploadSubmissionRequest, opts ...grpc.CallOption) (*UserUploadSubmissionRequest, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
@@ -122,6 +124,15 @@ func (c *resonateUserClient) ListUsers(ctx context.Context, in *Empty, opts ...g
 	return out, nil
 }
 
+func (c *resonateUserClient) AddUserUploadSubmission(ctx context.Context, in *UserAddUploadSubmissionRequest, opts ...grpc.CallOption) (*UserUploadSubmissionRequest, error) {
+	out := new(UserUploadSubmissionRequest)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUserUploadSubmission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resonateUserClient) AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserRequest, error) {
 	out := new(UserRequest)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUserGroup", in, out, opts...)
@@ -185,6 +196,8 @@ type ResonateUserServer interface {
 	DeleteUser(context.Context, *UserRequest) (*Empty, error)
 	//ListUsers returns a list of all Users
 	ListUsers(context.Context, *Empty) (*UserListResponse, error)
+	//AddUserUploadSubmission adds a UserUploadSubmission
+	AddUserUploadSubmission(context.Context, *UserAddUploadSubmissionRequest) (*UserUploadSubmissionRequest, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
@@ -223,6 +236,9 @@ func (UnimplementedResonateUserServer) DeleteUser(context.Context, *UserRequest)
 }
 func (UnimplementedResonateUserServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+}
+func (UnimplementedResonateUserServer) AddUserUploadSubmission(context.Context, *UserAddUploadSubmissionRequest) (*UserUploadSubmissionRequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUserUploadSubmission not implemented")
 }
 func (UnimplementedResonateUserServer) AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUserGroup not implemented")
@@ -395,6 +411,24 @@ func _ResonateUser_ListUsers_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResonateUser_AddUserUploadSubmission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAddUploadSubmissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).AddUserUploadSubmission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/AddUserUploadSubmission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).AddUserUploadSubmission(ctx, req.(*UserAddUploadSubmissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ResonateUser_AddUserGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserGroupCreateRequest)
 	if err := dec(in); err != nil {
@@ -520,6 +554,10 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUsers",
 			Handler:    _ResonateUser_ListUsers_Handler,
+		},
+		{
+			MethodName: "AddUserUploadSubmission",
+			Handler:    _ResonateUser_AddUserUploadSubmission_Handler,
 		},
 		{
 			MethodName: "AddUserGroup",

@@ -372,6 +372,46 @@
         ]
       }
     },
+    "/api/v1/users/{id}/upload_submission": {
+      "post": {
+        "summary": "Add an upload submission",
+        "description": "Add an upload submission to the server to user resource with id: id.",
+        "operationId": "ResonateUser_AddUserUploadSubmission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserUploadSubmissionRequest"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUserAddUploadSubmissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserUploadSubmissions"
+        ]
+      }
+    },
     "/api/v1/users/{id}/usergroup": {
       "post": {
         "summary": "Add a user group",
@@ -526,6 +566,17 @@
         "roleId": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "userUserAddUploadSubmissionRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -906,6 +957,14 @@
         },
         "newsletterNotification": {
           "type": "boolean"
+        }
+      }
+    },
+    "userUserUploadSubmissionRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         }
       }
     }
