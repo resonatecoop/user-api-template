@@ -9,13 +9,25 @@ func IsValidUUID(u string) bool {
 	return err == nil
 }
 
-//ConvertUUIDToStrArray returns a slice of uuids for given slive of strings
+//ConvertUUIDToStrArray returns a slice of uuids for given slice of strings
 func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	strArray := make([]string, len(uuids))
 	for i := range uuids {
 		strArray[i] = uuids[i].String()
 	}
 	return strArray
+}
+
+//ConvertUUIDToStrArray returns a slice of strings for given slice of uuids
+func ConvertStrToUUIDArray(str []string) []uuid.UUID {
+	uuidArray := make([]uuid.UUID, len(str))
+	for i := range str {
+		u, err := uuid.Parse(str[i])
+		if err != nil {
+			uuidArray[i] = u
+		}
+	}
+	return uuidArray
 }
 
 // // GetUUIDFromString returns id as string and returns error if not a valid uuid

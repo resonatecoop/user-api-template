@@ -128,10 +128,11 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 	}, nil
 }
 
-// UserAdd
+// AddUserUploadSubmission
 func (s *Server) AddUserUploadSubmission(ctx context.Context, uploadSubmission *pbUser.UserAddUploadSubmissionRequest) (*pbUser.UserUploadSubmissionRequest, error) {
 	newUploadSubmission := &model.UserUploadSubmission{
-		Name: uploadSubmission.Name,
+		Name:  uploadSubmission.Name,
+		Files: uuidpkg.ConvertStrToUUIDArray(uploadSubmission.Files),
 	}
 	_, err := s.db.NewInsert().
 		Column(
@@ -145,7 +146,9 @@ func (s *Server) AddUserUploadSubmission(ctx context.Context, uploadSubmission *
 		return nil, err
 	}
 
-	res := &pbUser.UserUploadSubmissionRequest{Id: newUploadSubmission.ID.String()}
+	res := &pbUser.UserUploadSubmissionRequest{
+		Id: newUploadSubmission.ID.String(),
+	}
 
 	return res, nil
 }

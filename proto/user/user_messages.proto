@@ -126,6 +126,7 @@ message UserUploadSubmissionRequest {
 message UserAddUploadSubmissionRequest {
   string id = 1; // UUID required
   string name = 2; // required
+  repeated string files = 3;
 }
 
 message UserListResponse {
