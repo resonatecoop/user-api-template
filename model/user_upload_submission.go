@@ -5,9 +5,14 @@ import "github.com/google/uuid"
 // UserUploadSubmission
 type UserUploadSubmission struct {
 	IDRecord
-	UserID uuid.UUID   `bun:"type:uuid,notnull"`
-	User   *User       `bun:"rel:has-one"`
-	Name   string      `bun:",notnull"`
-	Files  []uuid.UUID `bun:",type:uuid[],array"`
-	Active bool        `bun:"default:true,notnull"`
+	Active      bool        `bun:"default:true,notnull"`
+	Description string      `bun:",notnull"`
+	Files       []uuid.UUID `bun:",type:uuid[],array"`
+	Name        string      `bun:",notnull"`
+	// TrackGroup   *TrackGroup  `bun:"rel:has-one"`
+	TrackGroup  uuid.UUID  `bun:"type:uuid"`
+	UserID      uuid.UUID  `bun:"type:uuid,notnull"`
+	User        *User      `bun:"rel:has-one"`
+	UserGroupID uuid.UUID  `bun:"type:uuid,notnull"`
+	UserGroup   *UserGroup `bun:"rel:has-one"`
 }
