@@ -9,7 +9,7 @@ func IsValidUUID(u string) bool {
 	return err == nil
 }
 
-//ConvertUUIDToStrArray returns a slice of uuids for given slice of strings
+//ConvertUUIDToStrArray returns a slice of strings for given slice of uuids
 func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	strArray := make([]string, len(uuids))
 	for i := range uuids {
@@ -18,7 +18,7 @@ func ConvertUUIDToStrArray(uuids []uuid.UUID) []string {
 	return strArray
 }
 
-//ConvertUUIDToStrArray returns a slice of strings for given slice of uuids
+//ConvertUUIDToStrArray returns a slice of uuids for given slice of strings
 func ConvertStrToUUIDArray(str []string) []uuid.UUID {
 	uuidArray := make([]uuid.UUID, len(str))
 	for i := range str {
