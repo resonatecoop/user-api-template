@@ -84,6 +84,12 @@ message UserPrivateResponse {
   //StreetAddress residence_address = 14;
 }
 
+message UserMembershipResponse {
+  string id = 1;
+  string start = 2;
+  string end = 3;
+}
+
 message UserPublicResponse {
   string id = 1;
   int32 legacy_id = 2;
