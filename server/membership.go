@@ -29,6 +29,7 @@ func (s *Server) GetUserMembership(ctx context.Context, user *pbUser.UserRequest
 	result.Id = membership.ID.String()
 	result.Start = membership.Start.UTC().String()
 	result.End = membership.End.UTC().String()
+	result.MembershipClass = membership.MembershipClass.Name
 
 	return &result, nil
 }

@@ -766,6 +766,9 @@
         },
         "end": {
           "type": "string"
+        },
+        "membershipClass": {
+          "type": "string"
         }
       }
     },

@@ -88,6 +88,7 @@ message UserMembershipResponse {
   string id = 1;
   string start = 2;
   string end = 3;
+  string membership_class = 4;
 }
 
 message UserPublicResponse {
