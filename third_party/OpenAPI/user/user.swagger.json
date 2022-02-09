@@ -578,6 +578,9 @@
         "name": {
           "type": "string"
         },
+        "description": {
+          "type": "string"
+        },
         "files": {
           "type": "array",
           "items": {
