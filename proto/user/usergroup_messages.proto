@@ -51,10 +51,10 @@ message UserGroupCreateRequest {
   string group_type = 8; // required UUID
   repeated Tag tags = 9; // optional UUIDs
   string group_email = 10; // optional
+  repeated Link links = 11;
   // repeated User followers = 9;
   // repeated UserGroup members = 10;
   // repeated UserGroup memberOfGroups = 11;
-  // repeated Link links = 12;
   //StreetAddress address = 14;
   //Privacy privacy = 15;
   //repeated RelatedUserGroup recommended_artists = 16;

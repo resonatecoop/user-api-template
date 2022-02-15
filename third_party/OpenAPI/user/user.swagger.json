@@ -479,6 +479,26 @@
     "userEmpty": {
       "type": "object"
     },
+    "userLink": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "groupType": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "personalData": {
+          "type": "boolean"
+        }
+      }
+    },
     "userTag": {
       "type": "object",
       "properties": {
@@ -570,6 +590,12 @@
         },
         "groupEmail": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userLink"
+          }
         }
       }
     },

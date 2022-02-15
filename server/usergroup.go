@@ -93,6 +93,30 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		GroupEmail:  usergroup.GroupEmail,
 	}
 
+	if usergroup.Links != nil {
+		linksRef := make([]uuid.UUID, len(usergroup.Links))
+		links := make([]model.Link, len(usergroup.Links))
+
+		for i := range usergroup.Links {
+			links[i] = model.Link{
+				URI:      usergroup.Links[i].Uri,
+				Platform: usergroup.Links[i].Platform,
+			}
+		}
+
+		_, err := s.db.NewInsert().Model(&links).Exec(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for i := range links {
+			linksRef = append(linksRef, links[i].ID)
+		}
+
+		newUserGroup.Links = linksRef
+	}
+
 	newUserGroup.CreatedAt = time.Now().UTC()
 
 	_, err = s.db.NewInsert().Model(newUserGroup).Exec(ctx)
