@@ -499,20 +499,6 @@
         }
       }
     },
-    "userTag": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "userUserAddRequest": {
       "type": "object",
       "properties": {
@@ -585,7 +571,7 @@
         "tags": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userTag"
+            "type": "string"
           }
         },
         "groupEmail": {
@@ -594,7 +580,7 @@
         "links": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userLink"
+            "type": "string"
           }
         }
       }
@@ -739,13 +725,13 @@
         "links": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userLink"
+            "type": "string"
           }
         },
         "tags": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userTag"
+            "type": "string"
           }
         }
       }

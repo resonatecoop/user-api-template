@@ -49,9 +49,9 @@ message UserGroupCreateRequest {
   string avatar = 5; // UUID
   string banner = 6; // UUID
   string group_type = 8; // required UUID
-  repeated Tag tags = 9; // optional UUIDs
+  repeated string tags = 9; // optional UUIDs
   string group_email = 10; // optional
-  repeated Link links = 11;
+  repeated string links = 11;
   // repeated User followers = 9;
   // repeated UserGroup members = 10;
   // repeated UserGroup memberOfGroups = 11;
@@ -72,8 +72,8 @@ message UserGroupUpdateRequest {
   optional string group_type = 7;
   optional string group_email = 9;
   optional string owner_id = 10;
-  repeated Link links = 11;
-  repeated Tag tags = 12;
+  repeated string links = 11;
+  repeated string tags = 12;
   
   //optional StreetAddress address = 8;
   //optional string owner_id = 7; // required

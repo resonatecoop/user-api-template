@@ -9,6 +9,7 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
+	"github.com/goware/urlx"
 	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
@@ -98,11 +99,12 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 	if usergroup.Tags != nil {
 		tags := make([]model.Tag, len(usergroup.Tags))
 		names := make([]string, len(usergroup.Tags))
+		tagType := "genre" // defaults to genre tags for now
 
 		for i := range usergroup.Tags {
 			tag := model.Tag{
-				Name: usergroup.Tags[i].Name,
-				Type: "genre",
+				Name: usergroup.Tags[i],
+				Type: tagType,
 			}
 			tag.ID = uuid.Must(uuid.NewRandom())
 			names[i] = tag.Name
@@ -114,7 +116,7 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		// find existing tags
 		err := s.db.NewSelect().
 			Model(&existing).
-			Where("type = ? AND name IN (?)", "genre", bun.In(names)).
+			Where("type = ? AND name IN (?)", tagType, bun.In(names)).
 			Scan(ctx)
 
 		if err != nil {
@@ -161,9 +163,13 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		links := make([]model.Link, len(usergroup.Links))
 
 		for i := range usergroup.Links {
+			uri := usergroup.Links[i]
+
+			platform := s.getPlatform(uri)
+
 			link := model.Link{
-				URI:      usergroup.Links[i].Uri,
-				Platform: usergroup.Links[i].Platform,
+				URI:      usergroup.Links[i],
+				Platform: platform,
 			}
 			link.ID = uuid.Must(uuid.NewRandom())
 			uris[i] = link.URI
@@ -277,11 +283,12 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	if UserGroupUpdateRequest.Tags != nil {
 		tags := make([]model.Tag, len(UserGroupUpdateRequest.Tags))
 		names := make([]string, len(UserGroupUpdateRequest.Tags))
+		tagType := "genre" // defaults to genre tags for now
 
 		for i := range UserGroupUpdateRequest.Tags {
 			tag := model.Tag{
-				Name: UserGroupUpdateRequest.Tags[i].Name,
-				Type: "genre",
+				Name: UserGroupUpdateRequest.Tags[i],
+				Type: tagType,
 			}
 			tag.ID = uuid.Must(uuid.NewRandom())
 			names[i] = tag.Name
@@ -293,7 +300,7 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 		// find existing tags
 		err := s.db.NewSelect().
 			Model(&existing).
-			Where("type = ? AND name IN (?)", "genre", bun.In(names)).
+			Where("type = ? AND name IN (?)", tagType, bun.In(names)).
 			Scan(ctx)
 
 		if err != nil {
@@ -340,9 +347,12 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 		uris := make([]string, len(UserGroupUpdateRequest.Links))
 
 		for i := range UserGroupUpdateRequest.Links {
+			uri := UserGroupUpdateRequest.Links[i]
+			platform := s.getPlatform(uri)
+
 			link := model.Link{
-				URI:      UserGroupUpdateRequest.Links[i].Uri,
-				Platform: UserGroupUpdateRequest.Links[i].Platform,
+				URI:      uri,
+				Platform: platform,
 			}
 			link.ID = uuid.Must(uuid.NewRandom())
 			uris[i] = link.URI
@@ -392,6 +402,8 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 				return nil, err
 			}
 		}
+
+		// TODO prune orphan links?
 
 		updatedUserGroupValues["links"] = result
 	}
@@ -556,16 +568,12 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 
 	if usergroup.Links != nil {
 		for i := range usergroup.Links {
-			platform := usergroup.Links[i].Platform
-			uri := usergroup.Links[i].Uri
+			uri := usergroup.Links[i]
+
 			_, err := url.ParseRequestURI(uri)
 
 			if err != nil {
 				return fmt.Errorf("invalid url %v", uri)
-			}
-
-			if platform != "" && platform != "facebook" && platform != "twitter" && platform != "soundcloud" && platform != "youtube" && platform != "bandcamp" {
-				return fmt.Errorf("invalid platform %v", uri)
 			}
 		}
 	}
@@ -589,4 +597,27 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 	}
 
 	return nil
+}
+
+func (s *Server) getPlatform(uri string) string {
+	parsed, _ := urlx.Parse(uri)
+	hostname := parsed.Hostname()
+	platform := ""
+
+	switch {
+	case hostname == "youtube.com" || hostname == "youtu.be":
+		platform = "youtube"
+	case hostname == "facebook.com":
+		platform = "facebook"
+	case hostname == "soundcloud.com":
+		platform = "soundcloud"
+	case hostname == "twitter.com":
+		platform = "twitter"
+	case hostname == "bandcamp.com":
+		platform = "bandcamp"
+	case hostname == "vimeo.com":
+		platform = "vimeo"
+	}
+
+	return platform
 }
