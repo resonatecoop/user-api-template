@@ -735,6 +735,12 @@
         },
         "ownerId": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userLink"
+          }
         }
       }
     },

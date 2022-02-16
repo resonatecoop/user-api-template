@@ -72,13 +72,14 @@ message UserGroupUpdateRequest {
   optional string group_type = 7;
   optional string group_email = 9;
   optional string owner_id = 10;
+  repeated Link links = 11;
+  
   //optional StreetAddress address = 8;
   //optional string owner_id = 7; // required
 
   // repeated User followers = 9;
   // repeated UserGroup members = 10;
   // repeated UserGroup memberOfGroups = 11;
-  // repeated Link links = 12;
   // repeated Tag tags = 13;
   
   // Privacy privacy = 15;

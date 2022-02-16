@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"regexp"
 	"time"
 
 	uuid "github.com/google/uuid"
+	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
@@ -94,29 +96,63 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 	}
 
 	if usergroup.Links != nil {
-		linksRef := make([]uuid.UUID, len(usergroup.Links))
+		uris := make([]string, len(usergroup.Links))
 		links := make([]model.Link, len(usergroup.Links))
 
 		for i := range usergroup.Links {
-			links[i] = model.Link{
+			link := model.Link{
 				URI:      usergroup.Links[i].Uri,
 				Platform: usergroup.Links[i].Platform,
 			}
+			link.ID = uuid.Must(uuid.NewRandom())
+			uris[i] = link.URI
+			links[i] = link
 		}
 
-		_, err := s.db.NewInsert().Model(&links).Exec(ctx)
+		existing := []model.Link{}
 
-		if err != nil {
-			return nil, err
+		// find existing links
+		_ = s.db.NewSelect().
+			Model(&existing).
+			Where("uri IN (?)", bun.In(uris)).
+			Scan(ctx)
+
+		var result []uuid.UUID
+		var insert []model.Link
+
+		for l := range links {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].URI == links[l].URI {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, links[l])
+				result = append(result, links[l].ID)
+			} else {
+				result = append(result, seen)
+			}
 		}
 
-		for i := range links {
-			linksRef = append(linksRef, links[i].ID)
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
 		}
 
-		newUserGroup.Links = linksRef
+		newUserGroup.Links = result
 	}
 
+	newUserGroup.ID = uuid.Must(uuid.NewRandom())
 	newUserGroup.CreatedAt = time.Now().UTC()
 
 	_, err = s.db.NewInsert().Model(newUserGroup).Exec(ctx)
@@ -171,6 +207,63 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	}
 	if UserGroupUpdateRequest.Banner != nil {
 		updatedUserGroupValues["banner"] = *UserGroupUpdateRequest.Banner
+	}
+
+	if UserGroupUpdateRequest.Links != nil {
+		links := make([]model.Link, len(UserGroupUpdateRequest.Links))
+		uris := make([]string, len(UserGroupUpdateRequest.Links))
+
+		for i := range UserGroupUpdateRequest.Links {
+			link := model.Link{
+				URI:      UserGroupUpdateRequest.Links[i].Uri,
+				Platform: UserGroupUpdateRequest.Links[i].Platform,
+			}
+			link.ID = uuid.Must(uuid.NewRandom())
+			uris[i] = link.URI
+			links[i] = link
+		}
+
+		existing := []model.Link{}
+
+		// find existing links
+		_ = s.db.NewSelect().
+			Model(&existing).
+			Where("uri IN (?)", bun.In(uris)).
+			Scan(ctx)
+
+		var result []uuid.UUID
+		var insert []model.Link
+
+		for l := range links {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].URI == links[l].URI {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, links[l])
+				result = append(result, links[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		updatedUserGroupValues["links"] = result
 	}
 
 	updatedUserGroupValues["updated_at"] = time.Now().UTC()
@@ -303,6 +396,22 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 		re := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 		if !re.MatchString(usergroup.GroupEmail) {
 			return errors.New("group email address must be a valid email")
+		}
+	}
+
+	if usergroup.Links != nil {
+		for i := range usergroup.Links {
+			platform := usergroup.Links[i].Platform
+			uri := usergroup.Links[i].Uri
+			_, err := url.ParseRequestURI(uri)
+
+			if err != nil {
+				return fmt.Errorf("invalid url %v", uri)
+			}
+
+			if platform != "" && platform != "facebook" && platform != "twitter" && platform != "soundcloud" && platform != "youtube" && platform != "bandcamp" {
+				return fmt.Errorf("invalid platform %v", uri)
+			}
 		}
 	}
 
