@@ -112,10 +112,14 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		existing := []model.Link{}
 
 		// find existing links
-		_ = s.db.NewSelect().
+		err = s.db.NewSelect().
 			Model(&existing).
 			Where("uri IN (?)", bun.In(uris)).
 			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
 
 		var result []uuid.UUID
 		var insert []model.Link
@@ -226,10 +230,14 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 		existing := []model.Link{}
 
 		// find existing links
-		_ = s.db.NewSelect().
+		err := s.db.NewSelect().
 			Model(&existing).
 			Where("uri IN (?)", bun.In(uris)).
 			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
 
 		var result []uuid.UUID
 		var insert []model.Link
