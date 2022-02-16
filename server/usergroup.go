@@ -95,6 +95,67 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		GroupEmail:  usergroup.GroupEmail,
 	}
 
+	if usergroup.Tags != nil {
+		tags := make([]model.Tag, len(usergroup.Tags))
+		names := make([]string, len(usergroup.Tags))
+
+		for i := range usergroup.Tags {
+			tag := model.Tag{
+				Name: usergroup.Tags[i].Name,
+				Type: "genre",
+			}
+			tag.ID = uuid.Must(uuid.NewRandom())
+			names[i] = tag.Name
+			tags[i] = tag
+		}
+
+		existing := []model.Tag{}
+
+		// find existing tags
+		err := s.db.NewSelect().
+			Model(&existing).
+			Where("type = ? AND name IN (?)", "genre", bun.In(names)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Tag
+
+		for l := range tags {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].Name == tags[l].Name {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, tags[l])
+				result = append(result, tags[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		newUserGroup.Tags = result
+	}
+
 	if usergroup.Links != nil {
 		uris := make([]string, len(usergroup.Links))
 		links := make([]model.Link, len(usergroup.Links))
@@ -211,6 +272,67 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	}
 	if UserGroupUpdateRequest.Banner != nil {
 		updatedUserGroupValues["banner"] = *UserGroupUpdateRequest.Banner
+	}
+
+	if UserGroupUpdateRequest.Tags != nil {
+		tags := make([]model.Tag, len(UserGroupUpdateRequest.Tags))
+		names := make([]string, len(UserGroupUpdateRequest.Tags))
+
+		for i := range UserGroupUpdateRequest.Tags {
+			tag := model.Tag{
+				Name: UserGroupUpdateRequest.Tags[i].Name,
+				Type: "genre",
+			}
+			tag.ID = uuid.Must(uuid.NewRandom())
+			names[i] = tag.Name
+			tags[i] = tag
+		}
+
+		existing := []model.Tag{}
+
+		// find existing tags
+		err := s.db.NewSelect().
+			Model(&existing).
+			Where("type = ? AND name IN (?)", "genre", bun.In(names)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Tag
+
+		for l := range tags {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].Name == tags[l].Name {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, tags[l])
+				result = append(result, tags[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		updatedUserGroupValues["tags"] = result
 	}
 
 	if UserGroupUpdateRequest.Links != nil {

@@ -73,6 +73,7 @@ message UserGroupUpdateRequest {
   optional string group_email = 9;
   optional string owner_id = 10;
   repeated Link links = 11;
+  repeated Tag tags = 12;
   
   //optional StreetAddress address = 8;
   //optional string owner_id = 7; // required
@@ -80,7 +81,6 @@ message UserGroupUpdateRequest {
   // repeated User followers = 9;
   // repeated UserGroup members = 10;
   // repeated UserGroup memberOfGroups = 11;
-  // repeated Tag tags = 13;
   
   // Privacy privacy = 15;
   // repeated RelatedUserGroup recommended_artists = 16;

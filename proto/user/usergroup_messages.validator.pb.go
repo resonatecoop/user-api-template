@@ -103,6 +103,13 @@ func (this *UserGroupUpdateRequest) Validate() error {
 			}
 		}
 	}
+	for _, item := range this.Tags {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Tags", err)
+			}
+		}
+	}
 	return nil
 }
 func (this *UserGroupPrivateResponse) Validate() error {

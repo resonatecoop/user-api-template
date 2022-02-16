@@ -741,6 +741,12 @@
           "items": {
             "$ref": "#/definitions/userLink"
           }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userTag"
+          }
         }
       }
     },
