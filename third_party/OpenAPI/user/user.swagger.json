@@ -691,7 +691,7 @@
         "links": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/userLink"
           }
         },
         "tags": {

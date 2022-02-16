@@ -128,7 +128,7 @@ message UserGroupPublicResponse {
   repeated string followers = 9;
   repeated string members = 10;
   repeated string memberOfGroups = 11;
-  repeated string links = 12;
+  repeated Link links = 12;
   repeated string tags = 13;
   // repeated RelatedUserGroup recommended_artists = 17;
   // map<string, string> publisher = 21;

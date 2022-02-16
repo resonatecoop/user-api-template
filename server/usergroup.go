@@ -332,11 +332,36 @@ func (s *Server) GetUserGroup(ctx context.Context, usergrouprequest *pbUser.User
 		return nil, errors.New("supplied group type is not valid")
 	}
 
+	links := []model.Link{}
+
+	if len(usergroup.Links) > 0 {
+		err = s.db.NewSelect().
+			Model(&links).
+			Where("id IN (?)", bun.In(usergroup.Links)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	usergroupLinks := []*pbUser.Link{}
+
+	if len(links) > 0 {
+		for i := range links {
+			usergroupLinks = append(usergroupLinks, &pbUser.Link{
+				Platform: links[i].Platform,
+				Uri:      links[i].URI,
+			})
+		}
+	}
+
 	return &pbUser.UserGroupPublicResponse{
 		DisplayName: usergroup.DisplayName,
 		GroupType:   group.Name,
 		ShortBio:    usergroup.ShortBio,
 		Description: usergroup.Description,
+		Links:       usergroupLinks,
 		Avatar:      uuid.UUID.String(usergroup.Avatar),
 		Banner:      uuid.UUID.String(usergroup.Banner),
 		GroupEmail:  usergroup.GroupEmail,
