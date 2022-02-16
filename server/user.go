@@ -53,7 +53,7 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 
 	// defaults to User Role, must update with greater privileges to change role
 	newUser := &model.User{
-		Username:               user.Username,
+		Username:               strings.ToLower(user.Username),
 		RoleID:                 thisRole,
 		FullName:               user.FullName,
 		FirstName:              user.FirstName,
@@ -62,6 +62,9 @@ func (s *Server) AddUser(ctx context.Context, user *pbUser.UserAddRequest) (*pbU
 		Country:                user.Country,
 		NewsletterNotification: user.NewsletterNotification,
 	}
+
+	newUser.ID = uuid.Must(uuid.NewRandom())
+
 	_, err = s.db.NewInsert().
 		Column(
 			"id",

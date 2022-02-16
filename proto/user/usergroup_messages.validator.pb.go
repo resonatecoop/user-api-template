@@ -79,13 +79,6 @@ func (this *UserGroup) Validate() error {
 	return nil
 }
 func (this *UserGroupCreateRequest) Validate() error {
-	for _, item := range this.Tags {
-		if item != nil {
-			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
-				return github_com_mwitkow_go_proto_validators.FieldError("Tags", err)
-			}
-		}
-	}
 	return nil
 }
 func (this *UserGroupUpdateRequest) Validate() error {
@@ -105,6 +98,13 @@ func (this *UserGroupListResponse) Validate() error {
 	return nil
 }
 func (this *UserGroupPublicResponse) Validate() error {
+	for _, item := range this.Links {
+		if item != nil {
+			if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(item); err != nil {
+				return github_com_mwitkow_go_proto_validators.FieldError("Links", err)
+			}
+		}
+	}
 	return nil
 }
 func (this *UserGroupRecommended) Validate() error {

@@ -4,10 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/url"
 	"regexp"
 	"time"
 
 	uuid "github.com/google/uuid"
+	"github.com/goware/urlx"
+	"github.com/uptrace/bun"
 
 	"github.com/resonatecoop/user-api/model"
 	pbUser "github.com/resonatecoop/user-api/proto/user"
@@ -93,6 +96,134 @@ func (s *Server) AddUserGroup(ctx context.Context, usergroup *pbUser.UserGroupCr
 		GroupEmail:  usergroup.GroupEmail,
 	}
 
+	if usergroup.Tags != nil {
+		tags := make([]model.Tag, len(usergroup.Tags))
+		names := make([]string, len(usergroup.Tags))
+		tagType := "genre" // defaults to genre tags for now
+
+		for i := range usergroup.Tags {
+			tag := model.Tag{
+				Name: usergroup.Tags[i],
+				Type: tagType,
+			}
+			tag.ID = uuid.Must(uuid.NewRandom())
+			names[i] = tag.Name
+			tags[i] = tag
+		}
+
+		existing := []model.Tag{}
+
+		// find existing tags
+		err := s.db.NewSelect().
+			Model(&existing).
+			Where("type = ? AND name IN (?)", tagType, bun.In(names)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Tag
+
+		for l := range tags {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].Name == tags[l].Name {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, tags[l])
+				result = append(result, tags[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		newUserGroup.Tags = result
+	}
+
+	if usergroup.Links != nil {
+		uris := make([]string, len(usergroup.Links))
+		links := make([]model.Link, len(usergroup.Links))
+
+		for i := range usergroup.Links {
+			uri := usergroup.Links[i]
+
+			platform := s.getPlatform(uri)
+
+			link := model.Link{
+				URI:      usergroup.Links[i],
+				Platform: platform,
+			}
+			link.ID = uuid.Must(uuid.NewRandom())
+			uris[i] = link.URI
+			links[i] = link
+		}
+
+		existing := []model.Link{}
+
+		// find existing links
+		err = s.db.NewSelect().
+			Model(&existing).
+			Where("uri IN (?)", bun.In(uris)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Link
+
+		for l := range links {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].URI == links[l].URI {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, links[l])
+				result = append(result, links[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		newUserGroup.Links = result
+	}
+
+	newUserGroup.ID = uuid.Must(uuid.NewRandom())
 	newUserGroup.CreatedAt = time.Now().UTC()
 
 	_, err = s.db.NewInsert().Model(newUserGroup).Exec(ctx)
@@ -147,6 +278,134 @@ func (s *Server) UpdateUserGroup(ctx context.Context, UserGroupUpdateRequest *pb
 	}
 	if UserGroupUpdateRequest.Banner != nil {
 		updatedUserGroupValues["banner"] = *UserGroupUpdateRequest.Banner
+	}
+
+	if UserGroupUpdateRequest.Tags != nil {
+		tags := make([]model.Tag, len(UserGroupUpdateRequest.Tags))
+		names := make([]string, len(UserGroupUpdateRequest.Tags))
+		tagType := "genre" // defaults to genre tags for now
+
+		for i := range UserGroupUpdateRequest.Tags {
+			tag := model.Tag{
+				Name: UserGroupUpdateRequest.Tags[i],
+				Type: tagType,
+			}
+			tag.ID = uuid.Must(uuid.NewRandom())
+			names[i] = tag.Name
+			tags[i] = tag
+		}
+
+		existing := []model.Tag{}
+
+		// find existing tags
+		err := s.db.NewSelect().
+			Model(&existing).
+			Where("type = ? AND name IN (?)", tagType, bun.In(names)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Tag
+
+		for l := range tags {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].Name == tags[l].Name {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, tags[l])
+				result = append(result, tags[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		updatedUserGroupValues["tags"] = result
+	}
+
+	if UserGroupUpdateRequest.Links != nil {
+		links := make([]model.Link, len(UserGroupUpdateRequest.Links))
+		uris := make([]string, len(UserGroupUpdateRequest.Links))
+
+		for i := range UserGroupUpdateRequest.Links {
+			uri := UserGroupUpdateRequest.Links[i]
+			platform := s.getPlatform(uri)
+
+			link := model.Link{
+				URI:      uri,
+				Platform: platform,
+			}
+			link.ID = uuid.Must(uuid.NewRandom())
+			uris[i] = link.URI
+			links[i] = link
+		}
+
+		existing := []model.Link{}
+
+		// find existing links
+		err := s.db.NewSelect().
+			Model(&existing).
+			Where("uri IN (?)", bun.In(uris)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var result []uuid.UUID
+		var insert []model.Link
+
+		for l := range links {
+			var seen uuid.UUID
+
+			for e := range existing {
+				if existing[e].URI == links[l].URI {
+					seen = existing[e].ID
+					break
+				}
+			}
+
+			if seen == uuid.Nil {
+				insert = append(insert, links[l])
+				result = append(result, links[l].ID)
+			} else {
+				result = append(result, seen)
+			}
+		}
+
+		if len(insert) > 0 {
+			_, err := s.db.
+				NewInsert().
+				Model(&insert).
+				Exec(ctx)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		// TODO prune orphan links?
+
+		updatedUserGroupValues["links"] = result
 	}
 
 	updatedUserGroupValues["updated_at"] = time.Now().UTC()
@@ -207,11 +466,36 @@ func (s *Server) GetUserGroup(ctx context.Context, usergrouprequest *pbUser.User
 		return nil, errors.New("supplied group type is not valid")
 	}
 
+	links := []model.Link{}
+
+	if len(usergroup.Links) > 0 {
+		err = s.db.NewSelect().
+			Model(&links).
+			Where("id IN (?)", bun.In(usergroup.Links)).
+			Scan(ctx)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	usergroupLinks := []*pbUser.Link{}
+
+	if len(links) > 0 {
+		for i := range links {
+			usergroupLinks = append(usergroupLinks, &pbUser.Link{
+				Platform: links[i].Platform,
+				Uri:      links[i].URI,
+			})
+		}
+	}
+
 	return &pbUser.UserGroupPublicResponse{
 		DisplayName: usergroup.DisplayName,
 		GroupType:   group.Name,
 		ShortBio:    usergroup.ShortBio,
 		Description: usergroup.Description,
+		Links:       usergroupLinks,
 		Avatar:      uuid.UUID.String(usergroup.Avatar),
 		Banner:      uuid.UUID.String(usergroup.Banner),
 		GroupEmail:  usergroup.GroupEmail,
@@ -282,6 +566,18 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 		}
 	}
 
+	if usergroup.Links != nil {
+		for i := range usergroup.Links {
+			uri := usergroup.Links[i]
+
+			_, err := url.ParseRequestURI(uri)
+
+			if err != nil {
+				return fmt.Errorf("invalid url %v", uri)
+			}
+		}
+	}
+
 	err := s.db.NewSelect().
 		Model(new(model.User)).
 		Where("id = ?", usergroup.Id).
@@ -301,4 +597,27 @@ func (s *Server) checkRequiredAddUserGroupAttributes(ctx context.Context, usergr
 	}
 
 	return nil
+}
+
+func (s *Server) getPlatform(uri string) string {
+	parsed, _ := urlx.Parse(uri)
+	hostname := parsed.Hostname()
+	platform := ""
+
+	switch {
+	case hostname == "youtube.com" || hostname == "youtu.be":
+		platform = "youtube"
+	case hostname == "facebook.com":
+		platform = "facebook"
+	case hostname == "soundcloud.com":
+		platform = "soundcloud"
+	case hostname == "twitter.com":
+		platform = "twitter"
+	case hostname == "bandcamp.com":
+		platform = "bandcamp"
+	case hostname == "vimeo.com":
+		platform = "vimeo"
+	}
+
+	return platform
 }

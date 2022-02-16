@@ -511,17 +511,23 @@
     "userEmpty": {
       "type": "object"
     },
-    "userTag": {
+    "userLink": {
       "type": "object",
       "properties": {
-        "id": {
+        "ID": {
           "type": "string"
         },
-        "type": {
+        "platform": {
           "type": "string"
         },
-        "name": {
+        "groupType": {
           "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "personalData": {
+          "type": "boolean"
         }
       }
     },
@@ -597,11 +603,17 @@
         "tags": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userTag"
+            "type": "string"
           }
         },
         "groupEmail": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -697,7 +709,7 @@
         "links": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/userLink"
           }
         },
         "tags": {
@@ -741,6 +753,18 @@
         },
         "ownerId": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
