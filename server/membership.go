@@ -15,13 +15,17 @@ func (s *Server) GetUserMembership(ctx context.Context, user *pbUser.UserRequest
 	// it should not be possible to have two active memberships at the same time
 	err := s.db.NewSelect().
 		Model(&memberships).
-		Where("id = ?", user.Id).
+		Where("user_id = ?", user.Id).
 		Order("created_at DESC").
 		Limit(1).
 		Scan(ctx)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if len(memberships) == 0 {
+		return &result, nil
 	}
 
 	membership := memberships[0]
