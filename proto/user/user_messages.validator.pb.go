@@ -39,6 +39,9 @@ func (this *UserCreditResponse) Validate() error {
 func (this *UserPrivateResponse) Validate() error {
 	return nil
 }
+func (this *UserMembershipResponse) Validate() error {
+	return nil
+}
 func (this *UserPublicResponse) Validate() error {
 	return nil
 }
