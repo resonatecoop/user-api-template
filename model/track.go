@@ -12,8 +12,8 @@ type Track struct {
 	TrackNumber int32  `bun:",notnull"`
 	Duration    float32
 
-	TrackGroups     []uuid.UUID `bun:",type:uuid[]" pg:",array"`
-	FavoriteOfUsers []uuid.UUID `bun:",type:uuid[]" pg:",array"`
+	TrackGroups     []uuid.UUID `bun:",type:uuid[],array"`
+	FavoriteOfUsers []uuid.UUID `bun:",type:uuid[],array"`
 
 	TrackServerId uuid.UUID `bun:"type:uuid,notnull"`
 
@@ -28,6 +28,8 @@ type Track struct {
 
 	Composers  map[string]string `pg:",hstore"`
 	Performers map[string]string `pg:",hstore"`
+
+	ISRC string
 
 	// Plays []User `pg:"many2many:plays"` Payment API
 }
