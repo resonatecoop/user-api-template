@@ -216,6 +216,38 @@
         ]
       }
     },
+    "/api/v1/user/{id}/membership": {
+      "get": {
+        "summary": "Get user membership",
+        "description": "Get user membership.",
+        "operationId": "ResonateUser_GetUserMembership",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userUserMembershipResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Membership"
+        ]
+      }
+    },
     "/api/v1/usergroup/{id}": {
       "get": {
         "summary": "Get a user group",
@@ -519,17 +551,23 @@
     "userEmpty": {
       "type": "object"
     },
-    "userTag": {
+    "userLink": {
       "type": "object",
       "properties": {
-        "id": {
+        "ID": {
           "type": "string"
         },
-        "type": {
+        "platform": {
           "type": "string"
         },
-        "name": {
+        "groupType": {
           "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "personalData": {
+          "type": "boolean"
         }
       }
     },
@@ -625,11 +663,17 @@
         "tags": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/userTag"
+            "type": "string"
           }
         },
         "groupEmail": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -725,7 +769,7 @@
         "links": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/userLink"
           }
         },
         "tags": {
@@ -769,6 +813,18 @@
         },
         "ownerId": {
           "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -780,6 +836,23 @@
           "items": {
             "$ref": "#/definitions/userUserPrivateResponse"
           }
+        }
+      }
+    },
+    "userUserMembershipResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        },
+        "membershipClass": {
+          "type": "string"
         }
       }
     },

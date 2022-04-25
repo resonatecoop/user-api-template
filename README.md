@@ -34,11 +34,13 @@ An OpenAPI UI is served on https://0.0.0.0:11000/.
 
 After cloning the repo, there are a couple of initial steps;
 
-1. Install the generate dependencies with `make install`.
+1. Ensure that you have [Go](https://go.dev/doc/install) installed on your system.
+2. Install the generate dependencies with `make install`.
    This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`,
    `protoc-gen-openapiv2` and `statik` which are necessary for us to generate the Go, swagger and static files.
-2. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
-3. Finally, generate the files with `make generate`.
+3. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
+4. Generate the files with `make generate`.
+5. Finally, update your `PATH` so that the protoc compiler can find the plugins: `export PATH="$PATH:$(go env GOPATH)/bin"`.
 
 ## Dev database setup
 

@@ -27,6 +27,7 @@ type ResonateUserClient interface {
 	UpdateUserRestricted(ctx context.Context, in *UserUpdateRestrictedRequest, opts ...grpc.CallOption) (*Empty, error)
 	//GetUserRestricted provides private level of information about a user
 	GetUserRestricted(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPrivateResponse, error)
+	GetUserMembership(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserMembershipResponse, error)
 	GetUserCredits(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserCreditResponse, error)
 	DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error)
 	//ListUsers returns a list of all Users
@@ -91,6 +92,15 @@ func (c *resonateUserClient) UpdateUserRestricted(ctx context.Context, in *UserU
 func (c *resonateUserClient) GetUserRestricted(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserPrivateResponse, error) {
 	out := new(UserPrivateResponse)
 	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUserRestricted", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) GetUserMembership(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserMembershipResponse, error) {
+	out := new(UserMembershipResponse)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetUserMembership", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -192,6 +202,7 @@ type ResonateUserServer interface {
 	UpdateUserRestricted(context.Context, *UserUpdateRestrictedRequest) (*Empty, error)
 	//GetUserRestricted provides private level of information about a user
 	GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error)
+	GetUserMembership(context.Context, *UserRequest) (*UserMembershipResponse, error)
 	GetUserCredits(context.Context, *UserRequest) (*UserCreditResponse, error)
 	DeleteUser(context.Context, *UserRequest) (*Empty, error)
 	//ListUsers returns a list of all Users
@@ -227,6 +238,9 @@ func (UnimplementedResonateUserServer) UpdateUserRestricted(context.Context, *Us
 }
 func (UnimplementedResonateUserServer) GetUserRestricted(context.Context, *UserRequest) (*UserPrivateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserRestricted not implemented")
+}
+func (UnimplementedResonateUserServer) GetUserMembership(context.Context, *UserRequest) (*UserMembershipResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserMembership not implemented")
 }
 func (UnimplementedResonateUserServer) GetUserCredits(context.Context, *UserRequest) (*UserCreditResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserCredits not implemented")
@@ -353,6 +367,24 @@ func _ResonateUser_GetUserRestricted_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResonateUserServer).GetUserRestricted(ctx, req.(*UserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_GetUserMembership_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).GetUserMembership(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/GetUserMembership",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).GetUserMembership(ctx, req.(*UserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -542,6 +574,10 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserRestricted",
 			Handler:    _ResonateUser_GetUserRestricted_Handler,
+		},
+		{
+			MethodName: "GetUserMembership",
+			Handler:    _ResonateUser_GetUserMembership_Handler,
 		},
 		{
 			MethodName: "GetUserCredits",
