@@ -131,6 +131,17 @@ service ResonateUser {
     };
   }
 
+  rpc GetUserMembership(UserRequest) returns (UserMembershipResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/user/{id}/membership"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get user membership"
+      description: "Get user membership."
+      tags: "Membership"
+    };
+  }
+
   rpc GetUserCredits(UserRequest) returns (UserCreditResponse) {
     option (google.api.http) = {
       get: "/api/v1/user/{id}/credits"

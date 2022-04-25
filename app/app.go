@@ -239,7 +239,7 @@ func connectDB(PSN string, isDebug bool) *bun.DB {
 
 	db := bun.NewDB(sqldb, pgdialect.New())
 	if isDebug {
-		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose()))
+		db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 	}
 
 	return db
