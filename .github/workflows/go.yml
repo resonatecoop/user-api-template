@@ -1,5 +1,13 @@
 name: Go
-on: [push]
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
 jobs:
   build:
     name: Build
