@@ -28,12 +28,12 @@ type TrackGroup struct {
 	Tracks []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 	Tags   []uuid.UUID `bun:",type:uuid[]" pg:",array"`
 
-	// TerritoriesIncl []string `pg:",array"`
-	// CLineYear time.Time
-	// PLineYear time.Time
-	// CLineText string
-	// PLineText string
-	// RightExpiryDate time.Time
-	// TotalVolumes int
-	// CatalogNumber string
+	TerritoriesIncl []string `pg:",array"`
+	CLineYear       time.Time
+	PLineYear       time.Time
+	CLineText       string
+	PLineText       string
+	RightExpiryDate time.Time
+	TotalVolumes    int
+	CatalogNumber   string
 }
