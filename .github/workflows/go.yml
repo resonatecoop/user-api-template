@@ -7,7 +7,9 @@ jobs:
     container: golang:latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Build
       run: go build -v ./...
   generate:
@@ -17,7 +19,9 @@ jobs:
       image: golang:latest
     steps:
     - name: Check out code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: Install tools
       run: make install
     - name: Regenerate files
