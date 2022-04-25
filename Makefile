@@ -15,6 +15,6 @@ install:
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
-		github.com/mwitkow/go-proto-validators \
+		github.com/mwitkow/go-proto-validators/protoc-gen-govalidators \
 		github.com/rakyll/statik \
 		github.com/bufbuild/buf/cmd/buf
