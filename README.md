@@ -39,9 +39,8 @@ After cloning the repo, there are a couple of initial steps;
    This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`,
    `protoc-gen-openapiv2` and `statik` which are necessary for us to generate the Go, swagger and static files.
 3. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
-4. Generate the files with `make generate`.
-5. Finally, update your `PATH` so that the protoc compiler can find the plugins: `export PATH="$PATH:$(go env GOPATH)/bin"`.
-6. Now, you'll need to generate a certificate:
+4. Finally, generate the files with `make generate`.
+5. Now, you'll need to generate a certificate:
 ```sh
 mkcert -install
 mkcert 0.0.0.0 127.0.0.1 localhost ::1
@@ -53,16 +52,9 @@ Serve the User API at https://127.0.0.1:11000 with this command:
 ```sh
 UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go runserver -env dev -dbdebug true
 ```
-6.
-Start the server:
+6. Start the server:
 ```sh
 pg_ctl -D /usr/local/var/postgres -l logfile start
-```
-
-For psql...
-To get into the shell I ran:
-```
-psql
 ```
 
 ## Dev database setup
@@ -75,13 +67,18 @@ password = "password"
 
 dbname = "resonate_dev"
 
+To get into the Postgres shell, run:
+```
+psql
+```
+
 ```sql
 CREATE DATABASE resonate_dev;
 CREATE USER resonate_dev_user WITH PASSWORD 'password';
 GRANT ALL PRIVILEGES ON DATABASE resonate_dev TO resonate_dev_user;
 ```
 
-And add the `hstore` and `uuid-ossp` extensions, confirming with the `SELECT` statement.
+* And add the `hstore` and `uuid-ossp` extensions, confirming with the `SELECT` statement.
 ```sql
 \c resonate_dev;
 CREATE EXTENSION hstore;
@@ -89,7 +86,7 @@ CREATE EXTENSION "uuid-ossp";
 SELECT * FROM pg_extension;
 ```
 
-Then, run these migrations:
+* Then, run these migrations (from the root of the user-api):
 ```sh
 UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev init
 UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev migrate                                                                                                     
@@ -97,9 +94,7 @@ UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev load_default_fi
 UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev load_test_fixtures
 ```
 
-Then, repeat the last two above blocks replacing `dev` with `test`.
-
-From the root of the user-api:
+* Then, repeat the last two above blocks replacing `dev` with `test`.
 
 If you need to roll back:
 
