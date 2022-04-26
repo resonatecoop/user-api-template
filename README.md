@@ -39,8 +39,9 @@ After cloning the repo, there are a couple of initial steps;
    This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`,
    `protoc-gen-openapiv2` and `statik` which are necessary for us to generate the Go, swagger and static files.
 3. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
-4. Finally, generate the files with `make generate`.
-5. Now, you'll need to generate a certificate:
+4. Generate the files with `make generate`.
+5. Finally, update your `PATH` so that the protoc compiler can find the plugins: `export PATH="$PATH:$(go env GOPATH)/bin"`.
+6. Now, you'll need to generate a certificate:
 ```sh
 mkcert -install
 mkcert 0.0.0.0 127.0.0.1 localhost ::1
