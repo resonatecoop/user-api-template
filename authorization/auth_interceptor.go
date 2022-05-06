@@ -207,7 +207,13 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 					if !ok {
 						userGroupUpdateReq, ok := req.(*pbUser.UserGroupUpdateRequest)
 						if !ok {
-							return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+							uploadSubmissionAddReq, ok := req.(*pbUser.UploadSubmissionAddRequest)
+
+							if !ok {
+								return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
+							} else {
+								id = uploadSubmissionAddReq.Id
+							}
 						} else {
 
 							newUserGroup := new(model.UserGroup)

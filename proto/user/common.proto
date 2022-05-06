@@ -14,6 +14,18 @@ message RelatedUserGroup {
   bytes avatar = 3;
 }
 
+message RelatedTrackGroup {
+  string id = 1; // required
+  string title = 2; // required
+  bytes cover = 3; // required
+  string type = 4; // required
+  string about = 5;
+  bool private = 6;
+  string display_artist = 7;
+  int32 total_tracks = 8;
+  RelatedUserGroup user_group = 9;
+}
+
 message User {
   string id = 1; // required
   string username = 2; // required

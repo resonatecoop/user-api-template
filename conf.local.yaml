@@ -18,8 +18,8 @@ refreshtoken:
 
 access:
   no_token_methods: "/user.ResonateUser/AddUser,/user.ResonateUser/GetUserGroup"
-  public_methods: "/user.ResonateUser/GetUser,/user.ResonateUser/GetUserCredits,/user.ResonateUser/GetUserMembership,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup,/user.ResonateUser/ListUsersUserGroups"
-  write_methods: "/user.ResonateUser/DeleteUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup"
+  public_methods: "/user.ResonateUser/AddUploadSubmission,/user.ResonateUser/UpdateUploadSubmission,/user.ResonateUser/DeleteUploadSubmission,/user.ResonateUser/GetUser,/user.ResonateUser/GetUserCredits,/user.ResonateUser/GetUserMembership,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup,/user.ResonateUser/ListUsersUserGroups"
+  write_methods: "/user.ResonateUser/AddUploadSubmission,/user.ResonateUser/UpdateUploadSubmission,/user.ResonateUser/DeleteUploadSubmission,/user.ResonateUser/DeleteUser,/user.ResonateUser/UpdateUser,/user.ResonateUser/AddUserGroup,/user.ResonateUser/UpdateUserGroup"
 
 application:
   min_password_strength: 0 # Minimum password zxcvbn strength

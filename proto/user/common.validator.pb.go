@@ -21,6 +21,14 @@ func (this *Empty) Validate() error {
 func (this *RelatedUserGroup) Validate() error {
 	return nil
 }
+func (this *RelatedTrackGroup) Validate() error {
+	if this.UserGroup != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.UserGroup); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("UserGroup", err)
+		}
+	}
+	return nil
+}
 func (this *User) Validate() error {
 	return nil
 }

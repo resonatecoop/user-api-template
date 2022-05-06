@@ -1,0 +1,30 @@
+syntax="proto3";
+
+import "user/common.proto";
+
+//package example;
+//package resonate.api.user;
+package user;
+
+option go_package = "github.com/resonatecoop/user-api/proto/user";
+
+message Track {
+  string id = 1; // required
+
+  string title = 2; // required
+  string status = 3; // required
+  bool enabled = 4;
+  int32 track_number = 5;
+
+  repeated RelatedTrackGroup track_groups = 6;
+  string creator_id = 7;
+  string user_group_id = 8;
+  repeated RelatedUserGroup artists = 9;
+  string track_server_id = 10;
+  repeated Tag tags = 11;
+  float duration = 12;
+}
+
+message TracksList {
+  repeated Track tracks = 1;
+}

@@ -126,17 +126,6 @@ message UserAddRequest {
   //StreetAddress residence_address = 13;
 }
 
-message UserUploadSubmissionRequest {
-  string id = 1;
-}
-
-message UserAddUploadSubmissionRequest {
-  string id = 1; // UUID required
-  string name = 2; // required
-  string description = 3; // required
-  repeated string files = 4;
-}
-
 message UserListResponse {
   repeated UserPrivateResponse user = 1;
 }
@@ -181,8 +170,6 @@ message UserListResponse {
 // message Tracks {
 //   repeated Track tracks = 1;
 // }
-
-
 
 // message Artists {
 //   repeated RelatedUserGroup artists = 1;

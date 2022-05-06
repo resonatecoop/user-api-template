@@ -13,7 +13,7 @@ func init() {
 
 	// Drop and create tables.
 	models := []interface{}{
-		(*model.UserUploadSubmission)(nil),
+		(*model.UploadSubmission)(nil),
 		(*model.Track)(nil),
 		(*model.TrackGroup)(nil),
 		(*model.Play)(nil),

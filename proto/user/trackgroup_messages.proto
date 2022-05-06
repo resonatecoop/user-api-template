@@ -1,0 +1,63 @@
+syntax="proto3";
+
+import "google/protobuf/timestamp.proto";
+import "user/common.proto";
+import "user/track_messages.proto";
+import "user/usergroup_messages.proto";
+
+//package example;
+//package resonate.api.user;
+package user;
+option go_package = "github.com/resonatecoop/user-api/proto/user";
+
+message TrackGroupRequest {
+  string id = 1;
+}
+
+message TrackGroupCreateRequest {
+  string id = 1; // required
+  string title = 2; // required
+  bytes cover = 3; // required
+  google.protobuf.Timestamp release_date = 4;
+  string type = 5; // required
+  string display_artist = 6;
+  bool multiple_composers = 7;
+  bool private = 8;
+  string creator_id = 9;
+  string user_group_id = 10;
+  RelatedUserGroup UserGroup = 11;
+  string label_id = 12;
+  RelatedUserGroup Label = 13;
+  repeated Track tracks = 14;
+  repeated Tag tags = 15;
+  string about = 16;
+}
+
+message TrackGroupUpdateRequest {
+  string id = 1; // required
+  string title = 2; // required
+  bytes cover = 3; // required
+  google.protobuf.Timestamp release_date = 4;
+  string type = 5; // required
+  string display_artist = 6;
+  bool multiple_composers = 7;
+  bool private = 8;
+  string creator_id = 9;
+  string user_group_id = 10;
+  RelatedUserGroup UserGroup = 11;
+  string label_id = 12;
+  RelatedUserGroup Label = 13;
+  repeated Track tracks = 14;
+  repeated Tag tags = 15;
+  string about = 16;
+}
+
+message TrackGroupResponse {
+  string id = 1;
+  string title = 2;
+}
+
+message TracksToTrackGroup {
+  string track_group_id = 1; // required
+  repeated Track tracks = 2; // required
+}

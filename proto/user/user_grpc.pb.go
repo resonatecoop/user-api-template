@@ -32,8 +32,12 @@ type ResonateUserClient interface {
 	DeleteUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*Empty, error)
 	//ListUsers returns a list of all Users
 	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
-	//AddUserUploadSubmission adds a UserUploadSubmission
-	AddUserUploadSubmission(ctx context.Context, in *UserAddUploadSubmissionRequest, opts ...grpc.CallOption) (*UserUploadSubmissionRequest, error)
+	//AddUploadSubmission adds a UserUploadSubmission
+	AddUploadSubmission(ctx context.Context, in *UploadSubmissionAddRequest, opts ...grpc.CallOption) (*UploadSubmissionRequest, error)
+	//UpdateUploadSubmission updates an existing UploadSubmission
+	UpdateUploadSubmission(ctx context.Context, in *UploadSubmissionUpdateRequest, opts ...grpc.CallOption) (*Empty, error)
+	//DeleteUploadSubmission deletes an upload submission
+	DeleteUploadSubmission(ctx context.Context, in *UploadSubmissionRequest, opts ...grpc.CallOption) (*Empty, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(ctx context.Context, in *UserGroupCreateRequest, opts ...grpc.CallOption) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
@@ -43,6 +47,8 @@ type ResonateUserClient interface {
 	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(ctx context.Context, in *UserGroupRequest, opts ...grpc.CallOption) (*Empty, error)
 	ListUsersUserGroups(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserGroupListResponse, error)
+	CreateTrackGroup(ctx context.Context, in *TrackGroupCreateRequest, opts ...grpc.CallOption) (*TrackGroupResponse, error)
+	GetTrackGroup(ctx context.Context, in *TrackGroupRequest, opts ...grpc.CallOption) (*TrackGroupResponse, error)
 }
 
 type resonateUserClient struct {
@@ -134,9 +140,27 @@ func (c *resonateUserClient) ListUsers(ctx context.Context, in *Empty, opts ...g
 	return out, nil
 }
 
-func (c *resonateUserClient) AddUserUploadSubmission(ctx context.Context, in *UserAddUploadSubmissionRequest, opts ...grpc.CallOption) (*UserUploadSubmissionRequest, error) {
-	out := new(UserUploadSubmissionRequest)
-	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUserUploadSubmission", in, out, opts...)
+func (c *resonateUserClient) AddUploadSubmission(ctx context.Context, in *UploadSubmissionAddRequest, opts ...grpc.CallOption) (*UploadSubmissionRequest, error) {
+	out := new(UploadSubmissionRequest)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/AddUploadSubmission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) UpdateUploadSubmission(ctx context.Context, in *UploadSubmissionUpdateRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/UpdateUploadSubmission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) DeleteUploadSubmission(ctx context.Context, in *UploadSubmissionRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/DeleteUploadSubmission", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -188,6 +212,24 @@ func (c *resonateUserClient) ListUsersUserGroups(ctx context.Context, in *UserRe
 	return out, nil
 }
 
+func (c *resonateUserClient) CreateTrackGroup(ctx context.Context, in *TrackGroupCreateRequest, opts ...grpc.CallOption) (*TrackGroupResponse, error) {
+	out := new(TrackGroupResponse)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/CreateTrackGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resonateUserClient) GetTrackGroup(ctx context.Context, in *TrackGroupRequest, opts ...grpc.CallOption) (*TrackGroupResponse, error) {
+	out := new(TrackGroupResponse)
+	err := c.cc.Invoke(ctx, "/user.ResonateUser/GetTrackGroup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ResonateUserServer is the server API for ResonateUser service.
 // All implementations should embed UnimplementedResonateUserServer
 // for forward compatibility
@@ -207,8 +249,12 @@ type ResonateUserServer interface {
 	DeleteUser(context.Context, *UserRequest) (*Empty, error)
 	//ListUsers returns a list of all Users
 	ListUsers(context.Context, *Empty) (*UserListResponse, error)
-	//AddUserUploadSubmission adds a UserUploadSubmission
-	AddUserUploadSubmission(context.Context, *UserAddUploadSubmissionRequest) (*UserUploadSubmissionRequest, error)
+	//AddUploadSubmission adds a UserUploadSubmission
+	AddUploadSubmission(context.Context, *UploadSubmissionAddRequest) (*UploadSubmissionRequest, error)
+	//UpdateUploadSubmission updates an existing UploadSubmission
+	UpdateUploadSubmission(context.Context, *UploadSubmissionUpdateRequest) (*Empty, error)
+	//DeleteUploadSubmission deletes an upload submission
+	DeleteUploadSubmission(context.Context, *UploadSubmissionRequest) (*Empty, error)
 	//AddUserGroup adds a UserGroup based on provided attributes
 	AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error)
 	//UpdateUserGroup updates an existing UserGroup
@@ -218,6 +264,8 @@ type ResonateUserServer interface {
 	//DeleteUserGroup deletes a UserGroup
 	DeleteUserGroup(context.Context, *UserGroupRequest) (*Empty, error)
 	ListUsersUserGroups(context.Context, *UserRequest) (*UserGroupListResponse, error)
+	CreateTrackGroup(context.Context, *TrackGroupCreateRequest) (*TrackGroupResponse, error)
+	GetTrackGroup(context.Context, *TrackGroupRequest) (*TrackGroupResponse, error)
 }
 
 // UnimplementedResonateUserServer should be embedded to have forward compatible implementations.
@@ -251,8 +299,14 @@ func (UnimplementedResonateUserServer) DeleteUser(context.Context, *UserRequest)
 func (UnimplementedResonateUserServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
 }
-func (UnimplementedResonateUserServer) AddUserUploadSubmission(context.Context, *UserAddUploadSubmissionRequest) (*UserUploadSubmissionRequest, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddUserUploadSubmission not implemented")
+func (UnimplementedResonateUserServer) AddUploadSubmission(context.Context, *UploadSubmissionAddRequest) (*UploadSubmissionRequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUploadSubmission not implemented")
+}
+func (UnimplementedResonateUserServer) UpdateUploadSubmission(context.Context, *UploadSubmissionUpdateRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUploadSubmission not implemented")
+}
+func (UnimplementedResonateUserServer) DeleteUploadSubmission(context.Context, *UploadSubmissionRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUploadSubmission not implemented")
 }
 func (UnimplementedResonateUserServer) AddUserGroup(context.Context, *UserGroupCreateRequest) (*UserRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUserGroup not implemented")
@@ -268,6 +322,12 @@ func (UnimplementedResonateUserServer) DeleteUserGroup(context.Context, *UserGro
 }
 func (UnimplementedResonateUserServer) ListUsersUserGroups(context.Context, *UserRequest) (*UserGroupListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListUsersUserGroups not implemented")
+}
+func (UnimplementedResonateUserServer) CreateTrackGroup(context.Context, *TrackGroupCreateRequest) (*TrackGroupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTrackGroup not implemented")
+}
+func (UnimplementedResonateUserServer) GetTrackGroup(context.Context, *TrackGroupRequest) (*TrackGroupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTrackGroup not implemented")
 }
 
 // UnsafeResonateUserServer may be embedded to opt out of forward compatibility for this service.
@@ -443,20 +503,56 @@ func _ResonateUser_ListUsers_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ResonateUser_AddUserUploadSubmission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserAddUploadSubmissionRequest)
+func _ResonateUser_AddUploadSubmission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadSubmissionAddRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResonateUserServer).AddUserUploadSubmission(ctx, in)
+		return srv.(ResonateUserServer).AddUploadSubmission(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.ResonateUser/AddUserUploadSubmission",
+		FullMethod: "/user.ResonateUser/AddUploadSubmission",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResonateUserServer).AddUserUploadSubmission(ctx, req.(*UserAddUploadSubmissionRequest))
+		return srv.(ResonateUserServer).AddUploadSubmission(ctx, req.(*UploadSubmissionAddRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_UpdateUploadSubmission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadSubmissionUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).UpdateUploadSubmission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/UpdateUploadSubmission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).UpdateUploadSubmission(ctx, req.(*UploadSubmissionUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_DeleteUploadSubmission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UploadSubmissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).DeleteUploadSubmission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/DeleteUploadSubmission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).DeleteUploadSubmission(ctx, req.(*UploadSubmissionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -551,6 +647,42 @@ func _ResonateUser_ListUsersUserGroups_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ResonateUser_CreateTrackGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TrackGroupCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).CreateTrackGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/CreateTrackGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).CreateTrackGroup(ctx, req.(*TrackGroupCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ResonateUser_GetTrackGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TrackGroupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResonateUserServer).GetTrackGroup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.ResonateUser/GetTrackGroup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResonateUserServer).GetTrackGroup(ctx, req.(*TrackGroupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "user.ResonateUser",
 	HandlerType: (*ResonateUserServer)(nil),
@@ -592,8 +724,16 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ResonateUser_ListUsers_Handler,
 		},
 		{
-			MethodName: "AddUserUploadSubmission",
-			Handler:    _ResonateUser_AddUserUploadSubmission_Handler,
+			MethodName: "AddUploadSubmission",
+			Handler:    _ResonateUser_AddUploadSubmission_Handler,
+		},
+		{
+			MethodName: "UpdateUploadSubmission",
+			Handler:    _ResonateUser_UpdateUploadSubmission_Handler,
+		},
+		{
+			MethodName: "DeleteUploadSubmission",
+			Handler:    _ResonateUser_DeleteUploadSubmission_Handler,
 		},
 		{
 			MethodName: "AddUserGroup",
@@ -614,6 +754,14 @@ var _ResonateUser_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListUsersUserGroups",
 			Handler:    _ResonateUser_ListUsersUserGroups_Handler,
+		},
+		{
+			MethodName: "CreateTrackGroup",
+			Handler:    _ResonateUser_CreateTrackGroup_Handler,
+		},
+		{
+			MethodName: "GetTrackGroup",
+			Handler:    _ResonateUser_GetTrackGroup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

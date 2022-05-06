@@ -1,0 +1,24 @@
+syntax="proto3";
+
+//package example;
+//package resonate.api.user;
+package user;
+option go_package = "github.com/resonatecoop/user-api/proto/user";
+
+message UploadSubmissionRequest {
+  string id = 1;
+}
+
+message UploadSubmissionAddRequest {
+  string id = 1; // UUID required
+  string name = 2; // required
+  string description = 3; // required
+  repeated string files = 4;
+}
+
+message UploadSubmissionUpdateRequest {
+  string id = 1; // UUID required
+  string name = 2; // required
+  string description = 3; // required
+  repeated string files = 4;
+}

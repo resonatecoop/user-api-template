@@ -2,7 +2,14 @@
   "swagger": "2.0",
   "info": {
     "title": "Resonate Service Documentation: User",
-    "version": "2.0.2"
+    "version": "2.0.2",
+    "contact": {
+      "email": "members@resonate.coop"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://github.com/resonatecoop/user-api/blob/master/LICENSE"
+    }
   },
   "schemes": [
     "https"
@@ -111,6 +118,142 @@
         ],
         "tags": [
           "Users"
+        ]
+      }
+    },
+    "/api/v1/trackgroup": {
+      "post": {
+        "summary": "Create a trackgroup",
+        "description": "Create a trackgroup to the server.",
+        "operationId": "ResonateUser_CreateTrackGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userTrackGroupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userTrackGroupCreateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Trackgroups"
+        ]
+      }
+    },
+    "/api/v1/trackgroup/{id}": {
+      "get": {
+        "summary": "Get a trackgroup",
+        "description": "Get a trackgroup from the server.",
+        "operationId": "ResonateUser_GetTrackGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userTrackGroupResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Trackgroups"
+        ]
+      }
+    },
+    "/api/v1/upload-submission/{id}": {
+      "delete": {
+        "summary": "Delete upload submission",
+        "description": "Delete an upload submission from the server.",
+        "operationId": "ResonateUser_DeleteUploadSubmission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UploadSubmissions"
+        ]
+      },
+      "patch": {
+        "summary": "Update an upload submission",
+        "description": "Update an existing upload submission record on the server.",
+        "operationId": "ResonateUser_UpdateUploadSubmission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userUploadSubmissionUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UploadSubmissions"
         ]
       }
     },
@@ -408,12 +551,12 @@
       "post": {
         "summary": "Add an upload submission",
         "description": "Add an upload submission to the server to user resource with id: id.",
-        "operationId": "ResonateUser_AddUserUploadSubmission",
+        "operationId": "ResonateUser_AddUploadSubmission",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/userUserUploadSubmissionRequest"
+              "$ref": "#/definitions/userUploadSubmissionRequest"
             }
           },
           "default": {
@@ -435,12 +578,12 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/userUserAddUploadSubmissionRequest"
+              "$ref": "#/definitions/userUploadSubmissionAddRequest"
             }
           }
         ],
         "tags": [
-          "UserUploadSubmissions"
+          "UploadSubmissions"
         ]
       }
     },
@@ -571,6 +714,241 @@
         }
       }
     },
+    "userRelatedTrackGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "cover": {
+          "type": "string",
+          "format": "byte"
+        },
+        "type": {
+          "type": "string"
+        },
+        "about": {
+          "type": "string"
+        },
+        "private": {
+          "type": "boolean"
+        },
+        "displayArtist": {
+          "type": "string"
+        },
+        "totalTracks": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "userGroup": {
+          "$ref": "#/definitions/userRelatedUserGroup"
+        }
+      }
+    },
+    "userRelatedUserGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "userTag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "userTrack": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "trackNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "trackGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userRelatedTrackGroup"
+          }
+        },
+        "creatorId": {
+          "type": "string"
+        },
+        "userGroupId": {
+          "type": "string"
+        },
+        "artists": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userRelatedUserGroup"
+          }
+        },
+        "trackServerId": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userTag"
+          }
+        },
+        "duration": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "userTrackGroupCreateRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "cover": {
+          "type": "string",
+          "format": "byte"
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string"
+        },
+        "displayArtist": {
+          "type": "string"
+        },
+        "multipleComposers": {
+          "type": "boolean"
+        },
+        "private": {
+          "type": "boolean"
+        },
+        "creatorId": {
+          "type": "string"
+        },
+        "userGroupId": {
+          "type": "string"
+        },
+        "UserGroup": {
+          "$ref": "#/definitions/userRelatedUserGroup"
+        },
+        "labelId": {
+          "type": "string"
+        },
+        "Label": {
+          "$ref": "#/definitions/userRelatedUserGroup"
+        },
+        "tracks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userTrack"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/userTag"
+          }
+        },
+        "about": {
+          "type": "string"
+        }
+      }
+    },
+    "userTrackGroupResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "userUploadSubmissionAddRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "userUploadSubmissionRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "userUploadSubmissionUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "userUserAddRequest": {
       "type": "object",
       "properties": {
@@ -604,26 +982,6 @@
         "roleId": {
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "userUserAddUploadSubmissionRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "files": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },
@@ -1039,14 +1397,6 @@
         },
         "newsletterNotification": {
           "type": "boolean"
-        }
-      }
-    },
-    "userUserUploadSubmissionRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
         }
       }
     }

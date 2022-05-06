@@ -10,6 +10,9 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "user/common.proto";
 import "user/user_messages.proto";
+import "user/track_messages.proto";
+import "user/trackgroup_messages.proto";
+import "user/upload_submissions_messages.proto";
 import "user/usergroup_messages.proto";
 
 // Defines the import path that should be used to import the generated package,
@@ -19,13 +22,23 @@ option go_package = "github.com/resonatecoop/user-api/proto/user";
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    version: "2.0.2";
-    title: "Resonate Service Documentation: User";
+    version: "2.0.2"
+    title: "Resonate Service Documentation: User"
+    // description: 'User API'
+    license: {
+      name: "MIT License"
+      url: "https://github.com/resonatecoop/user-api/blob/master/LICENSE"
+    }
+    contact: {
+      email: "members@resonate.coop"
+    }
   };
+  // host: "https://api.resonate.coop";
+  // base_path: "/api/v1";
   external_docs: {
-    url: "https://github.com/resonatecoop/user-api";
-    description: "gRPC-gateway resonate-user-api repository";
-  }
+    url: "https://github.com/resonatecoop/user-api"
+    description: "gRPC-gateway resonate-user-api repository"
+  };
   security_definitions: {
     security: {
       key: "bearer"
@@ -36,17 +49,16 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         description: "Authentication token, prefixed by Bearer: Bearer <token>"
       }
     }
-  }
+  };
   security: {
     security_requirement: {
       key: "bearer"
     }
-  }
+  };
   schemes: HTTPS;
 };
 
 service ResonateUser {
-
   // Users
 
   //GetUser provides a public level of information about a user
@@ -178,10 +190,10 @@ service ResonateUser {
     };
   }
 
-  // UserUploadSubmissions
+  // UploadSubmissions
 
-  //AddUserUploadSubmission adds a UserUploadSubmission
-  rpc AddUserUploadSubmission(UserAddUploadSubmissionRequest) returns (UserUploadSubmissionRequest) {
+  //AddUploadSubmission adds a UserUploadSubmission
+  rpc AddUploadSubmission(UploadSubmissionAddRequest) returns (UploadSubmissionRequest) {
     option (google.api.http) = {
       // Route to this method from POST requests to /api/v1/users/{id}/upload_submission
       post: "/api/v1/users/{id}/upload-submission"
@@ -190,7 +202,33 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Add an upload submission"
       description: "Add an upload submission to the server to user resource with id: id."
-      tags: "UserUploadSubmissions"
+      tags: "UploadSubmissions"
+    };
+  }
+
+  //UpdateUploadSubmission updates an existing UploadSubmission
+  rpc UpdateUploadSubmission(UploadSubmissionUpdateRequest) returns (Empty) {
+    option (google.api.http) = {
+      patch: "/api/v1/upload-submission/{id}"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update an upload submission"
+      description: "Update an existing upload submission record on the server."
+      tags: "UploadSubmissions"
+    };
+  }
+
+  //DeleteUploadSubmission deletes an upload submission
+  rpc DeleteUploadSubmission(UploadSubmissionRequest) returns (Empty) {
+    option (google.api.http) = {
+      // Route to this method from DELETE requests to /api/v1/restricted/user/{id}
+      delete: "/api/v1/upload-submission/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete upload submission"
+      description: "Delete an upload submission from the server."
+      tags: "UploadSubmissions"
     };
   }
 
@@ -305,7 +343,7 @@ service ResonateUser {
 
   // rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
   // rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
-  // // rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
+  // rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
   // rpc UpdateUserGroup(UserGroupUpdateRequest) returns (UserGroupPrivateResponse);
   // rpc DeleteUserGroup(UserGroupRequest) returns (Empty);
 
@@ -315,13 +353,69 @@ service ResonateUser {
   // rpc GetLabelUserGroups(UserGroupRequest) returns (GroupedUserGroups);
   // rpc GetUserGroupTypes(Empty) returns (GroupTaxonomies);
 
-  // //rpc AddRecommended(UserGroupRecommended) returns (Empty);
-  // //rpc RemoveRecommended(UserGroupRecommended) returns (Empty);
+  // rpc AddRecommended(UserGroupRecommended) returns (Empty);
+  // rpc RemoveRecommended(UserGroupRecommended) returns (Empty);
 
   // rpc AddMember(UserGroupMembershipRequest) returns (Empty);
   // rpc DeleteMember(UserGroupMembershipRequest) returns (Empty);
 
   // rpc SearchUserGroups(Query) returns (SearchResults);
+
+  // User Library
+  // rpc GetPlaylists(User) returns (Playlists);
+  // rpc GetFavoriteTracks(User) returns (Tracks);
+  // rpc GetOwnedTracks(User) returns (Tracks);
+  // rpc GetTrackHistory(User) returns (Tracks);
+
+  // rpc GetSupportedArtists(User) returns (Artists);
+  // rpc CreatePlay(CreatePlayRequest) returns (CreatePlayResponse); Payment API
+
+  // rpc FollowGroup(UserToUserGroup) returns (Empty);
+  // rpc UnfollowGroup(UserToUserGroup) returns (Empty);
+  // rpc AddFavoriteTrack(UserToTrack) returns (Empty);
+  // rpc RemoveFavoriteTrack(UserToTrack) returns (Empty);
+
+  // Tracks
+
+  // rpc CreateTrack(Track) returns (Track);
+  // rpc GetTracks(TracksList) returns (TracksList);
+  // rpc UpdateTrack(Track) returns (Empty);
+  // rpc DeleteTrack(Track) returns (Empty);
+
+  // rpc SearchTracks(Query) returns (SearchResults);
+
+  // Trackgroups
+
+  rpc CreateTrackGroup(TrackGroupCreateRequest) returns (TrackGroupResponse) {
+    option (google.api.http) = {
+      // Route to this method from POST requests to /api/v1/trackgroup
+      post: "/api/v1/trackgroup"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create a trackgroup"
+      description: "Create a trackgroup to the server."
+      tags: "Trackgroups"
+    };
+  }
+
+  rpc GetTrackGroup(TrackGroupRequest) returns (TrackGroupResponse) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/trackgroup/{id}
+      get: "/api/v1/trackgroup/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a trackgroup"
+      description: "Get a trackgroup from the server."
+      tags: "Trackgroups"
+    };
+  }
+  // rpc UpdateTrackGroup(TrackGroup) returns (Empty);
+  // rpc DeleteTrackGroup(TrackGroup) returns (Empty);
+  // rpc AddTracksToTrackGroup(TracksToTrackGroup) returns (Empty);
+  // rpc RemoveTracksFromTrackGroup(TracksToTrackGroup) returns (Empty);
+
+  // rpc SearchTrackGroups(Query) returns (SearchResults);
 }
 
 
