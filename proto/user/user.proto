@@ -150,7 +150,7 @@ service ResonateUser {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get user membership"
       description: "Get user membership."
-      tags: "Users"
+      tags: "Membership"
     };
   }
 
