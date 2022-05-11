@@ -11,6 +11,7 @@ type Track struct {
 	Enabled     bool   `bun:",notnull"`
 	TrackNumber int32  `bun:",notnull"`
 	Duration    float32
+	Download    bool `bun:",notnull"` // Allow or disallow download
 
 	TrackGroups     []uuid.UUID `bun:",type:uuid[],array"`
 	FavoriteOfUsers []uuid.UUID `bun:",type:uuid[],array"`
