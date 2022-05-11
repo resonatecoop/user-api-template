@@ -11,6 +11,7 @@ type TrackGroup struct {
 	IDRecord
 
 	Title             string    `bun:",notnull"`
+	Slug              string    `bun:",notnull"` // Slug title
 	ReleaseDate       time.Time `bun:",notnull"`
 	Type              string    `bun:"type:track_group_type,notnull"` // EP, LP, Single, Playlist
 	Cover             []byte    `bun:",notnull"`
