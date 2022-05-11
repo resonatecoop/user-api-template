@@ -195,49 +195,10 @@ func (interceptor *AuthInterceptor) authorize(ctx context.Context, req interface
 	if isPublicAccessMethod {
 		// everyone can access but check it's against their own ID
 		if activeRole > int32(model.LabelRole) {
-			// dealing with normal users, Label admins can maintain own artist content.
-			// attempt to extract the Id from all the possible request types dealing with failure
-			// TODO a bit nasty, can we make this more elegant and less opinionated?
-			var id string
-			userReq, ok := req.(*pbUser.UserRequest)
-			if !ok {
-				userUpdateReq, ok := req.(*pbUser.UserUpdateRequest)
-				if !ok {
-					userGroupCreateReq, ok := req.(*pbUser.UserGroupCreateRequest)
-					if !ok {
-						userGroupUpdateReq, ok := req.(*pbUser.UserGroupUpdateRequest)
-						if !ok {
-							uploadSubmissionAddReq, ok := req.(*pbUser.UploadSubmissionAddRequest)
+			id, err := interceptor.extractUserIdFromReq(ctx, req, accessTokenRecord)
 
-							if !ok {
-								return status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
-							} else {
-								id = uploadSubmissionAddReq.Id
-							}
-						} else {
-
-							newUserGroup := new(model.UserGroup)
-
-							err = interceptor.db.NewSelect().
-								Model(newUserGroup).
-								Where("owner_id = ?", accessTokenRecord.UserID).
-								Where("id = ?", userGroupUpdateReq.Id).
-								Scan(ctx)
-
-							if err != nil {
-								return status.Errorf(codes.PermissionDenied, "Supplied UUID for User Group is not valid or logged in User doesn't own Group")
-							}
-
-							id = accessTokenRecord.UserID.String()
-						}
-					} else {
-						id = userGroupCreateReq.Id
-					}
-				} else {
-					id = userUpdateReq.Id
-				}
-			} else {
-				id = userReq.Id
+			if err != nil {
+				return err
 			}
 
 			ID, err := uuid.Parse(id)
@@ -318,6 +279,54 @@ func (interceptor *AuthInterceptor) Authenticate(token string) (*model.AccessTok
 	}
 
 	return accessToken, nil
+}
+
+func (interceptor *AuthInterceptor) extractUserIdFromReq(ctx context.Context, req interface{}, accessTokenRecord *model.AccessToken) (string, error) {
+	// Dealing with normal users, Label admins can maintain own artist content.
+	// attempt to extract the Id from all the possible request types dealing with failure
+	userReq, ok := req.(*pbUser.UserRequest)
+
+	if ok {
+		return userReq.Id, nil
+	}
+
+	userUpdateReq, ok := req.(*pbUser.UserUpdateRequest)
+
+	if ok {
+		return userUpdateReq.Id, nil
+	}
+
+	userGroupCreateReq, ok := req.(*pbUser.UserGroupCreateRequest)
+
+	if ok {
+		return userGroupCreateReq.Id, nil
+	}
+
+	userGroupUpdateReq, ok := req.(*pbUser.UserGroupUpdateRequest)
+
+	if ok {
+		newUserGroup := new(model.UserGroup)
+
+		err := interceptor.db.NewSelect().
+			Model(newUserGroup).
+			Where("owner_id = ?", accessTokenRecord.UserID).
+			Where("id = ?", userGroupUpdateReq.Id).
+			Scan(ctx)
+
+		if err != nil {
+			return "", status.Errorf(codes.PermissionDenied, "Supplied UUID for User Group is not valid or logged in User doesn't own Group")
+		}
+
+		return accessTokenRecord.UserID.String(), nil
+	}
+
+	uploadSubmissionAddReq, ok := req.(*pbUser.UploadSubmissionAddRequest)
+
+	if ok {
+		return uploadSubmissionAddReq.Id, nil
+	}
+
+	return "", status.Errorf(codes.PermissionDenied, "UUID in request is not valid")
 }
 
 func (interceptor *AuthInterceptor) find(slice []string, val string) (int, bool) {
