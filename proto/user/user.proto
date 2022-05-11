@@ -341,11 +341,7 @@ service ResonateUser {
     };
   }
 
-  // rpc CreateUserGroup(UserGroupCreateRequest) returns (UserGroupPrivateResponse);
-  // rpc GetUserGroup(UserGroupRequest) returns (UserGroupPublicResponse);
   // rpc GetUserGroupRestricted(UserGroupRequest) returns (UserGroupPrivateResponse);
-  // rpc UpdateUserGroup(UserGroupUpdateRequest) returns (UserGroupPrivateResponse);
-  // rpc DeleteUserGroup(UserGroupRequest) returns (Empty);
 
   // rpc GetChildUserGroups(UserGroupRequest) returns (GroupedUserGroups);
   // rpc GetParentUserGroups(UserGroupRequest) returns (GroupedUserGroups);
