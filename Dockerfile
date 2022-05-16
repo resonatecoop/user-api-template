@@ -12,12 +12,15 @@ RUN export GO111MODULE=on
 RUN apt-get -y update
 RUN apt-get install -y libpq-dev postgresql-client
 RUN go install github.com/resonatecoop/user-api@${RELEASE_TAG}
-RUN cd /build && git clone --branch ${RELEASE_TAG} --single-branch --depth 1 https://github.com/resonatecoop/user-api
-
-RUN cd user-api && go build
-
-EXPOSE 11000
+RUN git clone --branch ${RELEASE_TAG} --single-branch --depth 1 https://github.com/resonatecoop/user-api
 
 WORKDIR /build/user-api
+
+RUN make install
+RUN git submodule update --init
+RUN make generate
+RUN go build
+
+EXPOSE 11000
 
 ENTRYPOINT ["sh", "docker-entrypoint.sh"]
