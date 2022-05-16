@@ -1,1 +1,3 @@
 .vscode
+proto/user/*.pb.go
+proto/user/*.gw.go
