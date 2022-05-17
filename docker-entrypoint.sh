@@ -1,2 +1,2 @@
-go run main.go db -env prod migrate
-go run main.go runserver -env prod -dbdebug true
+./user-api db -env prod migrate
+./user-api runserver -env prod -dbdebug true
