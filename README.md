@@ -39,8 +39,23 @@ After cloning the repo, there are a couple of initial steps;
    This will install `buf`, `protoc-gen-go`, `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`,
    `protoc-gen-openapiv2` and `statik` which are necessary for us to generate the Go, swagger and static files.
 3. Install the git submodule(s) with `git submodule update --init` from root directory of the cloned repo
-4. Generate the files with `make generate`.
-5. Finally, update your `PATH` so that the protoc compiler can find the plugins: `export PATH="$PATH:$(go env GOPATH)/bin"`.
+4. Finally, generate the files with `make generate`.
+5. Now, you'll need to generate a certificate:
+```sh
+mkcert -install
+mkcert 0.0.0.0 127.0.0.1 localhost ::1
+```
+
+The certificate is in the directory you ran the above command from. Rename the key file (something like `./0.0.0.0+3-key.pem`) to `uaclient.key` and the certificate file (something like `./0.0.0.0+3.pem`) to `uaclient.pem`. Copy both of the renamed files to `/usr/local/etc/nginx/ssl` (if you don't have an `ssl` folder in your nginx directory, create one).
+
+Serve the User API at https://127.0.0.1:11000 with this command:
+```sh
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go runserver -env dev -dbdebug true
+```
+6. Start the server:
+```sh
+pg_ctl -D /usr/local/var/postgres -l logfile start
+```
 
 ## Dev database setup
 
@@ -52,63 +67,39 @@ password = "password"
 
 dbname = "resonate_dev"
 
+To get into the Postgres shell, run:
 ```
+psql
+```
+
+```sql
 CREATE DATABASE resonate_dev;
-
 CREATE USER resonate_dev_user WITH PASSWORD 'password';
-
 GRANT ALL PRIVILEGES ON DATABASE resonate_dev TO resonate_dev_user;
-
 ```
 
-Add following postgres extensions: "hstore" and "uuid-ossp"
-
-```
+* And add the `hstore` and `uuid-ossp` extensions, confirming with the `SELECT` statement.
+```sql
 \c resonate_dev;
 CREATE EXTENSION hstore;
 CREATE EXTENSION "uuid-ossp";
-```
-
-You can confirm with
-
-```
 SELECT * FROM pg_extension;
 ```
 
-From the root of the user-api:
-
-* Init migrations
-
+* Then, run these migrations (from the root of the user-api):
 ```sh
-$  go run main.go db -env dev init
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev init
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev migrate                                                                                                     
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev load_default_fixtures
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev load_test_fixtures
 ```
 
-* Run migrations
+* Then, repeat the last two above blocks replacing `dev` with `test`.
+
+If you need to roll back:
 
 ```sh
-$ go run main.go db -env dev migrate
-```
-
-rolling back:
-
-```sh
-$ go run main.go db -env dev rollback
-```
-
-* Loading default fixtures
-```sh
-$ go run main.go db -env dev load_default_fixtures
-```
-
-* Loading test data (fixtures)
-```sh
-$ go run main.go db -env dev load_test_fixtures
-```
-
-The same can be repeated for the test database (`resonate_test`) substituting `dev` for `test`, e.g:
-
-```sh
-$  go run main.go db -env test init
+UACERT_DIR="/usr/local/etc/nginx/ssl" go run main.go db -env dev rollback
 ```
 
 ## Tests
