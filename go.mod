@@ -5,16 +5,16 @@ go 1.16
 require (
 	github.com/bufbuild/buf v0.32.0
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
-	github.com/go-openapi/errors v0.20.2 // indirect
-	github.com/go-openapi/runtime v0.24.1 // indirect
-	github.com/go-openapi/strfmt v0.21.2 // indirect
-	github.com/go-openapi/swag v0.21.1 // indirect
+	github.com/go-openapi/errors v0.20.2
+	github.com/go-openapi/runtime v0.24.1
+	github.com/go-openapi/strfmt v0.21.2
+	github.com/go-openapi/swag v0.21.1
 	github.com/go-pg/migrations v6.7.3+incompatible
 	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/uuid v1.1.2
-	github.com/goware/urlx v0.3.1 // indirect
+	github.com/goware/urlx v0.3.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jackc/pgx/v4 v4.11.0
