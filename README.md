@@ -174,9 +174,9 @@ be implementing the interface defined by the generated file in `proto/example.pb
 
 ### Generate swagger client
 
-``sh
+```sh
 swagger generate client -f ./third_party/OpenAPI/user/user.swagger.json -t ./client -a "user-api-client"
-´´
+´´´
 
 ### Code example
 
