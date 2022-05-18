@@ -5,12 +5,16 @@ go 1.16
 require (
 	github.com/bufbuild/buf v0.32.0
 	github.com/form3tech-oss/jwt-go v3.2.3+incompatible
+	github.com/go-openapi/errors v0.20.2
+	github.com/go-openapi/runtime v0.24.1
+	github.com/go-openapi/strfmt v0.21.2
+	github.com/go-openapi/swag v0.21.1
 	github.com/go-pg/migrations v6.7.3+incompatible
 	github.com/go-pg/pg v8.0.7+incompatible
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/uuid v1.1.2
-	github.com/goware/urlx v0.3.1 // indirect
+	github.com/goware/urlx v0.3.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.1
 	github.com/jackc/pgx/v4 v4.11.0
@@ -32,6 +36,6 @@ require (
 	google.golang.org/grpc v1.33.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.1
 	google.golang.org/protobuf v1.25.1-0.20201020201750-d3470999428b
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	mellium.im/sasl v0.2.1 // indirect
 )
