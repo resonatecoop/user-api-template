@@ -18,7 +18,7 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/extra/bundebug"
 
-	"github.com/resonatecoop/user-api/pkg/config"
+	"github.com/resonatecoop/user-api-template/pkg/config"
 
 	//"github.com/uptrace/bun/extra/bundebug"
 	"github.com/urfave/cli/v2"

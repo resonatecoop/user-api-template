@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"github.com/resonatecoop/user-api/model"
+	"github.com/resonatecoop/user-api-template/model"
 )
 
 // RBAC Mock

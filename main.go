@@ -13,21 +13,21 @@ import (
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 
-	"github.com/resonatecoop/user-api/app"
-	"github.com/resonatecoop/user-api/migrations"
-	"github.com/resonatecoop/user-api/model"
-	acc "github.com/resonatecoop/user-api/pkg/access"
+	"github.com/resonatecoop/user-api-template/app"
+	"github.com/resonatecoop/user-api-template/migrations"
+	"github.com/resonatecoop/user-api-template/model"
+	acc "github.com/resonatecoop/user-api-template/pkg/access"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/resonatecoop/user-api/gateway"
-	"github.com/resonatecoop/user-api/insecure"
-	pbUser "github.com/resonatecoop/user-api/proto/user"
+	"github.com/resonatecoop/user-api-template/gateway"
+	"github.com/resonatecoop/user-api-template/insecure"
+	pbUser "github.com/resonatecoop/user-api-template/proto/user"
 
-	authorization "github.com/resonatecoop/user-api/authorization"
-	userserver "github.com/resonatecoop/user-api/server"
+	authorization "github.com/resonatecoop/user-api-template/authorization"
+	userserver "github.com/resonatecoop/user-api-template/server"
 
 	// Static files
-	_ "github.com/resonatecoop/user-api/statik"
+	_ "github.com/resonatecoop/user-api-template/statik"
 
 	cli "github.com/urfave/cli/v2"
 )
