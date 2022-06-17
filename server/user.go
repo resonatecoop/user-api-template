@@ -110,7 +110,6 @@ func (s *Server) GetUser(ctx context.Context, user *pbUser.UserRequest) (*pbUser
 
 	return &pbUser.UserPublicResponse{
 		Id:             u.ID.String(),
-		LegacyId:       u.LegacyID,
 		Username:       u.Username,
 		FullName:       u.FullName,
 		FirstName:      u.FirstName,
@@ -137,7 +136,6 @@ func (s *Server) GetUserRestricted(ctx context.Context, user *pbUser.UserRequest
 
 	return &pbUser.UserPrivateResponse{
 		Id:                     u.ID.String(),
-		LegacyId:               u.LegacyID,
 		Username:               u.Username,
 		FullName:               u.FullName,
 		FirstName:              u.FirstName,

@@ -19,7 +19,6 @@ type AuthUser struct {
 // User basic definition of a User and its meta
 type User struct {
 	IDRecord
-	LegacyID               int32  `bun:",type:serial,notnull,unique"`
 	Username               string `bun:",notnull,unique"`
 	FullName               string
 	FirstName              string

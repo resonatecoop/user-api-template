@@ -1,7 +1,6 @@
 - model: User
   rows:
     - id: 243b4178-6f98-4bf1-bbb1-46b57a901816
-      legacy_id: 100001
       created_at: '{{ now }}'
       username: jimmy@hendrix.com
       full_name: Jimmy Hendrix
@@ -11,7 +10,6 @@
       role_id: 3
       member: true
     - id: 5253747c-2b8c-40e2-8a70-bab91348a9bd
-      legacy_id: 100002
       created_at: '{{ now }}'
       username: miles@davis.com
       full_name: Miles Davis
@@ -22,7 +20,6 @@
       member: false
     - id: af0494cd-d082-459b-87bf-7fddc3414f65
       created_at: '{{ now }}'
-      legacy_id: 100003
       username: john@coltrane.com
       full_name: John Coltrane
       first_name: John
@@ -31,7 +28,6 @@
       role_id: 4
       member: true
     - id: f40cf437-eef2-4659-8eb3-7ee93f6dfcea
-      legacy_id: 100004
       role_id: 1
       created_at: '{{ now }}'
       username: 'test@superuser.com'
@@ -39,7 +35,6 @@
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
     - id: 046e7a23-a9f0-4fb8-a60f-861b2df05d95
-      legacy_id: 100005
       role_id: 5
       created_at: '{{ now }}'
       username: 'test@user.com'
@@ -47,7 +42,6 @@
         string: '$2a$10$4J4t9xuWhOKhfjN0bOKNReS9sL3BVSN9zxIr2.VaWWQfRBWh1dQIS'
         valid: true
     - id: 953c3537-3149-4164-9c73-ec785a3c17c4
-      legacy_id: 100006
       role_id: 5
       created_at: '{{ now }}'
       username: 'test@user2.com'
