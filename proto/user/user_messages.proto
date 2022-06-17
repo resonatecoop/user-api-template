@@ -63,7 +63,6 @@ message UserCreditResponse {
 
 message UserPrivateResponse {
   string id = 1; // required
-  int32 legacy_id = 2;
   string username = 3; // required
   string full_name = 4; // required
   string first_name = 5;
@@ -93,7 +92,6 @@ message UserMembershipResponse {
 
 message UserPublicResponse {
   string id = 1;
-  int32 legacy_id = 2;
   string username = 3; // required
   string full_name = 4; // required
   string first_name = 5;
