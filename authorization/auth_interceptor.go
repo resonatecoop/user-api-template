@@ -14,10 +14,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	uuid "github.com/google/uuid"
-	"github.com/resonatecoop/user-api/model"
-	"github.com/resonatecoop/user-api/pkg/access"
-	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
-	pbUser "github.com/resonatecoop/user-api/proto/user"
+	"github.com/resonatecoop/user-api-template/model"
+	"github.com/resonatecoop/user-api-template/pkg/access"
+	uuidpkg "github.com/resonatecoop/user-api-template/pkg/uuid"
+	pbUser "github.com/resonatecoop/user-api-template/proto/user"
 	grpclog "google.golang.org/grpc/grpclog"
 )
 

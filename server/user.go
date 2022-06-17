@@ -9,10 +9,10 @@ import (
 	"time"
 
 	uuid "github.com/google/uuid"
-	uuidpkg "github.com/resonatecoop/user-api/pkg/uuid"
+	uuidpkg "github.com/resonatecoop/user-api-template/pkg/uuid"
 
-	"github.com/resonatecoop/user-api/model"
-	pbUser "github.com/resonatecoop/user-api/proto/user"
+	"github.com/resonatecoop/user-api-template/model"
+	pbUser "github.com/resonatecoop/user-api-template/proto/user"
 )
 
 // AddUser adds a user to the DB

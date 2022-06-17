@@ -1,4 +1,4 @@
-module github.com/resonatecoop/user-api
+module github.com/resonatecoop/user-api-template
 
 go 1.18
 

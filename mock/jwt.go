@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/resonatecoop/user-api/model"
+	"github.com/resonatecoop/user-api-template/model"
 )
 
 // JWT mock

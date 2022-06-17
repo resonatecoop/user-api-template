@@ -11,7 +11,7 @@ import (
 	//"github.com/uptrace/bun/dialect/pgdialect"
 	//_ "github.com/jackc/pgx/v4/stdlib"
 
-	"github.com/resonatecoop/user-api/model"
+	"github.com/resonatecoop/user-api-template/model"
 )
 
 func init() {

@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/resonatecoop/user-api/pkg/config"
+	"github.com/resonatecoop/user-api-template/pkg/config"
 )
 
 const certPEM = `-----BEGIN CERTIFICATE-----
