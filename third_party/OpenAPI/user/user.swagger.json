@@ -184,70 +184,6 @@
         ]
       }
     },
-    "/api/v1/user/{id}/credits": {
-      "get": {
-        "summary": "Get user credits",
-        "description": "Get user credits.",
-        "operationId": "ResonateUser_GetUserCredits",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/userUserCreditResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Users"
-        ]
-      }
-    },
-    "/api/v1/user/{id}/membership": {
-      "get": {
-        "summary": "Get user membership",
-        "description": "Get user membership.",
-        "operationId": "ResonateUser_GetUserMembership",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/userUserMembershipResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Membership"
-        ]
-      }
-    },
     "/api/v1/usergroup/{id}": {
       "get": {
         "summary": "Get a user group",
@@ -567,15 +503,6 @@
         }
       }
     },
-    "userUserCreditResponse": {
-      "type": "object",
-      "properties": {
-        "total": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "userUserGroupCreateRequest": {
       "type": "object",
       "properties": {
@@ -776,23 +703,6 @@
           "items": {
             "$ref": "#/definitions/userUserPrivateResponse"
           }
-        }
-      }
-    },
-    "userUserMembershipResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "start": {
-          "type": "string"
-        },
-        "end": {
-          "type": "string"
-        },
-        "membershipClass": {
-          "type": "string"
         }
       }
     },
