@@ -11,7 +11,6 @@ WORKDIR /build
 RUN export GO111MODULE=on
 RUN apt-get -y update
 RUN apt-get install -y libpq-dev postgresql-client
-RUN go install github.com/resonatecoop/user-api@${RELEASE_TAG}
 RUN git clone --branch ${RELEASE_TAG} --single-branch --depth 1 https://github.com/resonatecoop/user-api
 
 WORKDIR /build/user-api
