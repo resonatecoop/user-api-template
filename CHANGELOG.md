@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-13] - 2022-06-17
+### Security
+- Update github.com/gogo/protobuf to v1.3.2
+
 ## [1.0.0-12] - 2022-06-17
 ### Added
 - This CHANGELOG file
